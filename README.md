@@ -1,11 +1,31 @@
-<div align="center">
+# TripGenie 🧞‍♂️
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+TripGenie is an AI-powered travel planner that generates map-based itineraries in seconds using Google Gemini 2.5.
 
-  <h1>Built with AI Studio</h2>
+## 🚀 How to Deploy
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+### Option 1: Vercel (Recommended)
+1. Fork/Upload this repository to GitHub.
+2. Go to [Vercel](https://vercel.com) and import the project.
+3. In **Environment Variables**, add:
+   - Name: `API_KEY`
+   - Value: `Your_Google_Gemini_API_Key`
+4. Click **Deploy**.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+### Option 2: Run Locally
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a `.env` file in the root directory:
+   ```
+   API_KEY=your_actual_api_key_here
+   ```
+   *(Note: Do not commit .env to GitHub)*
+3. Start the server:
+   ```bash
+   npm run dev
+   ```
 
-</div>
+## ⚠️ Security Note
+This is a client-side MVP. The API Key is embedded in the frontend build. For a production enterprise application, move the `geminiService.ts` logic to a backend server (Node.js/Python) to keep your API key hidden.
