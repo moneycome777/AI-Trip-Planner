@@ -26,12 +26,12 @@ class ErrorBoundary extends Component<Props, State> {
     console.error("Uncaught error:", error, errorInfo);
     
     // CONFIGURATION: Replace these with your actual EmailJS keys
-    const SERVICE_ID = 'YOUR_SERVICE_ID';
-    const TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-    const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+    const SERVICE_ID = 'service_q2f5gav';
+    const TEMPLATE_ID = 'template_bm7vaqo';
+    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
 
     // Only send if keys are configured (basic check)
-    if (SERVICE_ID !== 'YOUR_SERVICE_ID' && !this.state.sentReport) {
+    if (SERVICE_ID !== 'service_q2f5gav' && !this.state.sentReport) {
         const templateParams = {
             error_message: error.toString(),
             error_stack: errorInfo.componentStack,
