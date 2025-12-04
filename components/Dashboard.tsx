@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { TripPlan, UserPreferences, Activity } from '../types';
 import Itinerary from './Itinerary';
@@ -6,6 +7,7 @@ import ChatAssistant from './ChatAssistant';
 import { modifyTripPlan } from '../services/geminiService';
 import ComparisonModal from './ComparisonModal';
 import PlaceDetailsModal from './PlaceDetailsModal';
+import AdUnlockModal from './AdUnlockModal'; // Import Ad Modal
 import { GripVertical } from 'lucide-react';
 
 interface Props {
@@ -21,6 +23,16 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list');
   const [showComparison, setShowComparison] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+
+  // Monetization / Limits State
+  const [modCount, setModCount] = useState(0);
+  const [compareCount, setCompareCount] = useState(0);
+  const [showAd, setShowAd] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ type: 'MODIFY' | 'COMPARE', payload?: string } | null>(null);
+
+  // Constants
+  const FREE_MODIFICATION_LIMIT = 2;
+  const FREE_COMPARE_LIMIT = 1;
 
   // Resizable panel state
   const [leftPanelWidth, setLeftPanelWidth] = useState(35); // Percentage
@@ -60,11 +72,13 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
     };
   }, [isDragging]);
 
-  const handleModification = async (instruction: string) => {
+  // --- Logic for Modifications ---
+  const executeModification = async (instruction: string) => {
     setIsUpdating(true);
     try {
       const newPlan = await modifyTripPlan(plan, instruction);
       setPlan(newPlan);
+      setModCount(prev => prev + 1); // Increment usage
     } catch (e) {
       alert("System is momentarily overwhelmed. Please try again.");
     } finally {
@@ -72,71 +86,88 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
     }
   };
 
+  const handleModificationRequest = (instruction: string) => {
+      // Check if user has exceeded free limit
+      if (modCount >= FREE_MODIFICATION_LIMIT) {
+          setPendingAction({ type: 'MODIFY', payload: instruction });
+          setShowAd(true);
+      } else {
+          executeModification(instruction);
+      }
+  };
+
+  // --- Logic for Comparison ---
+  const handleCompareRequest = () => {
+      if (compareCount >= FREE_COMPARE_LIMIT) {
+          setPendingAction({ type: 'COMPARE' });
+          setShowAd(true);
+      } else {
+          setCompareCount(prev => prev + 1);
+          setShowComparison(true);
+      }
+  };
+
+  // --- Ad Reward Handler ---
+  const handleAdReward = () => {
+      setShowAd(false);
+      
+      if (pendingAction?.type === 'MODIFY' && pendingAction.payload) {
+          // Reset count to 0 so they get another batch of free edits
+          setModCount(0); 
+          executeModification(pendingAction.payload);
+      } else if (pendingAction?.type === 'COMPARE') {
+          // Allow comparison
+          setCompareCount(prev => prev + 1);
+          setShowComparison(true);
+      }
+      
+      setPendingAction(null);
+  };
+
   const handleBookTrip = () => {
-    // 1. Sanitize helper: "Kuala Lumpur, Malaysia" -> "kuala-lumpur"
+    // 1. Sanitize helper
     const sanitizeCity = (input: string) => {
         if (!input) return "everywhere";
-        // Take first part if comma exists, then trim, lowercase, and replace spaces/special chars with hyphens
         return input.split(',')[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
     };
 
     const origin = sanitizeCity(preferences.departFrom || "everywhere");
     const dest = sanitizeCity(preferences.destination);
 
-    // 2. Date Parsing for YYMMDD
+    // 2. Date Parsing
     let datePath = "";
-    
-    // Attempt to parse dates from string like "Oct 10 - Oct 15" or "10/10 - 15/10"
-    // We look for two groups of numbers/months
     const text = preferences.duration.toLowerCase();
-    
-    // Map month names
     const months: {[key:string]: string} = {
         jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
         jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12',
         january: '01', february: '02', march: '03', april: '04', june: '06',
         july: '07', august: '08', september: '09', october: '10', november: '11', december: '12'
     };
-
-    // Helper to zero-pad
     const pad = (n: string | number) => n.toString().padStart(2, '0');
-
-    // Strategy 1: Look for "Month DD" pattern (e.g. Oct 10)
     const monthRegex = /([a-z]+)[^0-9]+(\d{1,2})/g;
     const matchesMonth = [...text.matchAll(monthRegex)];
 
     if (matchesMonth.length >= 2) {
-        // We found at least two dates
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1;
 
         const getYYMMDD = (mName: string, dStr: string) => {
-             // Find month number
              let mNum = '01';
              for (const [key, val] of Object.entries(months)) {
                  if (mName.startsWith(key)) { mNum = val; break; }
              }
-             
-             // Logic: If month is earlier than current month, assume next year (YY+1)
-             // else assume current year (YY)
              const mInt = parseInt(mNum);
              const yearFull = (mInt < currentMonth) ? currentYear + 1 : currentYear;
              const yy = yearFull.toString().slice(-2);
-             
              return `${yy}${mNum}${pad(dStr)}`;
         };
 
         const startStr = getYYMMDD(matchesMonth[0][1], matchesMonth[0][2]);
         const endStr = getYYMMDD(matchesMonth[1][1], matchesMonth[1][2]);
-        
         datePath = `/${startStr}/${endStr}`;
     }
 
-    // 3. Construct URL
-    // Format: skyscanner.com/transport/flights/[origin]/[dest]/[YYMMDD]/[YYMMDD]
-    // const url = `https://www.skyscanner.com/transport/flights/${origin}/${dest}${datePath}`;
-    const url = `https://www.skyscanner.com`;
-    
+    const url = `https://www.skyscanner.com/transport/flights/${origin}/${dest}${datePath}`;
     window.open(url, '_blank');
   };
 
@@ -149,6 +180,20 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
   return (
     <div ref={containerRef} className="flex h-full w-full relative overflow-hidden">
+      
+      {/* Ad Modal for Usage Limits */}
+      {showAd && (
+          <AdUnlockModal 
+            duration={15}
+            onClose={() => setShowAd(false)}
+            onReward={handleAdReward}
+            title={pendingAction?.type === 'MODIFY' ? "Out of Free Edits" : "Unlock Comparison"}
+            message={pendingAction?.type === 'MODIFY' 
+                ? "You've used your free AI edits. Watch a short ad to unlock 2 more modifications." 
+                : "Watch a short ad to compare your trip with a standard tour."}
+          />
+      )}
+
       {/* Left Panel: Itinerary */}
       <div 
         className={`${mobileView === 'list' ? 'block' : 'hidden'} lg:block h-full border-r border-gray-200 relative bg-white flex flex-col z-20 shadow-xl lg:shadow-none transition-all duration-75 ease-linear`}
@@ -159,7 +204,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
             onDayClick={handleDayClick} 
             onNewTrip={onNewTrip} 
             onShowMap={() => setMobileView('map')}
-            onCompare={() => setShowComparison(true)}
+            onCompare={handleCompareRequest} 
             onPlaceClick={(activity) => setSelectedActivity(activity)}
         />
         
@@ -174,7 +219,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
         </div>
       </div>
 
-      {/* Resize Handle (Desktop Only) - Improved Visibility */}
+      {/* Resize Handle (Desktop Only) */}
       <div 
         className="hidden lg:flex w-5 hover:w-6 cursor-col-resize items-center justify-center bg-gray-100 border-l border-r border-gray-300 absolute top-0 bottom-0 z-50 group transition-all shadow-md hover:bg-indigo-50"
         style={{ left: `${leftPanelWidth}%`, transform: 'translateX(-50%)' }}
@@ -198,7 +243,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
       </div>
 
       {/* Chat Overlay */}
-      <ChatAssistant onSendMessage={handleModification} isUpdating={isUpdating} />
+      <ChatAssistant onSendMessage={handleModificationRequest} isUpdating={isUpdating} />
 
       {/* Comparison Modal */}
       {showComparison && (
