@@ -32,11 +32,15 @@ class ErrorBoundary extends Component<Props, State> {
 
     // Only send if not already sent
     if (!this.state.sentReport) {
+        
+        // ALIGNMENT FIX: Matching {{name}}, {{time}}, {{error_message}}
         const templateParams = {
-            error_message: error.toString(),
-            error_stack: errorInfo.componentStack,
+            name: "SYSTEM ALERT (TripGenie)",
+            time: new Date().toLocaleString(),
+            error_message: `CRITICAL APP CRASH:\n${error.toString()}\n\nSTACK TRACE:\n${errorInfo.componentStack}`,
+            
+            // Extra info
             user_agent: navigator.userAgent,
-            timestamp: new Date().toISOString()
         };
 
         emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)

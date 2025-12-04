@@ -15,16 +15,25 @@ const Contact: React.FC = () => {
     setStatus('sending');
 
     // EmailJS Configuration
-    // NOTE: Make sure your EmailJS Template is configured to send email to "motivateeveryday46@gmail.com"
-    const SERVICE_ID = 'service_q2f5gav'; // Using the ID from your ErrorBoundary
-    const TEMPLATE_ID = 'template_s9guskd'; // Updated to your provided template ID
-    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV'; // Using the Key from your ErrorBoundary
+    const SERVICE_ID = 'service_q2f5gav';
+    const TEMPLATE_ID = 'template_s9guskd';
+    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
 
+    // ALIGNMENT FIX: Mapping form data to your specific template variables
+    // Template expects: {{name}}, {{time}}, {{error_message}}
     const templateParams = {
-        from_name: formData.name,
+        // Map user's name to {{name}}
+        name: `${formData.name} (${formData.email})`, 
+        
+        // Map user's feedback to {{error_message}} so it appears in the email body
+        error_message: `USER FEEDBACK MESSAGE:\n\n${formData.message}`,
+        
+        // Map time
+        time: new Date().toLocaleString(),
+        
+        // Extra fields just in case you update template later
         reply_to: formData.email,
-        message: formData.message,
-        to_email: 'motivateeveryday46@gmail.com' // Pass this to template if your template uses {{to_email}}
+        message: formData.message 
     };
 
     emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
