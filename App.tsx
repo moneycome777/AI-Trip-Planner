@@ -19,7 +19,8 @@ const App: React.FC = () => {
       </div>
 
       {/* Main Content Area - Fills remaining space */}
-      <div className="flex-1 w-full relative overflow-hidden flex flex-col">
+      {/* Changed overflow-hidden to overflow-y-auto to allow scrolling on static pages */}
+      <div className="flex-1 w-full relative overflow-y-auto overflow-x-hidden flex flex-col">
         <Routes>
             <Route path="/" element={<MainPlanner />} />
             <Route path="/about" element={<About />} />
