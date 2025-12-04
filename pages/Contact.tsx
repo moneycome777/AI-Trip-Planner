@@ -17,7 +17,7 @@ const Contact: React.FC = () => {
     // EmailJS Configuration
     // NOTE: Make sure your EmailJS Template is configured to send email to "motivateeveryday46@gmail.com"
     const SERVICE_ID = 'service_q2f5gav'; // Using the ID from your ErrorBoundary
-    const TEMPLATE_ID = 'template_bm7vaqo'; // Replace this if you created a specific Contact Template
+    const TEMPLATE_ID = 'template_s9guskd'; // Updated to your provided template ID
     const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV'; // Using the Key from your ErrorBoundary
 
     const templateParams = {

@@ -27,11 +27,11 @@ class ErrorBoundary extends Component<Props, State> {
     
     // CONFIGURATION: Replace these with your actual EmailJS keys
     const SERVICE_ID = 'service_q2f5gav';
-    const TEMPLATE_ID = 'template_bm7vaqo';
+    const TEMPLATE_ID = 'template_s9guskd';
     const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
 
-    // Only send if keys are configured (basic check)
-    if (SERVICE_ID !== 'service_q2f5gav' && !this.state.sentReport) {
+    // Only send if not already sent
+    if (!this.state.sentReport) {
         const templateParams = {
             error_message: error.toString(),
             error_stack: errorInfo.componentStack,
