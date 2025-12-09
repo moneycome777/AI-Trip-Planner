@@ -38,6 +38,20 @@ const createCustomIcon = (type: string, number: number) => {
     });
 };
 
+// Component to handle Map sizing issues
+const MapResizer: React.FC = () => {
+  const map = useMap();
+  useEffect(() => {
+    // Invalidate size immediately and after a short delay to handle transitions
+    map.invalidateSize();
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+};
+
 interface MapUpdaterProps {
     days: DayPlan[];
 }
@@ -59,7 +73,10 @@ const MapUpdater: React.FC<MapUpdaterProps> = ({ days }) => {
         });
 
         if (hasPoints) {
-            map.flyToBounds(bounds, { padding: [50, 50] });
+            // Add a small delay to ensure container is sized before flying
+            setTimeout(() => {
+                map.flyToBounds(bounds, { padding: [50, 50] });
+            }, 300);
         }
     }, [days, map]);
 
@@ -78,7 +95,7 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
     : tripPlan.days;
 
   return (
-    <div className="h-full w-full relative">
+    <div className="h-full w-full relative z-0">
       {/* Mobile Back Button */}
       {onBackToList && (
         <button 
@@ -95,6 +112,7 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
       >
+        <MapResizer />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
