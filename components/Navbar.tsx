@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
           <div className="flex">
             <Link to="/" className="flex-shrink-0 flex items-center gap-2">
               <Plane className="h-8 w-8 text-indigo-600" />
-              <span className="font-bold text-xl text-gray-900">TripGenie</span>
+              <span className="font-bold text-xl text-gray-900">AriaTrip AI</span>
             </Link>
           </div>
           
