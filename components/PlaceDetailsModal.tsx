@@ -58,7 +58,7 @@ const PlaceDetailsModal: React.FC<Props> = ({ activity, onClose }) => {
                 <h3 className="text-sm font-bold text-gray-900">See what others are saying</h3>
                 
                 <a 
-                    href={`https://www.instagram.com/explore/tags/${activity.place_name.replace(/[^a-zA-Z0-9]/g, '')}/`} 
+                    href={`https://www.instagram.com/explore/search/keyword/?q=${searchQuery}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center justify-between w-full p-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition shadow-sm"
@@ -67,7 +67,7 @@ const PlaceDetailsModal: React.FC<Props> = ({ activity, onClose }) => {
                         <Instagram className="w-6 h-6" />
                         <div className="text-left">
                             <span className="block text-sm font-bold">Instagram Photos</span>
-                            <span className="block text-xs opacity-90">See vibes & aesthetics</span>
+                            <span className="block text-xs opacity-90">Search for location (Login required)</span>
                         </div>
                     </div>
                     <ExternalLink className="w-5 h-5 opacity-70" />
