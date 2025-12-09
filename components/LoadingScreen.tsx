@@ -8,22 +8,15 @@ interface Props {
 }
 
 const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
-  const [timeLeft, setTimeLeft] = useState(10); // Mandatory 10s watch time
   const [adFinished, setAdFinished] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setAdFinished(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // For production, we simulate ad watch time
+    const timer = setTimeout(() => {
+        setAdFinished(true);
+    }, 10000); 
 
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleContinue = () => {
@@ -72,9 +65,9 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
             {/* Footer Status */}
             <div className="p-6 text-center space-y-4">
                 <div>
-                    <h2 className="text-xl font-bold text-gray-800">Generating Your Perfect Trip...</h2>
+                    <h2 className="text-xl font-bold text-gray-800">AriaTrip AI is generating your trip...</h2>
                     <p className="text-sm text-gray-500 mt-1">
-                        Please watch this short video while our AI analyzes 5,000+ travel possibilities for you.
+                        Analyzing 5,000+ travel possibilities to create your executable plan.
                     </p>
                 </div>
 
@@ -101,7 +94,7 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
                     `}
                 >
                     {(adFinished && isAiReady) ? (
-                        <>View My Trip <PlayCircle className="w-5 h-5" /></>
+                        <>View My Plan <PlayCircle className="w-5 h-5" /></>
                     ) : (
                         <>{!adFinished ? "Please Wait..." : "Finalizing details..."}</>
                     )}
