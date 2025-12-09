@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = () => {
@@ -49,29 +49,18 @@ const Contact: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="bg-indigo-600 p-8 text-white text-center">
             <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
             <p className="text-indigo-100">We'd love to hear from you. Send us a message!</p>
         </div>
         
         <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div className="flex items-start gap-3">
-                    <Mail className="w-6 h-6 text-indigo-600 mt-1" />
-                    <div>
-                        <h3 className="font-bold text-gray-900">Email</h3>
-                        <p className="text-gray-600">motivateeveryday46@gmail.com</p>
-                        <p className="text-xs text-gray-400 mt-1">Response time: 24-48 hours</p>
-                    </div>
-                </div>
-                <div className="flex items-start gap-3">
-                    <MapPin className="w-6 h-6 text-indigo-600 mt-1" />
-                    <div>
-                        <h3 className="font-bold text-gray-900">Location</h3>
-                        <p className="text-gray-600">Digital Nomad HQ</p>
-                        <p className="text-gray-600">Global Remote Team</p>
-                    </div>
+            <div className="flex items-center justify-center gap-3 mb-8">
+                <Mail className="w-6 h-6 text-indigo-600" />
+                <div className="text-center">
+                    <h3 className="font-bold text-gray-900">Email Support</h3>
+                    <p className="text-gray-600">motivateeveryday46@gmail.com</p>
                 </div>
             </div>
 
