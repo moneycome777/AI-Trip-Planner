@@ -1,50 +1,126 @@
-import React from 'react';
-import { Zap, Shield, Globe } from 'lucide-react';
+import React, { useState } from 'react';
+import { Zap, Shield, Globe, MapPin, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
+
+type Lang = 'EN' | 'CN';
 
 const About: React.FC = () => {
+  const [lang, setLang] = useState<Lang>('EN');
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">About TripGenie AI</h1>
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8">
         
-        <div className="prose prose-indigo text-gray-600 space-y-6">
-          <p className="text-lg leading-relaxed">
-            TripGenie is a cutting-edge travel technology platform designed to eliminate the stress of itinerary planning. Born from the frustration of having 20 browser tabs open just to plan a weekend getaway, we built a solution that does the heavy lifting for you.
-          </p>
-
-          <h2 className="text-xl font-bold text-gray-800 mt-8">Our Mission</h2>
-          <p>
-            To make travel planning instant, personalized, and accessible to everyone. We believe that technology should handle the logistics so you can focus on the experience.
-          </p>
-
-          <h2 className="text-xl font-bold text-gray-800 mt-8">How We Use AI</h2>
-          <p>
-            TripGenie utilizes Google's Gemini 2.5 Flash model, a state-of-the-art Large Language Model (LLM). Unlike basic search engines, our AI understands context. When you say "romantic trip to Paris on a budget," it understands the nuance of "romantic" (views, ambiance) and "budget" (affordable bistros, free parks) simultaneously.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <div className="text-center">
-              <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-indigo-600" />
-              </div>
-              <h3 className="font-bold">Fast</h3>
-              <p className="text-sm">Plans generated in under 30 seconds.</p>
+        {/* Header with Toggle */}
+        <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+            <h1 className="text-3xl font-bold text-gray-900">About AriaTrip AI</h1>
+            <div className="flex gap-2">
+                <button 
+                    onClick={() => setLang('EN')} 
+                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'EN' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                >
+                    English
+                </button>
+                <button 
+                    onClick={() => setLang('CN')} 
+                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'CN' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                >
+                    中文
+                </button>
             </div>
-            <div className="text-center">
-              <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Globe className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="font-bold">Global</h3>
-              <p className="text-sm">Support for 100+ countries & 12 languages.</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Shield className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="font-bold">Secure</h3>
-              <p className="text-sm">No login required. We don't track you.</p>
-            </div>
+        </div>
+        
+        <div className="prose prose-indigo max-w-none text-gray-600 space-y-10">
+          
+          {/* INTRO */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                {lang === 'CN' ? "AriaTrip AI 的秘密：科技如何为您带来真正的自由旅行？" : "AriaTrip AI's Secret: How Tech Brings True Freedom"}
+            </h2>
+            <p className="text-lg leading-relaxed">
+                {lang === 'CN' 
+                    ? "欢迎来到 AriaTrip AI！我们相信，旅行规划不应该是负担，而应是旅程愉悦的一部分。传统的 AI 规划工具通常缺乏灵活性和真实性，而 AriaTrip AI 的设计初衷，就是解决这些痛点，为您提供一个可信赖、可编辑、且富有灵感的智能规划平台。"
+                    : "Welcome to AriaTrip AI! We believe planning shouldn't be a burden, but a joyful part of the journey. Traditional AI tools often lack flexibility and authenticity. AriaTrip AI was designed to solve these pain points, providing you with a trusted, editable, and inspiring intelligent planning platform."
+                }
+            </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Feature 1 */}
+              <div className="bg-indigo-50 p-6 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-white p-2 rounded-full text-indigo-600 shadow-sm"><Zap className="w-5 h-5"/></div>
+                      <h3 className="font-bold text-gray-900 text-lg">
+                          {lang === 'CN' ? "1. 地理空间算法优化" : "1. Geospatial Optimization"}
+                      </h3>
+                  </div>
+                  <p className="text-sm">
+                      {lang === 'CN'
+                        ? "拒绝无效奔波。我们的系统内置了尖端的地理空间优化算法，能精准计算每个兴趣点之间的最佳动线。我们承诺：您的精力只用在享受旅行，而不是浪费在路上。"
+                        : "No more wasted travel time. Our system uses advanced geospatial algorithms to calculate the perfect route between points of interest. Spend your energy enjoying the trip, not stuck in transit."
+                      }
+                  </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="bg-purple-50 p-6 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-white p-2 rounded-full text-purple-600 shadow-sm"><Shield className="w-5 h-5"/></div>
+                      <h3 className="font-bold text-gray-900 text-lg">
+                          {lang === 'CN' ? "2. 本地专家视角" : "2. Local Expert Perspective"}
+                      </h3>
+                  </div>
+                  <p className="text-sm">
+                      {lang === 'CN'
+                        ? "AriaTrip AI 的推荐引擎扮演着本地人专家的角色，过滤掉了常见的游客陷阱。我们为您筛选出富有地道风味的体验和“私藏行程”，让您的旅行更具深度。"
+                        : "Acting as a local expert, our recommendation engine filters out tourist traps. We curate authentic experiences and 'hidden gems' to give your trip real depth."
+                      }
+                  </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="bg-pink-50 p-6 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-white p-2 rounded-full text-pink-600 shadow-sm"><ExternalLink className="w-5 h-5"/></div>
+                      <h3 className="font-bold text-gray-900 text-lg">
+                          {lang === 'CN' ? "3. 实时社媒与地图直连" : "3. Real-Time Social Connect"}
+                      </h3>
+                  </div>
+                  <p className="text-sm">
+                      {lang === 'CN'
+                        ? "为解决信息过时痛点，我们提供一键直链到 Instagram、TikTok 和 Google Maps。即时查看最新的用户评价和动态照片，让决策基于最真实的社交证明。"
+                        : "To solve outdated info, we link directly to Instagram, TikTok, and Google Maps. Instantly see the latest reviews and photos, basing your decisions on real social proof."
+                      }
+                  </p>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="bg-green-50 p-6 rounded-xl">
+                  <div className="flex items-center gap-3 mb-3">
+                      <div className="bg-white p-2 rounded-full text-green-600 shadow-sm"><MessageSquare className="w-5 h-5"/></div>
+                      <h3 className="font-bold text-gray-900 text-lg">
+                          {lang === 'CN' ? "4. 智能聊天机器人" : "4. Smart Chatbot"}
+                      </h3>
+                  </div>
+                  <p className="text-sm">
+                      {lang === 'CN'
+                        ? "旅行中总有意外。我们的 AI Chatbot 允许您通过自然语言指令（如“把今天的行程放慢”）来修改行程。AriaTrip AI 是一个随时响应您需求的互动式伴侣。"
+                        : "Plans change. Our AI Chatbot allows you to modify your itinerary with natural language (e.g., 'Slow down today's pace'). AriaTrip AI is an interactive companion that responds instantly."
+                      }
+                  </p>
+              </div>
+          </div>
+
+          <div className="mt-12 text-center p-8 bg-gray-900 text-white rounded-2xl">
+              <h3 className="text-xl font-bold mb-4">
+                  {lang === 'CN' ? "选择 AriaTrip AI" : "Choose AriaTrip AI"}
+              </h3>
+              <p className="opacity-90 max-w-2xl mx-auto">
+                  {lang === 'CN' 
+                    ? "选择优雅、精准、且充满灵感的旅行规划新方式。" 
+                    : "Choose a new way of travel planning that is elegant, precise, and full of inspiration."}
+              </p>
+          </div>
+
         </div>
       </div>
     </div>
