@@ -40,6 +40,18 @@ export const TRAVEL_STYLES = [
   "Bucket List Travel"
 ];
 
+export const BUDGET_LEVELS = [
+  "Economy",
+  "Standard",
+  "Luxury"
+];
+
+export const PACING_STYLES = [
+  "Relaxed",
+  "Balanced",
+  "Intensive"
+];
+
 export const MOCK_AD_VIDEOS = [
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
