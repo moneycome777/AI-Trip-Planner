@@ -159,7 +159,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
         </div>
 
         {/* Details - Collapsible */}
-        <div className={`overflow-hidden transition-all duration-300 ${isHeaderCollapsed ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'}`}>
+        <div className={`overflow-hidden transition-all duration-300 ${isHeaderCollapsed ? 'max-h-0 opacity-0' : 'max-h-56 opacity-100'}`}>
             <div className="grid grid-cols-2 gap-2 mb-4">
                  <div className="bg-indigo-50 p-2 rounded-lg flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-indigo-600" />
@@ -175,11 +175,12 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                         <div className="text-xs font-semibold text-green-900">{tripPlan.estimated_budget}</div>
                     </div>
                  </div>
-                 <div className="bg-orange-50 p-2 rounded-lg flex items-center gap-2 col-span-2">
-                    <CloudSun className="w-4 h-4 text-orange-600" />
-                    <div>
+                 {/* Weather Section - Removed line-clamp to show full text */}
+                 <div className="bg-orange-50 p-2 rounded-lg flex items-start gap-2 col-span-2">
+                    <CloudSun className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
                         <div className="text-[10px] text-orange-400 font-bold uppercase">Weather</div>
-                        <div className="text-xs font-semibold text-orange-900 line-clamp-1">{tripPlan.weather_forecast}</div>
+                        <div className="text-xs font-semibold text-orange-900">{tripPlan.weather_forecast}</div>
                     </div>
                  </div>
             </div>
@@ -327,7 +328,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                 <div className="grid grid-cols-1 gap-4">
                     <div className="bg-white p-4 rounded-xl shadow-sm border">
                         <h4 className="font-bold flex items-center gap-2 text-gray-700 text-sm mb-2"><CloudSun className="w-4 h-4"/> Weather</h4>
-                        <p className="text-sm text-gray-600">{tripPlan.weather_forecast}</p>
+                        <p className="text-sm text-gray-600 whitespace-pre-wrap">{tripPlan.weather_forecast}</p>
                     </div>
                     <div className="bg-white p-4 rounded-xl shadow-sm border">
                         <h4 className="font-bold flex items-center gap-2 text-gray-700 text-sm mb-2"><Train className="w-4 h-4"/> Transport</h4>
