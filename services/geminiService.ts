@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { TripPlan, UserPreferences } from "../types";
+import { TripPlan, UserPreferences, ChatResponse } from "../types";
 
-// Define the response schema for Gemini
+// Define the response schema for Gemini (Trip Plan)
 const tripSchema = {
   type: Type.OBJECT,
   properties: {
@@ -58,8 +58,25 @@ const tripSchema = {
   required: ["trip_summary", "estimated_budget", "days", "warnings", "packing_list", "transport_advice"]
 };
 
+// Define Schema for Hybrid Chat (Response can be text OR a modified plan)
+const chatSchema = {
+    type: Type.OBJECT,
+    properties: {
+        intent: { 
+            type: Type.STRING, 
+            enum: ["chat", "modify"],
+            description: "Determine if the user is asking a general question ('chat') or wants to change the itinerary ('modify')." 
+        },
+        answer: { 
+            type: Type.STRING, 
+            description: "The text response to the user. If 'modify', explain what you changed." 
+        },
+        modified_plan: tripSchema // Embed the trip schema here
+    },
+    required: ["intent", "answer"]
+};
+
 export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan> => {
-  // Debug log to check if key is present (do not log the actual key in production)
   if (!process.env.API_KEY) {
     console.error("API Key is undefined. Check vite.config.ts and Vercel Environment Variables.");
     throw new Error("API Key is missing. Please check your environment variables.");
@@ -68,27 +85,35 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const prompt = `
-    Act as an expert local travel planner. 
+    Act as an expert local travel planner (Voya AI).
     
     User Request:
-    - Destination: ${prefs.destination}
+    - Destinations: ${prefs.destination}
     - Depart From: ${prefs.departFrom || "Not specified"}
     - Duration/Dates: ${prefs.duration}
-    - Layover/Stopover: ${prefs.layover || "None"}
+    - Layover: ${prefs.layover || "None"}
     - Hotel: ${prefs.hotel || "Not specified"}
     - Travel Style: ${prefs.style?.join(", ") || "Balanced"}
     - Constraints: ${prefs.constraints || "None"}
     - Language: ${prefs.language}
+    - Budget Level: ${prefs.budget || "Standard"}
+    - Pacing (Intensity): ${prefs.pacing || "Balanced"}
 
     Generate a detailed day-by-day itinerary.
     
     CRITICAL INSTRUCTIONS:
-    1. **LANGUAGE**: ALL output fields (summary, activity names, descriptions, warnings, tips) MUST be written in ${prefs.language}. Do not output English unless the language is English.
-    2. If "Layover" is specified, incorporate it into the travel plan appropriately.
-    3. If the user provided a duration but NOT specific dates, suggest the BEST time of year to visit in "suggested_dates" and explain why in "date_reasoning".
-    4. If the user did NOT specify a hotel, provide 3 good recommendations in "suggested_hotels".
-    5. Provide a "estimated_budget" for the trip (excluding flights) in the local currency or USD.
-    6. You must provide valid Latitude and Longitude for every activity.
+    1. **EXECUTABLE PLAN**: Do NOT create "Special Forces" (impossible) schedules. 
+       - If Pacing is "Relaxed": Max 3 activities per day. Start day at 10 AM.
+       - If Pacing is "Balanced": Max 4-5 activities.
+       - If Pacing is "Intensive": Packed schedule is allowed (early start).
+    2. **GEOSPATIAL CLUSTERING**: Group activities by neighborhood. Do NOT make the user travel back and forth across the city in one day. Ensure logical flow (Point A -> Point B -> Point C).
+    3. **BUDGET**: Suggest food/activities that fit the "${prefs.budget || "Standard"}" budget.
+    4. **LANGUAGE**: ALL output fields MUST be written in ${prefs.language}.
+    5. **MULTI-DESTINATION**: If multiple cities, organize logically. Include inter-city transport.
+    6. If "Layover" is specified, incorporate it.
+    7. If user provided duration but NOT dates, suggest BEST dates in "suggested_dates" and explain why in "date_reasoning".
+    8. If no hotel specified, provide 3 recommendations in "suggested_hotels" matching the ${prefs.budget} budget.
+    9. Provide valid Lat/Long for every activity.
   `;
 
   try {
@@ -112,23 +137,29 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
   }
 };
 
-export const modifyTripPlan = async (currentPlan: TripPlan, userInstruction: string): Promise<TripPlan> => {
+export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Promise<ChatResponse> => {
     if (!process.env.API_KEY) {
         throw new Error("API Key is missing.");
     }
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     const prompt = `
-    You are an expert travel planner.
-    Current Plan (JSON): ${JSON.stringify(currentPlan)}
+    You are Voya AI, an intelligent travel assistant.
+    Current Trip Plan (JSON): ${JSON.stringify(currentPlan)}
     
-    User Instruction for Modification: "${userInstruction}"
+    User Message: "${userMessage}"
 
-    Update the plan according to the user's request. 
-    Maintain the JSON structure exactly. 
-    IMPORTANT: Ensure the output language matches the original plan's language.
-    If the user asks to change a specific day, only modify that day and keep others largely the same unless flow requires changes.
-    Ensure coordinates are accurate for any new places.
+    Task:
+    1. Analyze the user's message.
+    2. Decide if the user is asking a general question ("chat") OR if they want to update the plan ("modify").
+    3. If modifying, ensure the new plan maintains logical routing (Geospatial Clustering).
+
+    Output JSON structure:
+    {
+        "intent": "chat" | "modify",
+        "answer": "Your response text here",
+        "modified_plan": (Required ONLY if intent is 'modify') The full updated trip plan JSON.
+    }
     `;
 
     try {
@@ -137,17 +168,17 @@ export const modifyTripPlan = async (currentPlan: TripPlan, userInstruction: str
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: tripSchema,
+                responseSchema: chatSchema,
                 temperature: 0.5,
             },
         });
 
         const text = response.text;
         if (!text) throw new Error("No response from AI");
-        return JSON.parse(text) as TripPlan;
+        return JSON.parse(text) as ChatResponse;
 
     } catch (error) {
-        console.error("Gemini Modification Error:", error);
+        console.error("Gemini Chat Error:", error);
         throw error;
     }
 };
@@ -162,7 +193,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     Act as a traditional travel agency. 
     Create a "Standard Group Tour" itinerary for ${prefs.destination} for ${prefs.duration}.
     This should be the typical "Tourist Trap" itinerary.
-    Language: ${prefs.language} (ALL text must be in this language).
+    Language: ${prefs.language}.
     `;
 
     try {
@@ -183,4 +214,12 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
         console.error("Gemini API Error:", error);
         throw error;
     }
+};
+
+export const modifyTripPlan = async (currentPlan: TripPlan, userInstruction: string): Promise<TripPlan> => {
+    const res = await chatWithAI(currentPlan, `Please modify the plan: ${userInstruction}`);
+    if (res.intent === 'modify' && res.modified_plan) {
+        return res.modified_plan;
+    }
+    return currentPlan;
 };
