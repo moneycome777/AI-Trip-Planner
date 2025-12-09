@@ -85,7 +85,7 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const prompt = `
-    Act as an expert local travel planner (Voya AI).
+    Act as an expert local travel planner (AriaTrip AI).
     
     User Request:
     - Destinations: ${prefs.destination}
@@ -114,6 +114,10 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
     7. If user provided duration but NOT dates, suggest BEST dates in "suggested_dates" and explain why in "date_reasoning".
     8. If no hotel specified, provide 3 recommendations in "suggested_hotels" matching the ${prefs.budget} budget.
     9. Provide valid Lat/Long for every activity.
+    10. **CURRENCY**: All costs (estimated_budget, cost_estimate, hotel price_range) MUST be displayed in TWO currencies:
+        1. The local currency of the Destination.
+        2. The currency of the 'Depart From' country (default to USD if not specified).
+        Format: "Local Amount (~Home Amount)". Example: "10,000 JPY (~$70 USD)".
   `;
 
   try {
@@ -144,7 +148,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     const prompt = `
-    You are Voya AI, an intelligent travel assistant.
+    You are AriaTrip AI, an intelligent travel assistant.
     Current Trip Plan (JSON): ${JSON.stringify(currentPlan)}
     
     User Message: "${userMessage}"
@@ -153,6 +157,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
     1. Analyze the user's message.
     2. Decide if the user is asking a general question ("chat") OR if they want to update the plan ("modify").
     3. If modifying, ensure the new plan maintains logical routing (Geospatial Clustering).
+    4. Maintain the dual-currency format for any new costs mentioned.
 
     Output JSON structure:
     {
@@ -194,6 +199,8 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     Create a "Standard Group Tour" itinerary for ${prefs.destination} for ${prefs.duration}.
     This should be the typical "Tourist Trap" itinerary.
     Language: ${prefs.language}.
+    CURRENCY: Show costs in Destination currency AND 'Depart From' currency (${prefs.departFrom || "USD"}).
+    Format: "Local (~Depart)".
     `;
 
     try {
