@@ -14,13 +14,15 @@ export type Language =
 
 export interface UserPreferences {
   destination: string;
-  departFrom?: string; // New
+  departFrom?: string;
   duration: string;
-  layover?: string; // New
+  layover?: string;
   hotel?: string;
   style?: string[];
   constraints?: string;
   language: Language;
+  budget?: 'Economy' | 'Standard' | 'Luxury'; // New
+  pacing?: 'Relaxed' | 'Balanced' | 'Intensive'; // New
 }
 
 export interface Activity {
@@ -48,7 +50,7 @@ export interface DayPlan {
 
 export interface TripPlan {
   trip_summary: string;
-  estimated_budget: string; // New
+  estimated_budget: string;
   suggested_dates?: string;
   date_reasoning?: string;
   suggested_hotels?: HotelSuggestion[];
@@ -64,4 +66,18 @@ export enum AppState {
   LANDING,
   LOADING,
   DASHBOARD,
+}
+
+// Chat Types
+export interface ChatMessage {
+    id: string;
+    role: 'user' | 'model';
+    text: string;
+    isPlanUpdate?: boolean;
+}
+
+export interface ChatResponse {
+    intent: 'chat' | 'modify';
+    answer: string;
+    modified_plan?: TripPlan;
 }
