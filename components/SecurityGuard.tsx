@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 
 const SecurityGuard: React.FC = () => {
@@ -8,7 +9,7 @@ const SecurityGuard: React.FC = () => {
       return false;
     };
 
-    // 2. Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S, Ctrl+P)
+    // 2. Disable Keyboard Shortcuts for Inspect/DevTools
     const handleKeyDown = (e: KeyboardEvent) => {
       // F12
       if (e.key === 'F12') {
@@ -16,35 +17,51 @@ const SecurityGuard: React.FC = () => {
         return false;
       }
 
-      // Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Element Inspector)
-      if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+      // Windows/Linux: Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Element Inspector)
+      if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'i', 'j', 'c'].includes(e.key)) {
         e.preventDefault();
         return false;
       }
 
-      // Ctrl+U (View Source)
-      if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+      // Windows/Linux: Ctrl+U (View Source)
+      if (e.ctrlKey && ['U', 'u'].includes(e.key)) {
         e.preventDefault();
         return false;
       }
 
-      // Ctrl+S (Save Page)
-      if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+      // Windows/Linux: Ctrl+S (Save Page)
+      if (e.ctrlKey && ['S', 's'].includes(e.key)) {
         e.preventDefault();
         return false;
+      }
+
+      // MacOS: Cmd+Option+I (DevTools), Cmd+Option+J (Console), Cmd+Option+U (View Source)
+      if (e.metaKey && e.altKey && ['I', 'J', 'U', 'i', 'j', 'u'].includes(e.key)) {
+         e.preventDefault();
+         return false;
+      }
+      
+      // MacOS: Cmd+Shift+C (Inspect Element)
+      if (e.metaKey && e.shiftKey && ['C', 'c'].includes(e.key)) {
+         e.preventDefault();
+         return false;
+      }
+
+      // MacOS: Cmd+S (Save)
+      if (e.metaKey && ['S', 's'].includes(e.key)) {
+         e.preventDefault();
+         return false;
       }
     };
 
-    // 3. DevTools "Trap" (Annoyance method)
+    // 3. DevTools "Trap"
     // This constantly clears console and triggers debugger if devtools are open
     const devToolsCheck = setInterval(() => {
-        // We use a specific profile of console.log to detect if it's being intercepted
-        // Note: This is aggressive. We will just clear console to hide logs for now.
+        // Clear console to hide logs if they manage to open it
         // console.clear(); 
         
-        // Uncommenting the line below triggers a debugger breakpoint loop
-        // which freezes the app if DevTools is open.
-        // debugger; 
+        // Triggers a debugger breakpoint loop which freezes the app if DevTools is open.
+        debugger; 
     }, 1000);
 
     document.addEventListener('contextmenu', handleContextMenu);

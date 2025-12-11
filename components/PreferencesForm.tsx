@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserPreferences, Language } from '../types';
 import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
-import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History } from 'lucide-react';
+import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History, CalendarRange } from 'lucide-react';
 
 interface Props {
   onSubmit: (prefs: UserPreferences) => void;
@@ -249,9 +249,30 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [currentInput, setCurrentInput] = useState('');
   const [destinations, setDestinations] = useState<string[]>([]);
+    
+  // Date Picker State
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+
 
   const t = UI_TEXT[formData.language];
   const marketing = getMarketingCopy(formData.language);
+
+
+  // Auto-calculate duration string when dates are selected
+  useEffect(() => {
+    if (dateRange.start && dateRange.end) {
+        const start = new Date(dateRange.start);
+        const end = new Date(dateRange.end);
+        const diffTime = end.getTime() - start.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Inclusive of start day
+        
+        if (diffDays > 0) {
+            const rangeStr = `${diffDays} Days (${dateRange.start} to ${dateRange.end})`;
+            setFormData(prev => ({ ...prev, duration: rangeStr }));
+        }
+    }
+  }, [dateRange]);
 
   const handleDestinationInput = (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value;
@@ -445,6 +466,52 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                             value={formData.duration}
                             onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                             />
+
+                            {/* Date Picker Trigger */}
+                            <button 
+                                type="button"
+                                onClick={() => setShowDatePicker(!showDatePicker)}
+                                className={`absolute top-2.5 p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition ${formData.language === 'Arabic' ? 'left-2' : 'right-2'}`}
+                                title="Select Date Range"
+                            >
+                                <CalendarRange className="w-4 h-4" />
+                            </button>
+
+                            {/* Date Picker Popup */}
+                            {showDatePicker && (
+                                <div className="absolute top-full mt-2 left-0 w-full bg-white border border-slate-200 rounded-xl shadow-xl z-50 p-3 animate-fadeIn">
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">Start</label>
+                                            <input 
+                                                type="date" 
+                                                className="w-full text-xs p-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-1 focus:ring-indigo-500 outline-none"
+                                                value={dateRange.start}
+                                                onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-500 uppercase mb-1 block">End</label>
+                                            <input 
+                                                type="date" 
+                                                className="w-full text-xs p-2 border border-slate-200 rounded-lg bg-slate-50 focus:ring-1 focus:ring-indigo-500 outline-none"
+                                                value={dateRange.end}
+                                                min={dateRange.start}
+                                                onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="text-right mt-2">
+                                         <button 
+                                            type="button" 
+                                            onClick={() => setShowDatePicker(false)}
+                                            className="text-[10px] font-bold text-indigo-600 hover:underline"
+                                         >
+                                            Close
+                                         </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
