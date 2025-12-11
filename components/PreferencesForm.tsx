@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserPreferences, Language } from '../types';
 import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
-import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History, CalendarRange } from 'lucide-react';
+import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History } from 'lucide-react';
 
 interface Props {
   onSubmit: (prefs: UserPreferences) => void;
@@ -472,25 +472,24 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                     <div>
                         <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{t.whenLabel}</label>
                         <div className="relative group">
-                            <Calendar className={`absolute top-3.5 text-slate-400 group-hover:text-indigo-500 transition w-5 h-5 ${formData.language === 'Arabic' ? 'right-4' : 'left-4'}`} />
-                            <input
-                            type="text"
-                            required
-                            placeholder={t.whenPlaceholder}
-                            className={`w-full py-3 bg-white/70 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-slate-800 placeholder:text-slate-400 font-medium ${formData.language === 'Arabic' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
-                            value={formData.duration}
-                            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                            />
-
-                            {/* Date Picker Trigger */}
-                            <button 
+                            {/* Interactive Date Picker Trigger (Replaces static icon) */}
+                            <button
                                 type="button"
                                 onClick={() => setShowDatePicker(!showDatePicker)}
-                                className={`absolute top-2.5 p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition ${formData.language === 'Arabic' ? 'left-2' : 'right-2'}`}
-                                title="Select Date Range"
+                                className={`absolute top-3.5 text-slate-400 hover:text-indigo-600 transition z-10 ${formData.language === 'Arabic' ? 'right-4' : 'left-4'}`}
+                                title="Pick Dates"
                             >
-                                <CalendarRange className="w-4 h-4" />
+                                <Calendar className="w-5 h-5" />
                             </button>
+                            
+                            <input
+                                type="text"
+                                required
+                                placeholder={t.whenPlaceholder}
+                                className={`w-full py-3 bg-white/70 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-slate-800 placeholder:text-slate-400 font-medium ${formData.language === 'Arabic' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+                                value={formData.duration}
+                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                            />
 
                             {/* Date Picker Popup */}
                             {showDatePicker && (
