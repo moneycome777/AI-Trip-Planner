@@ -147,7 +147,8 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
   const handleBookTrip = () => {
     const rawDest = preferences.destination.split(',')[0].trim().replace(/\s+/g, '-');
-    const url = `https://www.skyscanner.com/transport/flights/${preferences.departFrom ? 'everywhere' : 'everywhere'}/${rawDest}`;
+    // const url = `https://www.skyscanner.com/transport/flights/${preferences.departFrom ? 'everywhere' : 'everywhere'}/${rawDest}`;
+    const url = `https://www.skyscanner.com/`;
     window.open(url, '_blank');
   };
 
