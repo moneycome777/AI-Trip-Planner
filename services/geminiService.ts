@@ -137,7 +137,7 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash", 
+      model: "gemini-2.5-flash", 
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -192,7 +192,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash", 
+            model: "gemini-2.5-flash", 
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -228,7 +228,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash", 
+            model: "gemini-2.5-flash", 
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
