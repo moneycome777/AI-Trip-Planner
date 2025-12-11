@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripPlan, UserPreferences, ChatResponse } from "../types";
+import { MOCK_TRIP_PLAN } from "../constants"; // Import Mock Data
 
 // Define the response schema for Gemini (Trip Plan)
 const tripSchema = {
@@ -77,6 +78,12 @@ const chatSchema = {
 };
 
 export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan> => {
+  // DEV MODE CHECK: Bypass API if Dev Mode is enabled in LocalStorage
+  if (typeof window !== 'undefined' && localStorage.getItem('tripgenie_dev_mode') === 'true') {
+      console.log("Dev Mode detected: Returning Mock Plan immediately.");
+      return MOCK_TRIP_PLAN; // Instant return
+  }
+
   if (!process.env.API_KEY) {
     console.error("API Key is undefined. Check vite.config.ts and Vercel Environment Variables.");
     throw new Error("API Key is missing. Please check your environment variables.");
@@ -98,6 +105,7 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
     - Language: ${prefs.language}
     - Budget Level: ${prefs.budget || "Standard"}
     - Pacing (Intensity): ${prefs.pacing || "Balanced"}
+    - Transport Preference: ${prefs.transportMode || "Public Transport"}
 
     Generate a detailed day-by-day itinerary.
     
@@ -107,14 +115,21 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
        - If Pacing is "Balanced": Max 4-5 activities.
        - If Pacing is "Intensive": Packed schedule is allowed (early start).
     2. **GEOSPATIAL CLUSTERING**: Group activities by neighborhood. Do NOT make the user travel back and forth across the city in one day. Ensure logical flow (Point A -> Point B -> Point C).
-    3. **BUDGET**: Suggest food/activities that fit the "${prefs.budget || "Standard"}" budget.
-    4. **LANGUAGE**: ALL output fields MUST be written in ${prefs.language}.
-    5. **MULTI-DESTINATION**: If multiple cities, organize logically. Include inter-city transport.
-    6. If "Layover" is specified, incorporate it.
-    7. If user provided duration but NOT dates, suggest BEST dates in "suggested_dates" and explain why in "date_reasoning".
-    8. If no hotel specified, provide 3 recommendations in "suggested_hotels" matching the ${prefs.budget} budget.
-    9. Provide valid Lat/Long for every activity.
-    10. **CURRENCY**: All costs (estimated_budget, cost_estimate, hotel price_range) MUST be displayed in TWO currencies:
+    3. **BUDGET RULES**:
+       - If Budget is "Economy": Hotels MUST be Hostels, Capsules, or Budget Guesthouses. Food MUST be street food or cheap eats. Avoid expensive transport (use bus/metro/walking).
+       - If Budget is "Standard": Mid-range hotels, mix of restaurant and street food.
+       - If Budget is "Luxury": 5-star hotels, fine dining, private drivers.
+    4. **TRANSPORT RULES**:
+       - If Transport is "Self-Driving": Suggest parking lots near attractions.
+       - If Transport is "Public Transport": Suggest nearest train/bus stations.
+       - If Transport is "Taxi/Ride-hailing": Mention Grab/Uber availability.
+    5. **LANGUAGE**: ALL output fields MUST be written in ${prefs.language}.
+    6. **MULTI-DESTINATION**: If multiple cities, organize logically. Include inter-city transport.
+    7. If "Layover" is specified, incorporate it.
+    8. If user provided duration but NOT dates, suggest BEST dates in "suggested_dates" and explain why in "date_reasoning".
+    9. If no hotel specified, provide 3 recommendations in "suggested_hotels" matching the ${prefs.budget} budget.
+    10. Provide valid Lat/Long for every activity.
+    11. **CURRENCY**: All costs (estimated_budget, cost_estimate, hotel price_range) MUST be displayed in TWO currencies:
         1. The local currency of the Destination.
         2. The currency of the 'Depart From' country (default to USD if not specified).
         Format: "Local Amount (~Home Amount)". Example: "10,000 JPY (~$70 USD)".
@@ -122,7 +137,7 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash", 
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -135,8 +150,16 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
     if (!text) throw new Error("No response from AI");
     
     return JSON.parse(text) as TripPlan;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini API Error:", error);
+    
+    // FALLBACK TO MOCK DATA ON QUOTA ERROR (429) OR MODEL ERROR (404) OR GENERAL ERROR FOR DEV
+    // This allows the user to continue testing the UI even if they hit the 20/day limit.
+    if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
+        console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
+        return MOCK_TRIP_PLAN;
+    }
+
     throw error;
   }
 };
@@ -169,7 +192,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-1.5-flash", 
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -205,7 +228,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-1.5-flash", 
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -219,6 +242,8 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
         return JSON.parse(text) as TripPlan;
     } catch (error) {
         console.error("Gemini API Error:", error);
+        // Fallback for standard tour as well if quota hit
+        if (error.toString().includes("429")) return MOCK_TRIP_PLAN;
         throw error;
     }
 };

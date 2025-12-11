@@ -7,33 +7,33 @@ const About: React.FC = () => {
   const [lang, setLang] = useState<Lang>('EN');
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8">
+    <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
         
         {/* Header with Toggle */}
-        <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
-            <h1 className="text-3xl font-bold text-gray-900">About AriaTrip AI</h1>
+        <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
+            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">About AriaTrip AI</h1>
             <div className="flex gap-2">
                 <button 
                     onClick={() => setLang('EN')} 
-                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'EN' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'EN' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'}`}
                 >
                     English
                 </button>
                 <button 
                     onClick={() => setLang('CN')} 
-                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'CN' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}
+                    className={`px-3 py-1 text-sm rounded-full font-bold transition ${lang === 'CN' ? 'bg-slate-900 text-white' : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'}`}
                 >
                     中文
                 </button>
             </div>
         </div>
         
-        <div className="prose prose-indigo max-w-none text-gray-600 space-y-10">
+        <div className="prose prose-slate max-w-none text-slate-600 space-y-10">
           
           {/* INTRO */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-slate-800 mb-4">
                 {lang === 'CN' ? "AriaTrip AI 的秘密：科技如何为您带来真正的自由旅行？" : "AriaTrip AI's Secret: How Tech Brings True Freedom"}
             </h2>
             <p className="text-lg leading-relaxed">
@@ -46,10 +46,10 @@ const About: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Feature 1 */}
-              <div className="bg-indigo-50 p-6 rounded-xl">
+              <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
                   <div className="flex items-center gap-3 mb-3">
                       <div className="bg-white p-2 rounded-full text-indigo-600 shadow-sm"><Zap className="w-5 h-5"/></div>
-                      <h3 className="font-bold text-gray-900 text-lg">
+                      <h3 className="font-bold text-slate-900 text-lg">
                           {lang === 'CN' ? "1. 地理空间算法优化" : "1. Geospatial Optimization"}
                       </h3>
                   </div>
@@ -62,10 +62,10 @@ const About: React.FC = () => {
               </div>
 
               {/* Feature 2 */}
-              <div className="bg-purple-50 p-6 rounded-xl">
+              <div className="bg-purple-50/50 p-6 rounded-2xl border border-purple-100">
                   <div className="flex items-center gap-3 mb-3">
                       <div className="bg-white p-2 rounded-full text-purple-600 shadow-sm"><Shield className="w-5 h-5"/></div>
-                      <h3 className="font-bold text-gray-900 text-lg">
+                      <h3 className="font-bold text-slate-900 text-lg">
                           {lang === 'CN' ? "2. 本地专家视角" : "2. Local Expert Perspective"}
                       </h3>
                   </div>
@@ -78,10 +78,10 @@ const About: React.FC = () => {
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-pink-50 p-6 rounded-xl">
+              <div className="bg-pink-50/50 p-6 rounded-2xl border border-pink-100">
                   <div className="flex items-center gap-3 mb-3">
                       <div className="bg-white p-2 rounded-full text-pink-600 shadow-sm"><ExternalLink className="w-5 h-5"/></div>
-                      <h3 className="font-bold text-gray-900 text-lg">
+                      <h3 className="font-bold text-slate-900 text-lg">
                           {lang === 'CN' ? "3. 实时社媒与地图直连" : "3. Real-Time Social Connect"}
                       </h3>
                   </div>
@@ -94,10 +94,10 @@ const About: React.FC = () => {
               </div>
 
               {/* Feature 4 */}
-              <div className="bg-green-50 p-6 rounded-xl">
+              <div className="bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100">
                   <div className="flex items-center gap-3 mb-3">
-                      <div className="bg-white p-2 rounded-full text-green-600 shadow-sm"><MessageSquare className="w-5 h-5"/></div>
-                      <h3 className="font-bold text-gray-900 text-lg">
+                      <div className="bg-white p-2 rounded-full text-emerald-600 shadow-sm"><MessageSquare className="w-5 h-5"/></div>
+                      <h3 className="font-bold text-slate-900 text-lg">
                           {lang === 'CN' ? "4. 智能聊天机器人" : "4. Smart Chatbot"}
                       </h3>
                   </div>
@@ -110,11 +110,11 @@ const About: React.FC = () => {
               </div>
           </div>
 
-          <div className="mt-12 text-center p-8 bg-gray-900 text-white rounded-2xl">
+          <div className="mt-12 text-center p-8 bg-slate-900 text-white rounded-3xl shadow-lg">
               <h3 className="text-xl font-bold mb-4">
                   {lang === 'CN' ? "选择 AriaTrip AI" : "Choose AriaTrip AI"}
               </h3>
-              <p className="opacity-90 max-w-2xl mx-auto">
+              <p className="opacity-80 max-w-2xl mx-auto">
                   {lang === 'CN' 
                     ? "选择优雅、精准、且充满灵感的旅行规划新方式。" 
                     : "Choose a new way of travel planning that is elegant, precise, and full of inspiration."}

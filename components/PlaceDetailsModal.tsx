@@ -11,7 +11,7 @@ const PlaceDetailsModal: React.FC<Props> = ({ activity, onClose }) => {
   const searchQuery = encodeURIComponent(activity.place_name);
 
   return (
-    <div className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+    <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl transform transition-all scale-100 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}

@@ -19,19 +19,10 @@ const Contact: React.FC = () => {
     const TEMPLATE_ID = 'template_s9guskd';
     const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
 
-    // ALIGNMENT FIX: Mapping form data to your specific template variables
-    // Template expects: {{name}}, {{time}}, {{error_message}}
     const templateParams = {
-        // Map user's name to {{name}}
         name: `${formData.name} (${formData.email})`, 
-        
-        // Map user's feedback to {{error_message}} so it appears in the email body
         error_message: `USER FEEDBACK MESSAGE:\n\n${formData.message}`,
-        
-        // Map time
         time: new Date().toLocaleString(),
-        
-        // Extra fields just in case you update template later
         reply_to: formData.email,
         message: formData.message 
     };
@@ -48,51 +39,51 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="bg-indigo-600 p-8 text-white text-center">
+    <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+        <div className="bg-slate-900 p-8 text-white text-center">
             <h1 className="text-3xl font-bold mb-2">Contact Us</h1>
-            <p className="text-indigo-100">We'd love to hear from you. Send us a message!</p>
+            <p className="text-slate-300">We'd love to hear from you. Send us a message!</p>
         </div>
         
         <div className="p-8">
             <div className="flex items-center justify-center gap-3 mb-8">
                 <Mail className="w-6 h-6 text-indigo-600" />
                 <div className="text-center">
-                    <h3 className="font-bold text-gray-900">Email Support</h3>
-                    <p className="text-gray-600">motivateeveryday46@gmail.com</p>
+                    <h3 className="font-bold text-slate-900">Email Support</h3>
+                    <p className="text-slate-600">motivateeveryday46@gmail.com</p>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label className="block text-sm font-bold text-slate-600 mb-1">Name</label>
                     <input 
                         type="text" 
                         required
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
+                        className="w-full border border-slate-200 bg-white/50 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition" 
                         placeholder="Your Name"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label className="block text-sm font-bold text-slate-600 mb-1">Email</label>
                     <input 
                         type="email" 
                         required
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
+                        className="w-full border border-slate-200 bg-white/50 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition" 
                         placeholder="your@email.com" 
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <label className="block text-sm font-bold text-slate-600 mb-1">Message</label>
                     <textarea 
                         rows={4} 
                         required
-                        className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
+                        className="w-full border border-slate-200 bg-white/50 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition resize-none" 
                         placeholder="How can we help?"
                         value={formData.message}
                         onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -100,21 +91,21 @@ const Contact: React.FC = () => {
                 </div>
 
                 {status === 'success' && (
-                    <div className="bg-green-50 text-green-700 p-3 rounded-lg flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5" /> Message sent successfully! We will get back to you soon.
+                    <div className="bg-green-50 text-green-700 p-4 rounded-xl flex items-center gap-2 border border-green-100 font-medium">
+                        <CheckCircle className="w-5 h-5" /> Message sent successfully!
                     </div>
                 )}
 
                 {status === 'error' && (
-                    <div className="bg-red-50 text-red-700 p-3 rounded-lg flex items-center gap-2">
-                        <AlertCircle className="w-5 h-5" /> Failed to send message. Please try again later.
+                    <div className="bg-red-50 text-red-700 p-4 rounded-xl flex items-center gap-2 border border-red-100 font-medium">
+                        <AlertCircle className="w-5 h-5" /> Failed to send. Please try again later.
                     </div>
                 )}
 
                 <button 
                     type="submit" 
                     disabled={status === 'sending' || status === 'success'}
-                    className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-slate-200"
                 >
                     {status === 'sending' ? (
                         <>

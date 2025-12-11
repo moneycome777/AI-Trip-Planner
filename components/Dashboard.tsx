@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { TripPlan, UserPreferences, Activity, ChatMessage } from '../types';
 import Itinerary from './Itinerary';
@@ -8,6 +9,7 @@ import ComparisonModal from './ComparisonModal';
 import PlaceDetailsModal from './PlaceDetailsModal';
 import AdUnlockModal from './AdUnlockModal'; 
 import { GripVertical } from 'lucide-react';
+import { CACHE_KEY_PLAN } from '../constants';
 
 interface Props {
   initialPlan: TripPlan;
@@ -22,6 +24,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list');
   const [showComparison, setShowComparison] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [isDevMode, setIsDevMode] = useState(false);
 
   // Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -33,13 +36,17 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   const [pendingAction, setPendingAction] = useState<{ type: 'CHAT' | 'COMPARE', payload?: string } | null>(null);
 
   // Constants
-  const FREE_MODIFICATION_LIMIT = 4; // Increased for chat interactions
+  const FREE_MODIFICATION_LIMIT = 3; 
   const FREE_COMPARE_LIMIT = 1;
 
   // Resizable panel state
   const [leftPanelWidth, setLeftPanelWidth] = useState(35); 
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsDevMode(localStorage.getItem('tripgenie_dev_mode') === 'true');
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -92,6 +99,8 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
       if (response.intent === 'modify' && response.modified_plan) {
           setPlan(response.modified_plan);
           setModCount(prev => prev + 1);
+          // Persist the modification to cache so it survives refresh/navigation
+          localStorage.setItem(CACHE_KEY_PLAN, JSON.stringify(response.modified_plan));
       }
     } catch (e) {
       const errorMsg: ChatMessage = { id: Date.now().toString(), role: 'model', text: "Sorry, I encountered an error. Please try again." };
@@ -103,7 +112,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
   const handleChatRequest = (message: string) => {
       // Check limits
-      if (modCount >= FREE_MODIFICATION_LIMIT) {
+      if (!isDevMode && modCount >= FREE_MODIFICATION_LIMIT) {
           setPendingAction({ type: 'CHAT', payload: message });
           setShowAd(true);
       } else {
@@ -113,7 +122,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
   // --- Logic for Comparison ---
   const handleCompareRequest = () => {
-      if (compareCount >= FREE_COMPARE_LIMIT) {
+      if (!isDevMode && compareCount >= FREE_COMPARE_LIMIT) {
           setPendingAction({ type: 'COMPARE' });
           setShowAd(true);
       } else {
@@ -137,11 +146,8 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   };
 
   const handleBookTrip = () => {
-    // Simplified logic for brevity, same as previous
-    const sanitizeCity = (input: string) => input ? input.split(',')[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') : "everywhere";
-    const origin = sanitizeCity(preferences.departFrom);
-    const dest = sanitizeCity(preferences.destination);
-    const url = `https://www.skyscanner.com/transport/flights/${origin}/${dest}`;
+    const rawDest = preferences.destination.split(',')[0].trim().replace(/\s+/g, '-');
+    const url = `https://www.skyscanner.com/transport/flights/${preferences.departFrom ? 'everywhere' : 'everywhere'}/${rawDest}`;
     window.open(url, '_blank');
   };
 
@@ -153,7 +159,8 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   };
 
   return (
-    <div ref={containerRef} className="flex h-full w-full relative overflow-hidden">
+    // Clean full height layout, no fixed hacks needed as Navbar is removed via parent
+    <div ref={containerRef} className="flex h-full w-full overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       
       {showAd && (
           <AdUnlockModal 
@@ -169,7 +176,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
       {/* Left Panel */}
       <div 
-        className={`${mobileView === 'list' ? 'block' : 'hidden'} lg:block h-full border-r border-gray-200 relative bg-white flex flex-col z-20 shadow-xl lg:shadow-none transition-all duration-75 ease-linear`}
+        className={`${mobileView === 'list' ? 'block' : 'hidden'} lg:block h-full border-r border-slate-200 relative bg-white flex flex-col z-20 shadow-xl lg:shadow-none transition-all duration-75 ease-linear`}
         style={{ width: window.innerWidth >= 1024 ? `${leftPanelWidth}%` : '100%' }}
       >
         <Itinerary 
@@ -184,7 +191,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 lg:bottom-8 w-max">
             <button 
                 onClick={handleBookTrip}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition transform flex items-center gap-2 ring-2 ring-white"
+                className="bg-slate-900 text-white font-bold py-3 px-8 rounded-full shadow-xl hover:scale-105 transition transform flex items-center gap-2 border border-slate-700"
             >
                 Book Flights ✈️
             </button>
@@ -193,18 +200,18 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
 
       {/* Resize Handle */}
       <div 
-        className="hidden lg:flex w-5 hover:w-6 cursor-col-resize items-center justify-center bg-gray-100 border-l border-r border-gray-300 absolute top-0 bottom-0 z-50 group transition-all shadow-md hover:bg-indigo-50"
+        className="hidden lg:flex w-4 hover:w-5 cursor-col-resize items-center justify-center bg-slate-50 border-l border-r border-slate-200 absolute top-0 bottom-0 z-50 group transition-all"
         style={{ left: `${leftPanelWidth}%`, transform: 'translateX(-50%)' }}
         onMouseDown={handleMouseDown}
       >
         <div className="h-8 w-1 flex flex-col justify-center gap-0.5">
-             <GripVertical className="w-4 h-4 text-gray-400 group-hover:text-indigo-500" />
+             <GripVertical className="w-4 h-4 text-slate-300 group-hover:text-indigo-400" />
         </div>
       </div>
 
       {/* Right Panel */}
       <div 
-        className={`${mobileView === 'map' ? 'block' : 'hidden'} lg:block h-full relative z-10 bg-gray-100`}
+        className={`${mobileView === 'map' ? 'block' : 'hidden'} lg:block h-full relative z-10 bg-slate-50`}
         style={{ width: window.innerWidth >= 1024 ? `${100 - leftPanelWidth}%` : '100%' }}
       >
         <Map 

@@ -1,3 +1,4 @@
+
 export type Language = 
   | 'English' 
   | '中文' 
@@ -21,8 +22,9 @@ export interface UserPreferences {
   style?: string[];
   constraints?: string;
   language: Language;
-  budget?: 'Economy' | 'Standard' | 'Luxury'; // New
-  pacing?: 'Relaxed' | 'Balanced' | 'Intensive'; // New
+  budget?: 'Economy' | 'Standard' | 'Luxury';
+  pacing?: 'Relaxed' | 'Balanced' | 'Intensive';
+  transportMode?: 'Public Transport' | 'Self-Driving' | 'Taxi/Ride-hailing' | 'Walking'; // New Field
 }
 
 export interface Activity {

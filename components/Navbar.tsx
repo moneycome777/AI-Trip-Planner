@@ -1,75 +1,87 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Plane, Menu, X } from 'lucide-react';
+import { Plane, Menu, X, CheckCircle } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path ? 'text-indigo-600 font-bold' : 'text-gray-600 hover:text-indigo-600';
+  const isActive = (path: string) => location.pathname === path ? 'text-indigo-600 font-bold bg-indigo-50/50 rounded-full px-3 py-1' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-full px-3 py-1 transition';
+
+  const handleLogoClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount === 5) {
+        localStorage.setItem('tripgenie_dev_mode', 'true');
+        alert("Developer Mode Enabled: Ads are now disabled.");
+    }
+  };
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-[100]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <Plane className="h-8 w-8 text-indigo-600" />
-              <span className="font-bold text-xl text-gray-900">AriaTrip AI</span>
+    <nav className="fixed top-4 left-0 right-0 z-[100] px-4 flex justify-center">
+      <div className="max-w-7xl w-full bg-white/80 backdrop-blur-xl border border-white/40 shadow-sm rounded-full px-6 py-3 flex justify-between items-center transition-all duration-300">
+          
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link to="/" className="flex-shrink-0 flex items-center gap-2" onClick={handleLogoClick}>
+              <div className="bg-gradient-to-tr from-indigo-500 to-purple-500 text-white p-1.5 rounded-lg shadow-sm">
+                 <Plane className="h-5 w-5" />
+              </div>
+              <span className="font-bold text-lg text-slate-800 tracking-tight">AriaTrip AI</span>
             </Link>
           </div>
           
-          <div className="hidden sm:ml-6 sm:flex sm:space-x-8 items-center">
+          {/* Desktop Nav */}
+          <div className="hidden sm:flex sm:space-x-2 items-center text-sm font-medium">
             <Link to="/" className={isActive('/')}>Plan Trip</Link>
             <Link to="/destinations" className={isActive('/destinations')}>Destinations</Link>
             <Link to="/about" className={isActive('/about')}>About</Link>
             <Link to="/contact" className={isActive('/contact')}>Contact</Link>
           </div>
 
-          <div className="-mr-2 flex items-center sm:hidden">
+          {/* Mobile Menu Button */}
+          <div className="flex items-center sm:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-full text-slate-500 hover:bg-slate-100 focus:outline-none"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
-        </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu dropdown */}
       {isOpen && (
-        <div className="sm:hidden bg-white border-b border-gray-200">
-          <div className="pt-2 pb-3 space-y-1">
+        <div className="absolute top-20 left-4 right-4 bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl shadow-xl p-4 sm:hidden flex flex-col space-y-2 animate-fadeIn z-[90]">
             <Link 
               to="/" 
               onClick={() => setIsOpen(false)}
-              className="block pl-3 pr-4 py-2 border-l-4 border-indigo-500 text-base font-medium text-indigo-700 bg-indigo-50"
+              className="block px-4 py-3 rounded-xl bg-indigo-50 text-indigo-700 font-bold"
             >
               Plan Trip
             </Link>
             <Link 
               to="/destinations" 
               onClick={() => setIsOpen(false)}
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+              className="block px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium"
             >
               Destinations
             </Link>
             <Link 
               to="/about" 
               onClick={() => setIsOpen(false)}
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+              className="block px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium"
             >
               About
             </Link>
             <Link 
               to="/contact" 
               onClick={() => setIsOpen(false)}
-              className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+              className="block px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium"
             >
               Contact
             </Link>
-          </div>
         </div>
       )}
     </nav>

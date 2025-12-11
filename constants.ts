@@ -1,3 +1,6 @@
+
+import { TripPlan } from "./types";
+
 export const TRAVEL_STYLES = [
   "Foodie",
   "Instagrammable",
@@ -16,7 +19,6 @@ export const TRAVEL_STYLES = [
   "Romantic",
   "Backpacking",
   "Art & Design",
-  // Additional styles
   "Beach Lover",
   "Road Trip",
   "Hiking",
@@ -52,6 +54,13 @@ export const PACING_STYLES = [
   "Intensive"
 ];
 
+export const TRANSPORT_MODES = [
+  "Public Transport",
+  "Self-Driving",
+  "Taxi/Ride-hailing",
+  "Walking"
+];
+
 export const MOCK_AD_VIDEOS = [
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
@@ -63,4 +72,121 @@ export const EMPTY_TRIP: any = {
   warnings: [],
   packing_list: [],
   days: []
+};
+
+// Storage Keys
+export const CACHE_KEY_PLAN = 'tripgenie_cached_plan';
+export const CACHE_KEY_PREFS = 'tripgenie_cached_prefs';
+
+// Map Colors Palette
+export const DAY_COLORS = [
+    '#3B82F6', // Blue
+    '#F59E0B', // Amber
+    '#10B981', // Emerald
+    '#EC4899', // Pink
+    '#8B5CF6', // Violet
+    '#EF4444', // Red
+    '#06B6D4', // Cyan
+    '#84CC16', // Lime
+    '#F97316', // Orange
+    '#6366F1'  // Indigo
+];
+
+// Comprehensive Mock Data for Testing
+export const MOCK_TRIP_PLAN: TripPlan = {
+  trip_summary: "MOCK PLAN: A 3-Day Highlights of Tokyo",
+  estimated_budget: "50,000 JPY (~$350 USD)",
+  suggested_dates: "April 10 - April 13",
+  date_reasoning: "Perfect spring weather and post-cherry blossom crowds are lower.",
+  suggested_hotels: [
+    { name: "Hotel Gracery Shinjuku", description: "Famous Godzilla hotel in the heart of Kabukicho.", price_range: "$120-150/night" },
+    { name: "The Millennials Shibuya", description: "High-tech capsule hotel with social vibes.", price_range: "$60-80/night" }
+  ],
+  warnings: ["Beware of touts in Kabukicho/Roppongi.", "Don't tip in Japan, it's considered rude."],
+  packing_list: ["Universal Power Adapter", "Comfortable Walking Shoes", "Coin Purse (Cash is King)"],
+  weather_forecast: "Sunny with mild breeze. Highs of 18°C, Lows of 10°C.",
+  transport_advice: "Get a Suica/Pasmo card on Apple Wallet. Trains are the fastest way around.",
+  flight_delay_backup: "If delayed, head to the Haneda Garden Spa connected to Terminal 3.",
+  days: [
+    {
+      day_number: 1,
+      theme: "Arrival & Neon Lights",
+      activities: [
+        {
+          place_name: "Haneda Airport",
+          action: "Arrival & Pick up Pocket WiFi",
+          latitude: 35.5494,
+          longitude: 139.7798,
+          type: "transport",
+          transport_tip: "Take Keikyu Line to Shinagawa"
+        },
+        {
+          place_name: "Shibuya Crossing",
+          action: "Walk the famous scramble crossing",
+          latitude: 35.6595,
+          longitude: 139.7004,
+          type: "sightseeing",
+          description: "The busiest pedestrian crossing in the world."
+        },
+        {
+          place_name: "Ichiran Ramen",
+          action: "Dinner in a solo booth",
+          latitude: 35.6604,
+          longitude: 139.6995,
+          type: "food",
+          cost_estimate: "1200 JPY"
+        }
+      ]
+    },
+    {
+      day_number: 2,
+      theme: "Old & New Tokyo",
+      activities: [
+        {
+          place_name: "Senso-ji Temple",
+          action: "Morning prayers and fortune telling",
+          latitude: 35.7148,
+          longitude: 139.7967,
+          type: "sightseeing",
+          transport_tip: "Ginza Line to Asakusa"
+        },
+        {
+          place_name: "Nakamise Shopping Street",
+          action: "Snack on street food",
+          latitude: 35.7138,
+          longitude: 139.7963,
+          type: "food",
+          cost_estimate: "1500 JPY"
+        },
+        {
+          place_name: "Tokyo Skytree",
+          action: "Sunset views from the top",
+          latitude: 35.7100,
+          longitude: 139.8107,
+          type: "sightseeing",
+          cost_estimate: "3000 JPY"
+        }
+      ]
+    },
+    {
+      day_number: 3,
+      theme: "Pop Culture & Fashion",
+      activities: [
+        {
+          place_name: "Harajuku Takeshita Street",
+          action: "Shop for kawaii fashion",
+          latitude: 35.6715,
+          longitude: 139.7031,
+          type: "sightseeing"
+        },
+        {
+          place_name: "Meiji Shrine",
+          action: "Peaceful forest walk",
+          latitude: 35.6764,
+          longitude: 139.6993,
+          type: "sightseeing"
+        }
+      ]
+    }
+  ]
 };

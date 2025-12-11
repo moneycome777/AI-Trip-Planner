@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import L from 'leaflet';
 import { TripPlan, DayPlan } from '../types';
 import { ArrowLeft } from 'lucide-react';
+import { DAY_COLORS } from '../constants'; // We will add this export next
 
 // Fix Leaflet default icon issue in React
 const DefaultIcon = L.icon({
@@ -13,14 +14,9 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const createCustomIcon = (type: string, number: number) => {
-    let color = '#3B82F6'; // blue
-    if (type === 'food') color = '#EF4444'; // red
-    if (type === 'transport') color = '#10B981'; // green
-    if (type === 'hotel') color = '#8B5CF6'; // purple
-
+const createCustomIcon = (number: number, color: string) => {
     const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.3));">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
         <circle cx="12" cy="10" r="3" fill="white"></circle>
     </svg>
@@ -28,13 +24,13 @@ const createCustomIcon = (type: string, number: number) => {
     
     return L.divIcon({
         className: 'custom-icon',
-        html: `<div style="position: relative;">
+        html: `<div style="position: relative; display: flex; justify-content: center;">
                  ${svg}
-                 <span style="position: absolute; top: 0; right: -8px; background: white; border-radius: 50%; width: 14px; height: 14px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid gray;">${number}</span>
+                 <span style="position: absolute; top: -6px; right: -6px; background: ${color}; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">${number}</span>
                </div>`,
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-        popupAnchor: [0, -30]
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -36]
     });
 };
 
@@ -42,7 +38,6 @@ const createCustomIcon = (type: string, number: number) => {
 const MapResizer: React.FC = () => {
   const map = useMap();
   useEffect(() => {
-    // Invalidate size immediately and after a short delay to handle transitions
     map.invalidateSize();
     const timer = setTimeout(() => {
       map.invalidateSize();
@@ -73,7 +68,6 @@ const MapUpdater: React.FC<MapUpdaterProps> = ({ days }) => {
         });
 
         if (hasPoints) {
-            // Add a small delay to ensure container is sized before flying
             setTimeout(() => {
                 map.flyToBounds(bounds, { padding: [50, 50] });
             }, 300);
@@ -100,10 +94,25 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
       {onBackToList && (
         <button 
           onClick={onBackToList}
-          className="lg:hidden absolute top-4 left-4 z-[1000] bg-white text-gray-800 p-2 rounded-full shadow-lg border border-gray-200"
+          className="lg:hidden absolute top-4 left-4 z-[1000] bg-white text-slate-800 p-2.5 rounded-full shadow-lg border border-slate-200"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
+      )}
+
+      {/* Legend for All Days View */}
+      {!selectedDay && (
+          <div className="absolute top-4 right-4 z-[1000] bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-100 max-h-48 overflow-y-auto hidden sm:block">
+              <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Route Legend</h4>
+              <div className="space-y-1.5">
+                  {tripPlan.days.map((day, idx) => (
+                      <div key={day.day_number} className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: DAY_COLORS[idx % DAY_COLORS.length] }}></div>
+                          <span className="text-xs font-semibold text-slate-700">Day {day.day_number}</span>
+                      </div>
+                  ))}
+              </div>
+          </div>
       )}
 
       <MapContainer 
@@ -115,12 +124,16 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
         <MapResizer />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
         
         <MapUpdater days={daysToRender} />
 
         {daysToRender.map((day, dayIndex) => {
+            // Determine color based on actual day number index from original plan to keep consistency
+            const colorIndex = (day.day_number - 1) % DAY_COLORS.length;
+            const dayColor = DAY_COLORS[colorIndex];
+            
             const positions: [number, number][] = [];
             
             return (
@@ -134,13 +147,13 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
                             <Marker 
                                 key={`${day.day_number}-${actIndex}`}
                                 position={pos}
-                                icon={createCustomIcon(act.type, actIndex + 1)}
+                                icon={createCustomIcon(actIndex + 1, dayColor)}
                             >
                                 <Popup>
                                     <div className="p-1">
-                                        <div className="font-bold text-sm mb-1">Day {day.day_number}: {act.place_name}</div>
-                                        <div className="text-xs text-gray-600">{act.action}</div>
-                                        {act.cost_estimate && <div className="text-xs text-green-600 font-semibold mt-1">{act.cost_estimate}</div>}
+                                        <div className="text-[10px] font-bold uppercase mb-1" style={{ color: dayColor }}>Day {day.day_number}</div>
+                                        <div className="font-bold text-sm mb-0.5 text-slate-900">{act.place_name}</div>
+                                        <div className="text-xs text-slate-500">{act.action}</div>
                                     </div>
                                 </Popup>
                             </Marker>
@@ -151,10 +164,11 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
                         <Polyline 
                             positions={positions} 
                             pathOptions={{ 
-                                color: dayIndex % 2 === 0 ? '#4F46E5' : '#0ea5e9',
+                                color: dayColor,
                                 weight: 4,
-                                opacity: 0.7,
-                                dashArray: selectedDay ? undefined : '5, 10' 
+                                opacity: 0.8,
+                                dashArray: selectedDay ? undefined : '10, 10',
+                                lineCap: 'round'
                             }} 
                         />
                     )}

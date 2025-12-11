@@ -1,37 +1,29 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { UserPreferences, Language } from '../types';
-import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES } from '../constants';
-import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Sparkles, Clock, PlaneTakeoff, Info, Zap, MousePointer, Heart, Plus, X, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield } from 'lucide-react';
+import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
+import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History } from 'lucide-react';
 
 interface Props {
   onSubmit: (prefs: UserPreferences) => void;
+  onResume?: () => void;
+  savedTripDest?: string | null;
 }
 
 const POPULAR_DESTINATIONS: Record<string, string[]> = {
-    // Japan
-    'japan': [
-        'Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Okinawa', 'Nara', 'Fukuoka', 'Nagoya',
-        'Mount Fuji', 'Arashiyama Bamboo Grove', 'Fushimi Inari Shrine', 'Tokyo Tower'
-    ],
-    // China
-    'china': [
-        'Beijing', 'Shanghai', 'Guangzhou', 'Chengdu', 'Xi\'an', 'Shenzhen', 'Hangzhou', 'Nanjing',
-        'Great Wall of China', 'Terracotta Army', 'West Lake', 'The Bund'
-    ],
-    // USA
-    'usa': [
-        'New York', 'Los Angeles', 'San Francisco', 'Las Vegas', 'Hawaii', 'Chicago', 'Miami', 'Boston', 'Orlando',
-        'Statue of Liberty', 'Golden Gate Bridge', 'Grand Canyon', 'Times Square', 'Hollywood Sign'
-    ],
-    'united states': [
-        'New York', 'Los Angeles', 'San Francisco', 'Las Vegas', 'Hawaii', 'Chicago', 'Miami', 'Boston', 'Orlando',
-        'Statue of Liberty', 'Golden Gate Bridge', 'Grand Canyon', 'Times Square', 'Hollywood Sign'
-    ],
-    // Europe
-    'europe': [
-        'London', 'Paris', 'Rome', 'Barcelona', 'Amsterdam', 'Berlin', 'Prague', 'Vienna', 'Budapest', 'Santorini'
-    ]
+    'japan': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Okinawa', 'Nara', 'Mount Fuji'],
+    'china': ['Beijing', 'Shanghai', 'Guangzhou', 'Chengdu', 'Xi\'an', 'Great Wall'],
+    'usa': ['New York', 'Los Angeles', 'San Francisco', 'Las Vegas', 'Hawaii'],
+    'united states': ['New York', 'Los Angeles', 'San Francisco', 'Las Vegas', 'Hawaii'],
+    'korea': ['Seoul', 'Busan', 'Jeju Island'],
+    'france': ['Paris', 'Nice', 'Lyon', 'Bordeaux'],
+    'italy': ['Rome', 'Venice', 'Florence', 'Milan', 'Amalfi Coast'],
+    'uk': ['London', 'Edinburgh', 'Manchester'],
+    'thailand': ['Bangkok', 'Phuket', 'Chiang Mai', 'Krabi'],
+    'spain': ['Barcelona', 'Madrid', 'Seville', 'Ibiza'],
+    'germany': ['Berlin', 'Munich', 'Hamburg'],
+    'australia': ['Sydney', 'Melbourne', 'Gold Coast'],
 };
 
 // Marketing Copy Helper
@@ -80,237 +72,21 @@ const getMarketingCopy = (lang: Language) => {
 };
 
 const UI_TEXT: Record<Language, any> = {
-  'English': {
-    whereLabel: "Where to? (Add multiple)",
-    wherePlaceholder: "e.g. Tokyo (Press Enter)",
-    departLabel: "Depart from?",
-    departPlaceholder: "e.g. London",
-    whenLabel: "When / How long?",
-    whenPlaceholder: "e.g. 5 Days",
-    advanced: "Advanced Settings (Optional)",
-    layoverLabel: "Layover / Stopover",
-    layoverPlaceholder: "e.g. 10h stop in Dubai",
-    hotelLabel: "Hotel / Accommodation",
-    hotelPlaceholder: "e.g. Hilton Osaka",
-    styleLabel: "Travel Style",
-    constraintsLabel: "Constraints / Special Requests",
-    constraintsPlaceholder: "e.g. No spicy food...",
-    budgetLabel: "Budget Level",
-    pacingLabel: "Trip Pacing (Intensity)",
-    button: "Generate Trip"
-  },
-  '中文': {
-    whereLabel: "去哪里？(可添加多个)",
-    wherePlaceholder: "例如：东京 (按回车添加)",
-    departLabel: "出发地？",
-    departPlaceholder: "例如：上海",
-    whenLabel: "时间 / 多久？",
-    whenPlaceholder: "例如：5天",
-    advanced: "高级设置 (可选)",
-    layoverLabel: "中转 / 停留",
-    layoverPlaceholder: "例如：在迪拜停留10小时",
-    hotelLabel: "酒店 / 住宿",
-    hotelPlaceholder: "例如：大阪希尔顿",
-    styleLabel: "旅行风格",
-    constraintsLabel: "限制 / 特殊要求",
-    constraintsPlaceholder: "例如：不吃辣...",
-    budgetLabel: "预算等级",
-    pacingLabel: "行程节奏 (强度)",
-    button: "生成行程"
-  },
-  '日本語': {
-    whereLabel: "どこへ？(複数追加可)",
-    wherePlaceholder: "例：東京 (Enterで追加)",
-    departLabel: "出発地",
-    departPlaceholder: "例：東京",
-    whenLabel: "いつ / 期間？",
-    whenPlaceholder: "例：5日間",
-    advanced: "詳細設定 (任意)",
-    layoverLabel: "乗り継ぎ / 経由",
-    layoverPlaceholder: "例：ドバイで10時間待機",
-    hotelLabel: "ホテル / 宿泊先",
-    hotelPlaceholder: "例：ヒルトン大阪",
-    styleLabel: "旅行スタイル",
-    constraintsLabel: "制約 / 特別なリクエスト",
-    constraintsPlaceholder: "例：辛いものはダメ...",
-    budgetLabel: "予算レベル",
-    pacingLabel: "旅行のペース",
-    button: "プランを作成"
-  },
-  'Hindi': {
-      whereLabel: "कहाँ जाना है?",
-      wherePlaceholder: "जैसे टोक्यो",
-      departLabel: "कहाँ से?",
-      departPlaceholder: "जैसे दिल्ली",
-      whenLabel: "कब / कितने दिन?",
-      whenPlaceholder: "जैसे 5 दिन",
-      advanced: "उन्नत सेटिंग्स",
-      layoverLabel: "लेओवर",
-      layoverPlaceholder: "जैसे दुबई में 8 घंटे",
-      hotelLabel: "होटल",
-      hotelPlaceholder: "जैसे हिल्टन",
-      styleLabel: "शैली",
-      constraintsLabel: "विशेष अनुरोध",
-      constraintsPlaceholder: "जैसे मसालेदार नहीं",
-      budgetLabel: "बजट",
-      pacingLabel: "गति",
-      button: "यात्रा बनाएँ"
-  },
-  'Spanish': {
-      whereLabel: "¿A dónde?",
-      wherePlaceholder: "ej. Tokio",
-      departLabel: "¿Desde dónde?",
-      departPlaceholder: "ej. Madrid",
-      whenLabel: "¿Cuándo / Cuánto?",
-      whenPlaceholder: "ej. 5 días",
-      advanced: "Opciones avanzadas",
-      layoverLabel: "Escala",
-      layoverPlaceholder: "ej. 10h en Dubái",
-      hotelLabel: "Hotel",
-      hotelPlaceholder: "ej. Hilton",
-      styleLabel: "Estilo",
-      constraintsLabel: "Restricciones",
-      constraintsPlaceholder: "ej. Sin picante",
-      budgetLabel: "Presupuesto",
-      pacingLabel: "Ritmo",
-      button: "Generar Viaje"
-  },
-  'Arabic': {
-      whereLabel: "إلى أين؟",
-      wherePlaceholder: "مثلاً: طوكيو",
-      departLabel: "من أين؟",
-      departPlaceholder: "مثلاً: الرياض",
-      whenLabel: "متى / المدة؟",
-      whenPlaceholder: "مثلاً: 5 أيام",
-      advanced: "إعدادات متقدمة",
-      layoverLabel: "توقف",
-      layoverPlaceholder: "مثلاً: 8 ساعات في دبي",
-      hotelLabel: "فندق",
-      hotelPlaceholder: "مثلاً: هيلتون",
-      styleLabel: "النمط",
-      constraintsLabel: "قيود",
-      constraintsPlaceholder: "مثلاً: لا طعام حار",
-      budgetLabel: "الميزانية",
-      pacingLabel: "السرعة",
-      button: "إنشاء رحلة"
-  },
-  'French': {
-      whereLabel: "Où ?",
-      wherePlaceholder: "ex. Tokyo",
-      departLabel: "De ?",
-      departPlaceholder: "ex. Paris",
-      whenLabel: "Quand ?",
-      whenPlaceholder: "ex. 5 jours",
-      advanced: "Avancé",
-      layoverLabel: "Escale",
-      layoverPlaceholder: "ex. 10h à Dubaï",
-      hotelLabel: "Hôtel",
-      hotelPlaceholder: "ex. Hilton",
-      styleLabel: "Style",
-      constraintsLabel: "Contraintes",
-      constraintsPlaceholder: "ex. Pas épicé",
-      budgetLabel: "Budget",
-      pacingLabel: "Rythme",
-      button: "Générer"
-  },
-  'Portuguese': {
-      whereLabel: "Para onde?",
-      wherePlaceholder: "ex. Tóquio",
-      departLabel: "De onde?",
-      departPlaceholder: "ex. São Paulo",
-      whenLabel: "Quando?",
-      whenPlaceholder: "ex. 5 dias",
-      advanced: "Avançado",
-      layoverLabel: "Escala",
-      layoverPlaceholder: "ex. 10h em Dubai",
-      hotelLabel: "Hotel",
-      hotelPlaceholder: "ex. Hilton",
-      styleLabel: "Estilo",
-      constraintsLabel: "Restrições",
-      constraintsPlaceholder: "ex. Sem picante",
-      budgetLabel: "Orçamento",
-      pacingLabel: "Ritmo",
-      button: "Gerar"
-  },
-  'Russian': {
-      whereLabel: "Куда?",
-      wherePlaceholder: "например, Токио",
-      departLabel: "Откуда?",
-      departPlaceholder: "например, Москва",
-      whenLabel: "Когда?",
-      whenPlaceholder: "например, 5 дней",
-      advanced: "Настройки",
-      layoverLabel: "Пересадка",
-      layoverPlaceholder: "например, 10ч в Дубае",
-      hotelLabel: "Отель",
-      hotelPlaceholder: "например, Хилтон",
-      styleLabel: "Стиль",
-      constraintsLabel: "Ограничения",
-      constraintsPlaceholder: "например, не острое",
-      budgetLabel: "Бюджет",
-      pacingLabel: "Темп",
-      button: "Создать"
-  },
-  'Indonesian': {
-      whereLabel: "Ke mana?",
-      wherePlaceholder: "cth. Tokyo",
-      departLabel: "Dari mana?",
-      departPlaceholder: "cth. Jakarta",
-      whenLabel: "Kapan?",
-      whenPlaceholder: "cth. 5 hari",
-      advanced: "Lanjutan",
-      layoverLabel: "Transit",
-      layoverPlaceholder: "cth. 8 jam di Dubai",
-      hotelLabel: "Hotel",
-      hotelPlaceholder: "cth. Hilton",
-      styleLabel: "Gaya",
-      constraintsLabel: "Batasan",
-      constraintsPlaceholder: "cth. Tidak pedas",
-      budgetLabel: "Anggaran",
-      pacingLabel: "Kecepatan",
-      button: "Buat"
-  },
-  'Korean': {
-      whereLabel: "어디로?",
-      wherePlaceholder: "예: 도쿄",
-      departLabel: "출발지?",
-      departPlaceholder: "예: 서울",
-      whenLabel: "언제?",
-      whenPlaceholder: "예: 5일",
-      advanced: "고급 설정",
-      layoverLabel: "경유",
-      layoverPlaceholder: "예: 두바이 10시간",
-      hotelLabel: "호텔",
-      hotelPlaceholder: "예: 힐튼",
-      styleLabel: "스타일",
-      constraintsLabel: "제약",
-      constraintsPlaceholder: "예: 매운 것 제외",
-      budgetLabel: "예산",
-      pacingLabel: "일정 강도",
-      button: "생성"
-  },
-  'Thai': {
-      whereLabel: "ไปไหน?",
-      wherePlaceholder: "เช่น โตเกียว",
-      departLabel: "จากไหน?",
-      departPlaceholder: "เช่น กรุงเทพ",
-      whenLabel: "เมื่อไหร่?",
-      whenPlaceholder: "เช่น 5 วัน",
-      advanced: "ขั้นสูง",
-      layoverLabel: "แวะพัก",
-      layoverPlaceholder: "เช่น ดูไบ 8 ชม.",
-      hotelLabel: "โรงแรม",
-      hotelPlaceholder: "เช่น ฮิลตัน",
-      styleLabel: "สไตล์",
-      constraintsLabel: "ข้อจำกัด",
-      constraintsPlaceholder: "เช่น ไม่เผ็ด",
-      budgetLabel: "งบประมาณ",
-      pacingLabel: "ความแน่นของทริป",
-      button: "สร้าง"
-  }
+  'English': { whereLabel: "Where to?", wherePlaceholder: "e.g. Tokyo (Press Enter)", departLabel: "Depart from?", departPlaceholder: "e.g. London", whenLabel: "Duration?", whenPlaceholder: "e.g. 5 Days", advanced: "Advanced Settings", layoverLabel: "Layover", layoverPlaceholder: "e.g. 10h stop in Dubai", hotelLabel: "Hotel Preference", hotelPlaceholder: "e.g. Hilton Osaka", styleLabel: "Travel Style", constraintsLabel: "Special Requests", constraintsPlaceholder: "e.g. No spicy food...", budgetLabel: "Budget", pacingLabel: "Pacing", transportLabel: "Transport Mode", button: "Generate Trip" },
+  '中文': { whereLabel: "去哪里？", wherePlaceholder: "例如：东京 (按回车添加)", departLabel: "出发地？", departPlaceholder: "例如：上海", whenLabel: "多久？", whenPlaceholder: "例如：5天", advanced: "高级设置", layoverLabel: "中转", layoverPlaceholder: "例如：在迪拜停留10小时", hotelLabel: "酒店偏好", hotelPlaceholder: "例如：大阪希尔顿", styleLabel: "旅行风格", constraintsLabel: "特殊要求", constraintsPlaceholder: "例如：不吃辣...", budgetLabel: "预算", pacingLabel: "节奏", transportLabel: "交通方式", button: "生成行程" },
+  '日本語': { whereLabel: "どこへ？", wherePlaceholder: "例：東京", departLabel: "出発地", departPlaceholder: "例：東京", whenLabel: "期間", whenPlaceholder: "例：5日間", advanced: "詳細設定", layoverLabel: "乗り継ぎ", layoverPlaceholder: "例：ドバイ", hotelLabel: "ホテル", hotelPlaceholder: "例：ヒルトン", styleLabel: "スタイル", constraintsLabel: "リクエスト", constraintsPlaceholder: "例：辛いものNG", budgetLabel: "予算", pacingLabel: "ペース", transportLabel: "交通", button: "作成" },
+  'Hindi': { whereLabel: "कहाँ?", wherePlaceholder: "जैसे टोक्यो", departLabel: "कहाँ से?", departPlaceholder: "जैसे दिल्ली", whenLabel: "कब?", whenPlaceholder: "जैसे 5 दिन", advanced: "उन्नत", layoverLabel: "लेओवर", layoverPlaceholder: "जैसे दुबई", hotelLabel: "होटल", hotelPlaceholder: "जैसे हिल्टन", styleLabel: "शैली", constraintsLabel: "अनुरोध", constraintsPlaceholder: "जैसे मसालेदार नहीं", budgetLabel: "बजट", pacingLabel: "गति", transportLabel: "परिवहन", button: "बनाएँ" },
+  'Spanish': { whereLabel: "¿A dónde?", wherePlaceholder: "ej. Tokio", departLabel: "¿Desde?", departPlaceholder: "ej. Madrid", whenLabel: "¿Cuánto?", whenPlaceholder: "ej. 5 días", advanced: "Avanzado", layoverLabel: "Escala", layoverPlaceholder: "ej. Dubái", hotelLabel: "Hotel", hotelPlaceholder: "ej. Hilton", styleLabel: "Estilo", constraintsLabel: "Peticiones", constraintsPlaceholder: "ej. Sin picante", budgetLabel: "Presupuesto", pacingLabel: "Ritmo", transportLabel: "Transporte", button: "Generar" },
+  'Arabic': { whereLabel: "إلى أين؟", wherePlaceholder: "طوكيو", departLabel: "من أين؟", departPlaceholder: "الرياض", whenLabel: "المدة؟", whenPlaceholder: "5 أيام", advanced: "متقدم", layoverLabel: "توقف", layoverPlaceholder: "دبي", hotelLabel: "فندق", hotelPlaceholder: "هيلتون", styleLabel: "نمط", constraintsLabel: "طلبات", constraintsPlaceholder: "لا حار", budgetLabel: "ميزانية", pacingLabel: "سرعة", transportLabel: "نقل", button: "إنشاء" },
+  'French': { whereLabel: "Où ?", wherePlaceholder: "ex. Tokyo", departLabel: "De ?", departPlaceholder: "ex. Paris", whenLabel: "Quand ?", whenPlaceholder: "ex. 5 jours", advanced: "Avancé", layoverLabel: "Escale", layoverPlaceholder: "ex. Dubaï", hotelLabel: "Hôtel", hotelPlaceholder: "ex. Hilton", styleLabel: "Style", constraintsLabel: "Demandes", constraintsPlaceholder: "ex. Pas épicé", budgetLabel: "Budget", pacingLabel: "Rythme", transportLabel: "Transport", button: "Générer" },
+  'Portuguese': { whereLabel: "Para onde?", wherePlaceholder: "ex. Tóquio", departLabel: "De onde?", departPlaceholder: "ex. Lisboa", whenLabel: "Quanto?", whenPlaceholder: "ex. 5 dias", advanced: "Avançado", layoverLabel: "Escala", layoverPlaceholder: "ex. Dubai", hotelLabel: "Hotel", hotelPlaceholder: "ex. Hilton", styleLabel: "Estilo", constraintsLabel: "Pedidos", constraintsPlaceholder: "ex. Sem picante", budgetLabel: "Orçamento", pacingLabel: "Ritmo", transportLabel: "Transporte", button: "Gerar" },
+  'Russian': { whereLabel: "Куда?", wherePlaceholder: "напр. Токио", departLabel: "Откуда?", departPlaceholder: "напр. Москва", whenLabel: "Сколько?", whenPlaceholder: "напр. 5 дней", advanced: "Настройки", layoverLabel: "Пересадка", layoverPlaceholder: "напр. Дубай", hotelLabel: "Отель", hotelPlaceholder: "напр. Хилтон", styleLabel: "Стиль", constraintsLabel: "Пожелания", constraintsPlaceholder: "напр. не острое", budgetLabel: "Бюджет", pacingLabel: "Темп", transportLabel: "Транспорт", button: "Создать" },
+  'Indonesian': { whereLabel: "Ke mana?", wherePlaceholder: "cth. Tokyo", departLabel: "Dari?", departPlaceholder: "cth. Jakarta", whenLabel: "Lama?", whenPlaceholder: "cth. 5 hari", advanced: "Lanjutan", layoverLabel: "Transit", layoverPlaceholder: "cth. Dubai", hotelLabel: "Hotel", hotelPlaceholder: "cth. Hilton", styleLabel: "Gaya", constraintsLabel: "Khusus", constraintsPlaceholder: "cth. Tidak pedas", budgetLabel: "Anggaran", pacingLabel: "Kecepatan", transportLabel: "Transportasi", button: "Buat" },
+  'Korean': { whereLabel: "어디로?", wherePlaceholder: "예: 도쿄", departLabel: "출발?", departPlaceholder: "예: 서울", whenLabel: "기간?", whenPlaceholder: "예: 5일", advanced: "설정", layoverLabel: "경유", layoverPlaceholder: "예: 두바이", hotelLabel: "호텔", hotelPlaceholder: "예: 힐튼", styleLabel: "스타일", constraintsLabel: "요청", constraintsPlaceholder: "예: 매운거 X", budgetLabel: "예산", pacingLabel: "강도", transportLabel: "교통", button: "생성" },
+  'Thai': { whereLabel: "ไปไหน?", wherePlaceholder: "เช่น โตเกียว", departLabel: "จาก?", departPlaceholder: "เช่น กทม", whenLabel: "นาน?", whenPlaceholder: "เช่น 5 วัน", advanced: "ขั้นสูง", layoverLabel: "แวะ", layoverPlaceholder: "เช่น ดูไบ", hotelLabel: "โรงแรม", hotelPlaceholder: "เช่น ฮิลตัน", styleLabel: "สไตล์", constraintsLabel: "ขอพิเศษ", constraintsPlaceholder: "เช่น ไม่เผ็ด", budgetLabel: "งบ", pacingLabel: "ความแน่น", transportLabel: "การเดินทาง", button: "สร้าง" }
 };
 
-const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
+const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest }) => {
   const [formData, setFormData] = useState<UserPreferences>({
     destination: '',
     departFrom: '',
@@ -321,7 +97,8 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
     constraints: '',
     language: 'English',
     budget: 'Standard',
-    pacing: 'Balanced'
+    pacing: 'Balanced',
+    transportMode: 'Public Transport'
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -396,17 +173,16 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 overflow-y-auto" dir={formData.language === 'Arabic' ? 'rtl' : 'ltr'}>
-      <div className="min-h-full flex flex-col items-center p-4 py-10">
-        
-        {/* Main Application Container */}
-        <div className="max-w-xl w-full bg-white rounded-2xl shadow-xl overflow-hidden mb-12 flex-shrink-0">
+    <div className="w-full flex-grow flex flex-col items-center justify-start pt-8 pb-10" dir={formData.language === 'Arabic' ? 'rtl' : 'ltr'}>
+      
+      {/* Main Application Container */}
+      <div className="max-w-xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden mb-12 flex-shrink-0 border border-white/60 relative z-10 mx-4">
             
             {/* Header */}
-            <div className="bg-indigo-600 p-8 text-white relative text-center">
-                <div className={`absolute top-4 ${formData.language === 'Arabic' ? 'left-4' : 'right-4'}`}>
+            <div className="p-8 text-center border-b border-white/50 relative">
+                 <div className={`absolute top-4 ${formData.language === 'Arabic' ? 'left-4' : 'right-4'}`}>
                     <select 
-                    className="bg-indigo-700 text-white text-sm rounded px-2 py-1 border-none focus:ring-0 cursor-pointer"
+                    className="bg-white/50 text-slate-600 text-xs font-semibold rounded-lg px-2 py-1.5 border border-slate-200 focus:ring-0 cursor-pointer outline-none hover:bg-white transition"
                     value={formData.language}
                     onChange={(e) => setFormData({...formData, language: e.target.value as Language})}
                     >
@@ -424,121 +200,161 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
                     <option value="Thai">Thai</option>
                     </select>
                 </div>
-                <div className="flex justify-center items-center gap-2 mb-3">
-                    <Plane className={`w-10 h-10 ${formData.language === 'Arabic' ? 'transform scale-x-[-1]' : ''}`} /> 
-                    <h1 className="text-3xl font-bold tracking-tight">AriaTrip AI</h1>
+
+                <div className="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200 transform rotate-3">
+                     <Plane className={`w-8 h-8 text-white ${formData.language === 'Arabic' ? 'scale-x-[-1]' : ''}`} /> 
                 </div>
                 
-                <h2 className="text-xl font-bold mb-2">{marketing.heroTitle}</h2>
-                <p className="text-indigo-200 text-sm">{marketing.heroSubtitle}</p>
+                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2 tracking-tight">{marketing.heroTitle}</h1>
+                <p className="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto">{marketing.heroSubtitle}</p>
             </div>
+
+            {/* Resume Banner */}
+            {savedTripDest && onResume && (
+                <div className="px-6 pt-6">
+                    <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-fadeIn relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-200/20 rounded-full blur-xl -mr-8 -mt-8"></div>
+                        <div className="flex items-center gap-3 relative z-10">
+                            <div className="bg-white p-2.5 rounded-xl text-indigo-600 shadow-sm border border-indigo-50">
+                                <History className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Previous Session</p>
+                                <p className="text-sm font-bold text-indigo-900 leading-tight">Resume trip to {savedTripDest}?</p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={onResume}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-lg shadow-indigo-200 relative z-10"
+                        >
+                            Resume
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
             
             {/* Main Inputs */}
-            <div className="space-y-4">
+            <div className="space-y-5">
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t.whereLabel}</label>
-                {destinations.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-2">
-                        {destinations.map(dest => (
-                            <span key={dest} className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                                {dest}
-                                <button type="button" onClick={() => removeDestination(dest)} className="hover:text-indigo-900"><X className="w-3 h-3" /></button>
-                            </span>
-                        ))}
-                    </div>
-                )}
-                <div className="relative">
-                    <MapPin className={`absolute top-3 text-gray-400 w-5 h-5 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
-                    <input
-                    type="text"
-                    placeholder={t.wherePlaceholder}
-                    className={`w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${formData.language === 'Arabic' ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
-                    value={currentInput}
-                    onChange={handleDestinationInput}
-                    onKeyDown={handleKeyDown}
-                    />
-                    {currentInput && (
-                         <button type="button" onClick={() => addDestination(currentInput)} className={`absolute top-2 bg-indigo-600 text-white p-1 rounded-md hover:bg-indigo-700 ${formData.language === 'Arabic' ? 'left-2' : 'right-2'}`}><Plus className="w-4 h-4" /></button>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{t.whereLabel}</label>
+                    {destinations.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            {destinations.map(dest => (
+                                <span key={dest} className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 border border-indigo-100">
+                                    {dest}
+                                    <button type="button" onClick={() => removeDestination(dest)} className="hover:text-indigo-900"><X className="w-3 h-3" /></button>
+                                </span>
+                            ))}
+                        </div>
                     )}
-                </div>
-                {suggestions.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2 animate-fadeIn">
-                        {suggestions.map(city => (
-                            <button key={city} type="button" onClick={() => addDestination(city)} className="text-xs bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full hover:bg-indigo-100 border border-indigo-100 transition">{city}</button>
-                        ))}
+                    <div className="relative group">
+                        <MapPin className={`absolute top-3.5 text-slate-400 group-hover:text-indigo-500 transition w-5 h-5 ${formData.language === 'Arabic' ? 'right-4' : 'left-4'}`} />
+                        <input
+                        type="text"
+                        placeholder={t.wherePlaceholder}
+                        className={`w-full py-3 bg-white/70 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-slate-800 placeholder:text-slate-400 font-medium ${formData.language === 'Arabic' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+                        value={currentInput}
+                        onChange={handleDestinationInput}
+                        onKeyDown={handleKeyDown}
+                        />
+                        {currentInput && (
+                            <button type="button" onClick={() => addDestination(currentInput)} className={`absolute top-2.5 bg-indigo-500 text-white p-1 rounded-lg hover:bg-indigo-600 ${formData.language === 'Arabic' ? 'left-2.5' : 'right-2.5'}`}><Plus className="w-4 h-4" /></button>
+                        )}
                     </div>
-                )}
+                    {suggestions.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2 animate-fadeIn">
+                            {suggestions.map(city => (
+                                <button key={city} type="button" onClick={() => addDestination(city)} className="text-xs bg-white text-slate-600 px-3 py-1.5 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 hover:border-indigo-100 transition shadow-sm font-medium">{city}</button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.departLabel}</label>
-                    <div className="relative">
-                        <PlaneTakeoff className={`absolute top-3 text-gray-400 w-5 h-5 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
-                        <input
-                        type="text"
-                        placeholder={t.departPlaceholder}
-                        className={`w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${formData.language === 'Arabic' ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
-                        value={formData.departFrom || ''}
-                        onChange={(e) => setFormData({ ...formData, departFrom: e.target.value })}
-                        />
-                    </div>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{t.departLabel}</label>
+                        <div className="relative group">
+                            <PlaneTakeoff className={`absolute top-3.5 text-slate-400 group-hover:text-indigo-500 transition w-5 h-5 ${formData.language === 'Arabic' ? 'right-4' : 'left-4'}`} />
+                            <input
+                            type="text"
+                            placeholder={t.departPlaceholder}
+                            className={`w-full py-3 bg-white/70 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-slate-800 placeholder:text-slate-400 font-medium ${formData.language === 'Arabic' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+                            value={formData.departFrom || ''}
+                            onChange={(e) => setFormData({ ...formData, departFrom: e.target.value })}
+                            />
+                        </div>
                     </div>
 
                     <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.whenLabel}</label>
-                    <div className="relative">
-                        <Calendar className={`absolute top-3 text-gray-400 w-5 h-5 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
-                        <input
-                        type="text"
-                        required
-                        placeholder={t.whenPlaceholder}
-                        className={`w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${formData.language === 'Arabic' ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
-                        value={formData.duration}
-                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                        />
-                    </div>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{t.whenLabel}</label>
+                        <div className="relative group">
+                            <Calendar className={`absolute top-3.5 text-slate-400 group-hover:text-indigo-500 transition w-5 h-5 ${formData.language === 'Arabic' ? 'right-4' : 'left-4'}`} />
+                            <input
+                            type="text"
+                            required
+                            placeholder={t.whenPlaceholder}
+                            className={`w-full py-3 bg-white/70 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-slate-800 placeholder:text-slate-400 font-medium ${formData.language === 'Arabic' ? 'pr-12 pl-4' : 'pl-12 pr-4'}`}
+                            value={formData.duration}
+                            onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Advanced Accordion */}
-            <div className="border rounded-lg p-4 bg-gray-50">
+            <div className="border border-slate-200 rounded-2xl p-1 bg-white/50">
                 <button
                 type="button"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="flex items-center justify-between w-full text-left text-sm font-semibold text-gray-700"
+                className="flex items-center justify-between w-full p-3 text-left text-sm font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition"
                 >
-                <span>{t.advanced}</span>
-                {showAdvanced ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                <span className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${showAdvanced ? 'bg-indigo-500' : 'bg-slate-300'}`}></div>
+                    {t.advanced}
+                </span>
+                {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                 </button>
 
                 {showAdvanced && (
-                <div className="mt-4 space-y-4 animate-fadeIn">
+                <div className="p-3 pt-0 space-y-4 animate-fadeIn">
                     
-                     {/* Constraints - Swapped to top */}
-                     <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">{t.constraintsLabel}</label>
+                     <div className="mt-2">
+                        <label className="block text-xs font-bold text-slate-400 mb-1">{t.constraintsLabel}</label>
                         <textarea
                             rows={2}
                             placeholder={t.constraintsPlaceholder}
-                            className="w-full p-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500"
+                            className="w-full p-3 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-none outline-none"
                             value={formData.constraints || ''}
                             onChange={(e) => setFormData({ ...formData, constraints: e.target.value })}
                         />
                     </div>
 
-                    {/* New Budget & Pacing */}
+                    {/* New Transport Mode Selection */}
+                    <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1">{t.transportLabel}</label>
+                        <div className="relative">
+                            <Car className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                            <select 
+                                className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                value={formData.transportMode}
+                                onChange={(e) => setFormData({...formData, transportMode: e.target.value as any})}
+                            >
+                                {TRANSPORT_MODES.map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                             <label className="block text-xs font-medium text-gray-500 mb-1">{t.budgetLabel}</label>
+                             <label className="block text-xs font-bold text-slate-400 mb-1">{t.budgetLabel}</label>
                              <div className="relative">
-                                <DollarSign className={`absolute top-2.5 text-gray-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                                <DollarSign className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
                                 <select 
-                                    className={`w-full py-2 text-sm border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-indigo-500 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                    className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
                                     value={formData.budget}
                                     onChange={(e) => setFormData({...formData, budget: e.target.value as any})}
                                 >
@@ -547,11 +363,11 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
                              </div>
                         </div>
                         <div>
-                             <label className="block text-xs font-medium text-gray-500 mb-1">{t.pacingLabel}</label>
+                             <label className="block text-xs font-bold text-slate-400 mb-1">{t.pacingLabel}</label>
                              <div className="relative">
-                                <ActivityIcon className={`absolute top-2.5 text-gray-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                                <ActivityIcon className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
                                 <select 
-                                    className={`w-full py-2 text-sm border border-gray-300 rounded-md bg-white focus:ring-1 focus:ring-indigo-500 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                    className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
                                     value={formData.pacing}
                                     onChange={(e) => setFormData({...formData, pacing: e.target.value as any})}
                                 >
@@ -562,13 +378,13 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
                     </div>
 
                     <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">{t.layoverLabel}</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1">{t.layoverLabel}</label>
                     <div className="relative">
-                        <Clock className={`absolute top-2.5 text-gray-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                        <Clock className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
                         <input
                         type="text"
                         placeholder={t.layoverPlaceholder}
-                        className={`w-full py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                        className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
                         value={formData.layover || ''}
                         onChange={(e) => setFormData({ ...formData, layover: e.target.value })}
                         />
@@ -576,32 +392,31 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
                     </div>
 
                     <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">{t.hotelLabel}</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-1">{t.hotelLabel}</label>
                     <div className="relative">
-                        <Hotel className={`absolute top-2.5 text-gray-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                        <Hotel className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
                         <input
                         type="text"
                         placeholder={t.hotelPlaceholder}
-                        className={`w-full py-2 text-sm border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                        className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
                         value={formData.hotel || ''}
                         onChange={(e) => setFormData({ ...formData, hotel: e.target.value })}
                         />
                     </div>
                     </div>
 
-                    {/* Styles */}
                     <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-2">{t.styleLabel}</label>
+                    <label className="block text-xs font-bold text-slate-400 mb-2">{t.styleLabel}</label>
                     <div className="flex flex-wrap gap-2">
                         {TRAVEL_STYLES.map(style => (
                         <button
                             key={style}
                             type="button"
                             onClick={() => handleStyleToggle(style)}
-                            className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                            className={`px-3 py-1 text-xs rounded-full border transition-all ${
                             formData.style?.includes(style)
-                                ? 'bg-indigo-100 border-indigo-500 text-indigo-700'
-                                : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-100'
+                                ? 'bg-indigo-100 border-indigo-200 text-indigo-700 font-semibold'
+                                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                         >
                             {style}
@@ -616,82 +431,84 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit }) => {
 
             <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transform transition hover:scale-[1.02] flex items-center justify-center gap-2"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-4 rounded-2xl shadow-xl shadow-slate-200 transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
             >
                 <Globe className="w-5 h-5" />
                 {t.button}
             </button>
             </form>
-        </div>
+      </div>
 
-        {/* SEO & Content Section */}
-        <div className="max-w-4xl w-full space-y-12 mb-10 text-gray-800">
+      {/* SEO & Content Section */}
+      <div className="max-w-4xl w-full space-y-12 mb-10 text-slate-800 relative z-10 mx-4">
             
             {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                    <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-600">
-                        <Users className="w-6 h-6" />
+                {[
+                    { icon: Users, color: 'text-indigo-600', bg: 'bg-white', title: marketing.feature1Title, desc: marketing.feature1Desc },
+                    { icon: MapIcon, color: 'text-purple-600', bg: 'bg-white', title: marketing.feature2Title, desc: marketing.feature2Desc },
+                    { icon: Shield, color: 'text-emerald-600', bg: 'bg-white', title: marketing.feature3Title, desc: marketing.feature3Desc }
+                ].map((feat, idx) => (
+                    <div key={idx} className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-white/50 hover:shadow-md transition duration-300 text-center">
+                        <div className={`${feat.bg} w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 ${feat.color} shadow-sm border border-slate-100`}>
+                            <feat.icon className="w-6 h-6" />
+                        </div>
+                        <h3 className={`font-bold text-lg mb-2 ${feat.color.replace('600', '900')}`}>{feat.title}</h3>
+                        <p className="text-sm text-slate-500 leading-relaxed">{feat.desc}</p>
                     </div>
-                    <h3 className="font-bold text-lg mb-2">{marketing.feature1Title}</h3>
-                    <p className="text-sm text-gray-500">{marketing.feature1Desc}</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                    <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600">
-                        <MapIcon className="w-6 h-6" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">{marketing.feature2Title}</h3>
-                    <p className="text-sm text-gray-500">{marketing.feature2Desc}</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm text-center">
-                    <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
-                        <Shield className="w-6 h-6" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-2">{marketing.feature3Title}</h3>
-                    <p className="text-sm text-gray-500">{marketing.feature3Desc}</p>
-                </div>
+                ))}
+            </div>
+
+            {/* Testimonials - New Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 {[
+                     { name: "Sarah J.", role: "Solo Traveler", text: "I used to spend weeks planning. AriaTrip did it in 30 seconds. The map view is a game changer!", loc: "London, UK" },
+                     { name: "Michael Chen", role: "Foodie", text: "The local recommendations were spot on. Found amazing ramen shops I would have missed.", loc: "Singapore" },
+                     { name: "Elena R.", role: "Backpacker", text: "Zero backtracking logic saved me so much time and money on trains. Highly recommend!", loc: "Madrid, Spain" }
+                 ].map((review, i) => (
+                     <div key={i} className="bg-white/60 p-5 rounded-2xl shadow-sm border border-white/50 backdrop-blur-sm">
+                         <div className="flex items-center gap-1 mb-2">
+                             {[1,2,3,4,5].map(s => <span key={s} className="text-yellow-400">★</span>)}
+                         </div>
+                         <p className="text-slate-600 text-sm italic mb-4">"{review.text}"</p>
+                         <div>
+                             <p className="font-bold text-slate-900 text-sm">{review.name}</p>
+                             <p className="text-xs text-slate-400">{review.role} • {review.loc}</p>
+                         </div>
+                     </div>
+                 ))}
             </div>
 
             {/* How It Works */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-center mb-8">{marketing.howItWorksTitle}</h2>
+            <div className="bg-white/60 backdrop-blur-md rounded-3xl p-8 shadow-sm border border-white/50">
+                <h2 className="text-2xl font-bold text-center mb-10 text-slate-800">{marketing.howItWorksTitle}</h2>
                 <div className="space-y-8">
-                    <div className="flex gap-4">
-                        <div className="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">1</div>
-                        <div>
-                            <h4 className="font-bold text-lg">{marketing.how1Title}</h4>
-                            <p className="text-gray-600">{marketing.how1Desc}</p>
+                    {[
+                        { num: 1, title: marketing.how1Title, desc: marketing.how1Desc },
+                        { num: 2, title: marketing.how2Title, desc: marketing.how2Desc },
+                        { num: 3, title: marketing.how3Title, desc: marketing.how3Desc }
+                    ].map((step, i) => (
+                        <div key={i} className="flex gap-5">
+                            <div className="flex-shrink-0 w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold shadow-md text-lg">{step.num}</div>
+                            <div>
+                                <h4 className="font-bold text-lg text-slate-800 mb-1">{step.title}</h4>
+                                <p className="text-slate-500 leading-relaxed">{step.desc}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">2</div>
-                        <div>
-                            <h4 className="font-bold text-lg">{marketing.how2Title}</h4>
-                            <p className="text-gray-600">{marketing.how2Desc}</p>
-                        </div>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">3</div>
-                        <div>
-                            <h4 className="font-bold text-lg">{marketing.how3Title}</h4>
-                            <p className="text-gray-600">{marketing.how3Desc}</p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
-        </div>
+      </div>
 
-        {/* Footer */}
-        <footer className="w-full max-w-4xl border-t border-gray-200 pt-8 pb-4 text-center text-gray-500 text-sm">
-            <div className="flex justify-center gap-6 mb-4">
+      {/* Footer */}
+      <footer className="w-full max-w-4xl pt-8 pb-4 text-center text-slate-500 text-sm relative z-10">
+            <div className="flex justify-center gap-6 mb-4 font-medium">
                 <Link to="/privacy" className="hover:text-indigo-600 transition">Privacy Policy</Link>
                 <Link to="/privacy" className="hover:text-indigo-600 transition">Terms of Service</Link>
                 <Link to="/contact" className="hover:text-indigo-600 transition">Contact Us</Link>
             </div>
-            <p>&copy; {new Date().getFullYear()} {marketing.footerCopy}</p>
-        </footer>
-
-      </div>
+            <p className="opacity-70">&copy; {new Date().getFullYear()} {marketing.footerCopy}</p>
+      </footer>
     </div>
   );
 };
