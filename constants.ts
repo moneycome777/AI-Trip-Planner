@@ -1,4 +1,5 @@
 
+
 import { TripPlan } from "./types";
 
 export const TRAVEL_STYLES = [
@@ -96,6 +97,7 @@ export const DAY_COLORS = [
 export const MOCK_TRIP_PLAN: TripPlan = {
   trip_summary: "MOCK PLAN: A 3-Day Highlights of Tokyo",
   estimated_budget: "50,000 JPY (~$350 USD)",
+  budget_breakdown: "This estimate includes the itemized costs below plus a buffer of approx. 15,000 JPY for unlisted street snacks, bottled water, random vending machines, and short-distance metro rides between attractions.",
   suggested_dates: "April 10 - April 13",
   date_reasoning: "Perfect spring weather and post-cherry blossom crowds are lower.",
   suggested_hotels: [

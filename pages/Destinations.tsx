@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -36,7 +37,11 @@ const Destinations: React.FC = () => {
                             ))}
                         </div>
 
-                        <Link to="/" className="block text-center w-full py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-900 hover:text-white font-bold transition">
+                        <Link 
+                            to="/" 
+                            state={{ autoFillDestination: dest.country }}
+                            className="block text-center w-full py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-900 hover:text-white font-bold transition"
+                        >
                             Plan Trip to {dest.country}
                         </Link>
                     </div>

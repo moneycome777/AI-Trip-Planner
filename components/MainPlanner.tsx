@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AppState, TripPlan, UserPreferences } from '../types';
 import PreferencesForm from './PreferencesForm';
@@ -25,18 +24,10 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
 
     if (cachedPlan && cachedPrefs) {
         try {
-            const parsedPlan = JSON.parse(cachedPlan);
+            // We only check for existence here to enable the "Resume" button.
+            // We DO NOT auto-load the plan into state (AppState.DASHBOARD).
             const parsedPrefs = JSON.parse(cachedPrefs);
-            
-            // Check if we should auto-load (only on initial mount)
-            // But we always want to know the destination for the Resume button
             setSavedTripDest(parsedPrefs.destination);
-
-            setTripPlan(parsedPlan);
-            setPreferences(parsedPrefs);
-            setAppState(AppState.DASHBOARD);
-            setIsAiReady(true);
-            setShowNavbar(false); // Hide Navbar for dashboard view
         } catch (e) {
             console.error("Failed to parse cached plan", e);
             localStorage.removeItem(CACHE_KEY_PLAN);

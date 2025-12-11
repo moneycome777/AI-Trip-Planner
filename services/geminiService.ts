@@ -1,3 +1,5 @@
+
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripPlan, UserPreferences, ChatResponse } from "../types";
 import { MOCK_TRIP_PLAN } from "../constants"; // Import Mock Data
@@ -7,7 +9,8 @@ const tripSchema = {
   type: Type.OBJECT,
   properties: {
     trip_summary: { type: Type.STRING, description: "A catchy summary of the trip" },
-    estimated_budget: { type: Type.STRING, description: "Total estimated cost for the trip excluding flights (e.g., $500 - $700 USD per person)" },
+    estimated_budget: { type: Type.STRING, description: "Total estimated cost for the trip (Food, Transport, Tickets ONLY). EXCLUDE flights, accommodation, and shopping. Display in two currencies." },
+    budget_breakdown: { type: Type.STRING, description: "Detailed explanation of what the estimated_budget covers. Explicitly mention the buffer amount added for unlisted meals, snacks, bottled water, and casual transport." },
     suggested_dates: { type: Type.STRING, description: "Specific dates (e.g. 'April 5 - April 10') if user only gave duration, or user's dates." },
     date_reasoning: { type: Type.STRING, description: "Why these dates? (e.g. 'Cherry blossom season', 'Low crowds')" },
     suggested_hotels: {
@@ -56,7 +59,7 @@ const tripSchema = {
       }
     }
   },
-  required: ["trip_summary", "estimated_budget", "days", "warnings", "packing_list", "transport_advice"]
+  required: ["trip_summary", "estimated_budget", "budget_breakdown", "days", "warnings", "packing_list", "transport_advice"]
 };
 
 // Define Schema for Hybrid Chat (Response can be text OR a modified plan)
@@ -133,6 +136,11 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
         1. The local currency of the Destination.
         2. The currency of the 'Depart From' country (default to USD if not specified).
         Format: "Local Amount (~Home Amount)". Example: "10,000 JPY (~$70 USD)".
+    12. **BUDGET CALCULATION**: 
+        - The 'estimated_budget' should be a REALISTIC total for the trip excluding Shopping and Accommodation.
+        - It MUST include the sum of all itemized 'cost_estimate' fields.
+        - PLUS, it MUST include a realistic buffer for unlisted expenses (e.g., bottled water, snacks, random taxi rides, restroom fees).
+        - You MUST explain what is included in this buffer in the 'budget_breakdown' field.
   `;
 
   try {
@@ -224,6 +232,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     Language: ${prefs.language}.
     CURRENCY: Show costs in Destination currency AND 'Depart From' currency (${prefs.departFrom || "USD"}).
     Format: "Local (~Depart)".
+    Include a 'budget_breakdown' explaining the group tour fees.
     `;
 
     try {

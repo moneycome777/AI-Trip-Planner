@@ -1,4 +1,5 @@
 
+
 export type Language = 
   | 'English' 
   | '中文' 
@@ -53,6 +54,7 @@ export interface DayPlan {
 export interface TripPlan {
   trip_summary: string;
   estimated_budget: string;
+  budget_breakdown: string; // New field for hidden cost explanation
   suggested_dates?: string;
   date_reasoning?: string;
   suggested_hotels?: HotelSuggestion[];

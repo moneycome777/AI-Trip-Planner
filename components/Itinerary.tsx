@@ -1,7 +1,11 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, Lock, Map as MapIcon, Loader2, SplitSquareHorizontal, Hotel, Calendar, Info, BedDouble, Wallet, ArrowLeft, Download, Clock, Sun, Moon, Utensils, Home } from 'lucide-react';
+import { Train, AlertTriangle, CloudSun, Backpack, Lock, Map as MapIcon, Loader2, SplitSquareHorizontal, Hotel, Calendar, Info, BedDouble, Wallet, ArrowLeft, Download, Clock, Sun, Moon, Utensils, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface Props {
   tripPlan: TripPlan;
@@ -30,6 +34,7 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
         <div 
             onClick={onClick}
             className={`cursor-pointer bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all hover:translate-x-1 relative overflow-hidden ${isHotel ? 'bg-indigo-50/50 border-indigo-100' : ''}`}
+            title="Click to view details, social media links and more"
         >
             <div className="flex justify-between items-start mb-1">
                 <h4 className={`font-bold text-sm ${isHotel ? 'text-indigo-900' : 'text-slate-800'}`}>{activity.place_name}</h4>
@@ -51,18 +56,24 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
                     )}
                 </div>
             )}
+
+            {/* Hover visual cue */}
+            <div className="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <MousePointerClick className="w-4 h-4 text-indigo-300" />
+            </div>
         </div>
     </div>
   );
 };
 
-type Tab = 'schedule' | 'info' | 'survival';
+type Tab = 'schedule' | 'info' | 'survival' | 'budget';
 
 const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap, onCompare, onPlaceClick }) => {
   const [activeTab, setActiveTab] = useState<Tab>('schedule');
   const [unlockedDelay, setUnlockedDelay] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [showExportAd, setShowExportAd] = useState(false);
+  const [showFormatSelection, setShowFormatSelection] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
   
   // Day Colors for Map Mapping
@@ -92,10 +103,15 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
 
   const handleExportClick = () => {
       if (isDevMode) {
-          generateCSV();
+          setShowFormatSelection(true);
       } else {
           setShowExportAd(true);
       }
+  };
+
+  const handleExportReward = () => {
+      setShowExportAd(false);
+      setShowFormatSelection(true);
   };
 
   const generateCSV = () => {
@@ -124,11 +140,62 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
       link.setAttribute('href', url);
-      link.setAttribute('download', `AriaTrip_Plan_${new Date().toISOString().slice(0,10)}.csv`);
+      link.setAttribute('download', `AriaTrip_Plan.csv`);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setShowFormatSelection(false);
+  };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(79, 70, 229); // Indigo 600
+    doc.text("AriaTrip AI - Itinerary", 14, 20);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(50, 50, 50);
+    doc.text(tripPlan.trip_summary, 14, 30, { maxWidth: 180 });
+    
+    doc.setFontSize(11);
+    doc.setTextColor(16, 185, 129); // Emerald 500
+    doc.text(`Estimated Budget: ${tripPlan.estimated_budget}`, 14, 45);
+
+    const tableRows: any[] = [];
+    tripPlan.days.forEach(day => {
+        // Section Header for Day
+        tableRows.push([{ content: `Day ${day.day_number}: ${day.theme}`, colSpan: 4, styles: { fillColor: [243, 244, 246], fontStyle: 'bold', textColor: [31, 41, 55] } }]);
+        
+        day.activities.forEach((act, index) => {
+            tableRows.push([
+                act.place_name,
+                act.action,
+                act.type,
+                act.cost_estimate || '-'
+            ]);
+        });
+    });
+
+    autoTable(doc, {
+        startY: 55,
+        head: [['Place', 'Activity', 'Type', 'Cost']],
+        body: tableRows,
+        theme: 'grid',
+        headStyles: { fillColor: [79, 70, 229], textColor: 255 },
+        styles: { fontSize: 10, cellPadding: 3 },
+        columnStyles: {
+            0: { fontStyle: 'bold', cellWidth: 40 },
+            1: { cellWidth: 'auto' },
+            2: { cellWidth: 25 },
+            3: { cellWidth: 30 }
+        }
+    });
+
+    doc.save('AriaTrip_Plan.pdf');
+    setShowFormatSelection(false);
   };
 
   return (
@@ -137,12 +204,63 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
       {/* Ad Modal for Export */}
       {showExportAd && (
           <AdUnlockModal 
-            duration={15} // Require 15 seconds watch time for excel download
+            duration={10} 
             onClose={() => setShowExportAd(false)} 
-            onReward={() => { setShowExportAd(false); generateCSV(); }}
-            title="Unlock Download"
-            message="Watch a full ad to download your complete itinerary as an Excel/CSV file."
+            onReward={handleExportReward}
+            title="Unlock Downloads"
+            message="Watch a short ad to unlock PDF and Excel export options."
           />
+      )}
+
+      {/* Format Selection Modal */}
+      {showFormatSelection && (
+          <div className="fixed inset-0 z-[3000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+              <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl border border-white/50 relative">
+                   <button 
+                      onClick={() => setShowFormatSelection(false)} 
+                      className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 bg-slate-100 rounded-full"
+                    >
+                       <X className="w-4 h-4" />
+                   </button>
+                   
+                   <h3 className="text-xl font-bold text-slate-900 mb-2">Choose Format</h3>
+                   <p className="text-sm text-slate-500 mb-6">Select how you want to save your itinerary.</p>
+                   
+                   <div className="space-y-3">
+                       <button 
+                          onClick={generateCSV}
+                          className="w-full flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-xl hover:bg-emerald-100 transition group"
+                       >
+                           <div className="flex items-center gap-3">
+                               <div className="bg-emerald-200 p-2 rounded-lg text-emerald-800 group-hover:scale-110 transition">
+                                   <FileSpreadsheet className="w-5 h-5" />
+                               </div>
+                               <div className="text-left">
+                                   <span className="block font-bold text-emerald-900">Excel / CSV</span>
+                                   <span className="block text-xs text-emerald-700">Best for editing</span>
+                               </div>
+                           </div>
+                           <Download className="w-4 h-4 text-emerald-400" />
+                       </button>
+
+                       <button 
+                          onClick={generatePDF}
+                          className="w-full flex items-center justify-between p-4 bg-indigo-50 border border-indigo-100 rounded-xl hover:bg-indigo-100 transition group"
+                       >
+                           <div className="flex items-center gap-3">
+                               <div className="bg-indigo-200 p-2 rounded-lg text-indigo-800 group-hover:scale-110 transition">
+                                   <FileText className="w-5 h-5" />
+                               </div>
+                               <div className="text-left">
+                                   <span className="block font-bold text-indigo-900">PDF Document</span>
+                                   <span className="block text-xs text-indigo-700">Best for sharing</span>
+                               </div>
+                           </div>
+                           <Download className="w-4 h-4 text-indigo-400" />
+                       </button>
+                   </div>
+              </div>
+          </div>
       )}
 
       {/* Simplified Header */}
@@ -192,6 +310,12 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
             >
                 <Backpack className="w-3.5 h-3.5" /> Survival
             </button>
+             <button 
+                onClick={() => setActiveTab('budget')}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${activeTab === 'budget' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+                <Wallet className="w-3.5 h-3.5" /> Budget
+            </button>
         </div>
       </div>
 
@@ -201,12 +325,22 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
         {/* TAB 1: DAILY SCHEDULE */}
         {activeTab === 'schedule' && (
             <>  
+                {/* Helper Banner */}
+                <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 rounded-lg p-3 flex items-center gap-3 mb-2 animate-fadeIn">
+                     <div className="bg-white p-1.5 rounded-full shadow-sm">
+                        <MousePointerClick className="w-4 h-4 text-indigo-600" />
+                     </div>
+                     <p className="text-xs text-indigo-800 font-medium leading-tight">
+                         <strong>Pro Tip:</strong> Click on any activity card below to view details, TikToks, and booking links.
+                     </p>
+                </div>
+
                 <div className="flex justify-end gap-2 mb-2">
                     <button 
                         onClick={handleExportClick}
                         className="flex items-center gap-1 px-3 py-1.5 bg-white/60 hover:bg-white text-slate-600 border border-white/50 rounded-lg text-xs font-bold transition shadow-sm"
                     >
-                        <Download className="w-3 h-3" /> Excel
+                        <Download className="w-3 h-3" /> Export
                     </button>
                     <button 
                         onClick={onCompare}
@@ -358,6 +492,31 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                             </button>
                         </div>
                     )}
+                </div>
+            </div>
+        )}
+
+        {/* TAB 4: BUDGET BREAKDOWN */}
+        {activeTab === 'budget' && (
+            <div className="space-y-5 animate-fadeIn">
+                <div className="bg-emerald-50/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100 shadow-sm text-center">
+                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3 text-emerald-600">
+                        <PiggyBank className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-bold text-emerald-900 text-sm uppercase tracking-wide mb-1">Total Estimated Budget</h3>
+                    <p className="text-2xl font-black text-emerald-800">{tripPlan.estimated_budget}</p>
+                    <p className="text-xs text-emerald-600 mt-2 font-medium">(Excluding Flights & Accommodation)</p>
+                </div>
+
+                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white/60 shadow-sm">
+                    <h3 className="font-bold text-slate-800 flex items-center gap-2 mb-4 text-sm uppercase tracking-wide">
+                        <Wallet className="w-4 h-4 text-indigo-500" /> Hidden Costs & Buffer Explanation
+                    </h3>
+                    <div className="prose prose-sm prose-slate">
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                            {tripPlan.budget_breakdown || "This budget includes all itemized activities listed in the plan, plus a sensible buffer for unlisted expenses such as bottled water, random street snacks, restroom fees, and short-distance public transport rides (metro/bus) between locations."}
+                        </p>
+                    </div>
                 </div>
             </div>
         )}
