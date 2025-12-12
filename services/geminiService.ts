@@ -1,8 +1,10 @@
 
 
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripPlan, UserPreferences, ChatResponse } from "../types";
 import { MOCK_TRIP_PLAN } from "../constants"; // Import Mock Data
+import emailjs from '@emailjs/browser';
 
 // Define the response schema for Gemini (Trip Plan)
 const tripSchema = {
@@ -78,6 +80,28 @@ const chatSchema = {
         modified_plan: tripSchema // Embed the trip schema here
     },
     required: ["intent", "answer"]
+};
+
+// --- HELPER FOR SENDING QUOTA ALERTS ---
+const sendQuotaAlert = async (error: any, context: string) => {
+    // Using the same credentials as Contact form
+    const SERVICE_ID = 'service_q2f5gav';
+    const TEMPLATE_ID = 'template_s9guskd';
+    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
+
+    const templateParams = {
+        name: "SYSTEM ALERT - QUOTA EXCEEDED",
+        time: new Date().toLocaleString(),
+        error_message: `API QUOTA HIT (${context}):\n${error.toString()}`,
+        message: "The application has hit the Gemini API rate limit (429). Immediate attention required if this is frequent."
+    };
+
+    try {
+        await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+        console.log(`Quota alert email sent for ${context}.`);
+    } catch (err) {
+        console.error("Failed to send quota alert email", err);
+    }
 };
 
 export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan> => {
@@ -165,6 +189,10 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
     // This allows the user to continue testing the UI even if they hit the 20/day limit.
     if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
         console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
+        
+        // Trigger Email Alert
+        sendQuotaAlert(error, "generateTripPlan");
+
         return MOCK_TRIP_PLAN;
     }
 
@@ -213,8 +241,14 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
         if (!text) throw new Error("No response from AI");
         return JSON.parse(text) as ChatResponse;
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Gemini Chat Error:", error);
+        
+        // Trigger Email Alert if it's a quota issue
+        if (error.toString().includes("429") || error.toString().includes("Quota")) {
+            sendQuotaAlert(error, "chatWithAI");
+        }
+
         throw error;
     }
 };
@@ -249,10 +283,13 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
         const text = response.text;
         if (!text) throw new Error("No response from AI");
         return JSON.parse(text) as TripPlan;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Gemini API Error:", error);
         // Fallback for standard tour as well if quota hit
-        if (error.toString().includes("429")) return MOCK_TRIP_PLAN;
+        if (error.toString().includes("429") || error.toString().includes("Quota")) {
+             sendQuotaAlert(error, "generateStandardTour");
+             return MOCK_TRIP_PLAN;
+        }
         throw error;
     }
 };
