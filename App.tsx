@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import MainPlanner from './components/MainPlanner';
 import About from './pages/About';
@@ -10,12 +10,27 @@ import SecurityGuard from './components/SecurityGuard';
 
 const App: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState(true);
+  const location = useLocation();
   
   // Reset Dev Mode on Page Refresh (Session start)
   useEffect(() => {
     localStorage.removeItem('tripgenie_dev_mode');
     console.log("Dev mode reset");
   }, []);
+
+  // SEO: Dynamic Title Updating
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      '/': 'AriaTrip AI - Free Smart Travel Planner',
+      '/about': 'About AriaTrip AI - How it Works',
+      '/contact': 'Contact Us - AriaTrip Support',
+      '/destinations': 'Popular Travel Destinations - Japan, Europe, Asia',
+      '/privacy': 'Privacy Policy & Terms - AriaTrip AI'
+    };
+    
+    const title = titles[location.pathname] || 'AriaTrip AI - Elegant Travel Planner';
+    document.title = title;
+  }, [location]);
 
   return (
     <div className="h-screen w-screen overflow-hidden font-sans select-none flex flex-col relative text-slate-800">
