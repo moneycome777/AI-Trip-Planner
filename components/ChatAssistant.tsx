@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, User, Loader2, X, CheckCircle, MessageSquare } from 'lucide-react';
+import { Send, User, Loader2, X, CheckCircle, MessageSquare, Cpu, Zap } from 'lucide-react';
 import { ChatMessage } from '../types';
 
 interface Props {
@@ -17,10 +17,13 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
 
   const AVATAR_URL = "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-nBdZ6NXE5zfWOyBwvgFDCcMwYg5B9B.png";
 
+  const isComplexChat = (text: string) => {
+    const complexKeywords = ['restructure', 'optimize', 'compare', 'efficiency', 'accessibility', 'medical', 'advanced'];
+    return text.length > 200 || complexKeywords.some(kw => text.toLowerCase().includes(kw));
+  };
+
   useEffect(() => {
-    if (isOpen) {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
 
   useEffect(() => {
@@ -38,7 +41,8 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
 
   if (!isOpen) {
       return (
-        <div className="absolute bottom-6 right-6 z-[1000] flex flex-col items-end gap-2">
+        // Changed to fixed and adjusted positioning
+        <div className="fixed bottom-6 right-6 z-[2000] flex flex-col items-end gap-2">
             {showHint && !isUpdating && messages.length === 0 && (
                 <div 
                     className="bg-white px-4 py-2 rounded-xl shadow-xl border border-slate-100 mb-2 animate-bounce cursor-pointer relative" 
@@ -52,13 +56,9 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
             
             <button 
                 onClick={() => { setIsOpen(true); setShowHint(false); }}
-                className="w-20 h-20 transition transform hover:scale-110 group relative bg-transparent border-none outline-none focus:outline-none"
+                className="w-16 h-16 lg:w-20 lg:h-20 transition transform hover:scale-110 group relative bg-transparent border-none outline-none focus:outline-none"
             >
-                <img 
-                    src={AVATAR_URL} 
-                    alt="AriaTrip AI" 
-                    className="w-full h-full object-contain drop-shadow-2xl"
-                />
+                <img src={AVATAR_URL} alt="AriaTrip AI" className="w-full h-full object-contain drop-shadow-2xl" />
                 {messages.length > 0 && (
                     <span className="absolute top-2 right-2 h-3 w-3 bg-red-500 rounded-full border border-white z-10 shadow-sm"></span>
                 )}
@@ -68,8 +68,9 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
   }
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 lg:left-auto lg:right-6 lg:bottom-6 z-[1000] flex flex-col items-end">
-        <div className="bg-white w-full lg:w-96 h-[500px] max-h-[80vh] rounded-t-2xl lg:rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
+    // Changed to fixed and added inset constraints to prevent the "jump" and blank space
+    <div className="fixed bottom-0 left-0 right-0 lg:left-auto lg:right-6 lg:bottom-6 z-[2000] flex flex-col items-end">
+        <div className="bg-white w-full lg:w-96 h-[500px] max-h-[85vh] rounded-t-3xl lg:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-slideUp">
             <div className="bg-slate-900 p-4 flex justify-between items-center text-white flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <img src={AVATAR_URL} alt="Bot" className="w-8 h-8 rounded-full border border-white/20" />
@@ -80,7 +81,7 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 scrollbar-hide">
                 {messages.length === 0 && (
                     <div className="text-center text-slate-400 mt-10">
                         <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-20" />
@@ -90,12 +91,8 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
                 )}
                 
                 {messages.map((msg) => (
-                    <div 
-                        key={msg.id} 
-                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                        <div 
-                            className={`max-w-[85%] p-3 rounded-2xl text-sm ${
+                    <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                                 msg.role === 'user' 
                                     ? 'bg-indigo-600 text-white rounded-tr-none' 
                                     : msg.isPlanUpdate 
@@ -115,16 +112,27 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
                 
                 {isUpdating && (
                     <div className="flex justify-start">
-                        <div className="bg-slate-100 text-slate-500 p-3 rounded-2xl rounded-tl-none text-xs flex items-center gap-2">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Thinking...
+                        <div className="bg-slate-100 text-slate-500 p-3 rounded-2xl rounded-tl-none text-xs flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                Thinking...
+                            </div>
+                            {isComplexChat(input) ? (
+                                <div className="flex items-center gap-1 text-[8px] font-bold text-purple-600 uppercase">
+                                    <Cpu className="w-2 h-2" /> Pro Engine Active
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-1 text-[8px] font-bold text-blue-500 uppercase">
+                                    <Zap className="w-2 h-2" /> Turbo Engine Active
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-3 bg-white border-t border-slate-100">
+            <div className="p-3 bg-white border-t border-slate-100 pb-8 lg:pb-3">
                 <form onSubmit={handleSubmit} className="relative">
                     <input
                         type="text"

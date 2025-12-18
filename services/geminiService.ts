@@ -1,12 +1,35 @@
 
-
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripPlan, UserPreferences, ChatResponse } from "../types";
-import { MOCK_TRIP_PLAN } from "../constants"; // Import Mock Data
+import { MOCK_TRIP_PLAN } from "../constants";
 import emailjs from '@emailjs/browser';
 
-// Define the response schema for Gemini (Trip Plan)
+// --- CONFIGURATION ---
+const MODEL_FLASH = "gemini-3-flash-preview";
+const MODEL_PRO = "gemini-3-pro-preview";
+
+/**
+ * Define complexity: 
+ * - More than 2 cities
+ * - More than 8 days
+ * - Constraints longer than 150 chars
+ * - Multiple specific travel styles
+ */
+export const isComplexRequest = (prefs: UserPreferences): boolean => {
+    const cityCount = prefs.destination.split(',').length;
+    const dayMatch = prefs.duration.match(/\d+/);
+    const dayCount = dayMatch ? parseInt(dayMatch[0]) : 0;
+    const constraintLength = prefs.constraints?.length || 0;
+    
+    return cityCount > 2 || dayCount > 8 || constraintLength > 150 || (prefs.style?.length || 0) > 5;
+};
+
+export const isComplexChat = (message: string): boolean => {
+    const complexKeywords = ['restructure', 'optimize', 'compare', 'efficiency', 'accessibility', 'medical', 'advanced', 'rewrite'];
+    return message.length > 200 || complexKeywords.some(kw => message.toLowerCase().includes(kw));
+};
+
+// --- SCHEMAS ---
 const tripSchema = {
   type: Type.OBJECT,
   properties: {
@@ -64,7 +87,6 @@ const tripSchema = {
   required: ["trip_summary", "estimated_budget", "budget_breakdown", "days", "warnings", "packing_list", "transport_advice"]
 };
 
-// Define Schema for Hybrid Chat (Response can be text OR a modified plan)
 const chatSchema = {
     type: Type.OBJECT,
     properties: {
@@ -104,8 +126,8 @@ const sendQuotaAlert = async (error: any, context: string) => {
     }
 };
 
+// --- ACTIONS ---
 export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan> => {
-  // DEV MODE CHECK: Bypass API if Dev Mode is enabled in LocalStorage
   if (typeof window !== 'undefined' && localStorage.getItem('tripgenie_dev_mode') === 'true') {
       console.log("Dev Mode detected: Returning Mock Plan immediately.");
       return MOCK_TRIP_PLAN; // Instant return
@@ -116,7 +138,9 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
     throw new Error("API Key is missing. Please check your environment variables.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+  const complex = isComplexRequest(prefs);
+  const selectedModel = complex ? MODEL_PRO : MODEL_FLASH;
 
   const prompt = `
     Act as an expert local travel planner (AriaTrip AI).
@@ -169,24 +193,23 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", 
+      model: MODEL_FLASH,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
         responseSchema: tripSchema,
-        temperature: 0.4,
+        temperature: complex ? 0.5 : 0.3,
       },
     });
 
     const text = response.text;
     if (!text) throw new Error("No response from AI");
-    
+
     return JSON.parse(text) as TripPlan;
   } catch (error: any) {
-    console.error("Gemini API Error:", error);
+      console.error("Gemini API Error:", error);
     
     // FALLBACK TO MOCK DATA ON QUOTA ERROR (429) OR MODEL ERROR (404) OR GENERAL ERROR FOR DEV
-    // This allows the user to continue testing the UI even if they hit the 20/day limit.
     if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
         console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
         
@@ -204,7 +227,10 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
     if (!process.env.API_KEY) {
         throw new Error("API Key is missing.");
     }
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+    const complex = isComplexChat(userMessage);
+    // const selectedModel = complex ? MODEL_PRO : MODEL_FLASH;
+    const selectedModel = MODEL_FLASH;
 
     const prompt = `
     You are AriaTrip AI, an intelligent travel assistant.
@@ -228,7 +254,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
 
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", 
+            model: selectedModel,
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -240,7 +266,6 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
         const text = response.text;
         if (!text) throw new Error("No response from AI");
         return JSON.parse(text) as ChatResponse;
-
     } catch (error: any) {
         console.error("Gemini Chat Error:", error);
         
@@ -257,6 +282,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     if (!process.env.API_KEY) {
         throw new Error("API Key is missing.");
     }
+
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
     const prompt = `
@@ -268,22 +294,21 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     Format: "Local (~Depart)".
     Include a 'budget_breakdown' explaining the group tour fees.
     `;
-
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", 
+            model: MODEL_FLASH,
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
                 responseSchema: tripSchema,
-                temperature: 0.3,
+                temperature: 0.2,
             },
         });
-
+        
         const text = response.text;
         if (!text) throw new Error("No response from AI");
         return JSON.parse(text) as TripPlan;
-    } catch (error: any) {
+    } catch (error : any) {
         console.error("Gemini API Error:", error);
         // Fallback for standard tour as well if quota hit
         if (error.toString().includes("429") || error.toString().includes("Quota")) {

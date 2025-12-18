@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppState, TripPlan, UserPreferences } from '../types';
 import PreferencesForm from './PreferencesForm';
@@ -17,19 +18,14 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   const [isAiReady, setIsAiReady] = useState(false);
   const [savedTripDest, setSavedTripDest] = useState<string | null>(null);
 
-  // Load cached plan on mount
   useEffect(() => {
     const cachedPlan = localStorage.getItem(CACHE_KEY_PLAN);
     const cachedPrefs = localStorage.getItem(CACHE_KEY_PREFS);
-
     if (cachedPlan && cachedPrefs) {
         try {
-            // We only check for existence here to enable the "Resume" button.
-            // We DO NOT auto-load the plan into state (AppState.DASHBOARD).
             const parsedPrefs = JSON.parse(cachedPrefs);
             setSavedTripDest(parsedPrefs.destination);
         } catch (e) {
-            console.error("Failed to parse cached plan", e);
             localStorage.removeItem(CACHE_KEY_PLAN);
             localStorage.removeItem(CACHE_KEY_PREFS);
         }
@@ -39,7 +35,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   const handlePreferencesSubmit = async (prefs: UserPreferences) => {
     setPreferences(prefs);
     setAppState(AppState.LOADING);
-    setShowNavbar(false); // Hide Navbar when loading starts
+    setShowNavbar(false); 
     setIsAiReady(false);
     setTripPlan(null);
     
@@ -47,12 +43,9 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
       const plan = await generateTripPlan(prefs);
       setTripPlan(plan);
       setIsAiReady(true);
-
-      // Save to cache
       localStorage.setItem(CACHE_KEY_PLAN, JSON.stringify(plan));
       localStorage.setItem(CACHE_KEY_PREFS, JSON.stringify(prefs));
       setSavedTripDest(prefs.destination);
-
     } catch (error: any) {
       console.error("Failed to generate trip", error);
       
@@ -67,27 +60,18 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
       }
 
       alert(msg);
-      setAppState(AppState.LANDING);
-      setShowNavbar(true); // Show Navbar again on error
     }
   };
 
   const handleAdComplete = () => {
-      if (tripPlan) {
-          setAppState(AppState.DASHBOARD);
-          // Navbar remains hidden in Dashboard
-      }
+      if (tripPlan) setAppState(AppState.DASHBOARD);
   };
 
   const handleReset = () => {
-    // When clicking "New Trip", we DO NOT clear the cache immediately.
-    // This allows the user to click "Resume" on the home screen if they changed their mind.
-    // The cache is only overwritten when a NEW plan is successfully generated.
-    
     setTripPlan(null);
     setPreferences(null);
     setAppState(AppState.LANDING);
-    setShowNavbar(true); // Show Navbar when returning home
+    setShowNavbar(true); 
     setIsAiReady(false);
 
     // Refresh saved dest from cache to be sure
@@ -103,21 +87,15 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   const handleResume = () => {
     const cachedPlan = localStorage.getItem(CACHE_KEY_PLAN);
     const cachedPrefs = localStorage.getItem(CACHE_KEY_PREFS);
-    
     if (cachedPlan && cachedPrefs) {
-        try {
-            setTripPlan(JSON.parse(cachedPlan));
-            setPreferences(JSON.parse(cachedPrefs));
-            setAppState(AppState.DASHBOARD);
-            setShowNavbar(false);
-        } catch (e) {
-            console.error("Failed to resume plan", e);
-        }
+        setTripPlan(JSON.parse(cachedPlan));
+        setPreferences(JSON.parse(cachedPrefs));
+        setAppState(AppState.DASHBOARD);
+        setShowNavbar(false);
     }
   };
 
   return (
-    // Transparent wrapper to allow App.tsx global background to show
     <div className="w-full min-h-full relative flex flex-col">
       {appState === AppState.LANDING && (
         <PreferencesForm 
@@ -131,6 +109,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
         <LoadingScreen 
             isAiReady={isAiReady}
             onAdComplete={handleAdComplete}
+            preferences={preferences}
         />
       )}
       

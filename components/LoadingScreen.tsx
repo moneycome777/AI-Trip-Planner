@@ -1,49 +1,42 @@
+
 import React, { useEffect, useState } from 'react';
-import { Loader2, PlayCircle, CheckCircle } from 'lucide-react';
+import { Loader2, PlayCircle, CheckCircle, Cpu, Zap } from 'lucide-react';
 import { MOCK_AD_VIDEOS } from '../constants';
+import { UserPreferences } from '../types';
+import { isComplexRequest } from '../services/geminiService';
 
 interface Props {
   onAdComplete: () => void;
   isAiReady: boolean;
+  preferences?: UserPreferences | null;
 }
 
-const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
+const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady, preferences }) => {
   const [adFinished, setAdFinished] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
+
+  // Determine if we used the Pro model using the shared utility
+  const isComplex = preferences ? isComplexRequest(preferences) : false;
 
   useEffect(() => {
     const devMode = localStorage.getItem('tripgenie_dev_mode') === 'true';
     setIsDevMode(devMode);
-
     if (devMode) {
         setAdFinished(true);
-        // Instant skip in effect if props match
         return;
     }
-
-    // Normal Ad Flow
-    const timer = setTimeout(() => {
-        setAdFinished(true);
-    }, 10000); 
-
+    const timer = setTimeout(() => setAdFinished(true), 10000); 
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-      // Auto-advance if dev mode and ready.
-      // We check !isDevMode first to avoid redundant checks if already handled
-      if (isDevMode && isAiReady) {
-          onAdComplete();
-      }
+      if (isDevMode && isAiReady) onAdComplete();
   }, [isDevMode, isAiReady, onAdComplete]);
 
   const handleContinue = () => {
-      if (adFinished && isAiReady) {
-          onAdComplete();
-      }
+      if (adFinished && isAiReady) onAdComplete();
   };
 
-  // If in dev mode, showing minimal UI before auto-skip
   if (isDevMode) {
       return (
           <div className="h-screen w-screen bg-white flex flex-col items-center justify-center z-50 absolute top-0 left-0">
@@ -55,21 +48,11 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
 
   return (
     <div className="h-screen w-screen bg-black flex flex-col items-center justify-center z-50 absolute top-0 left-0">
-      
-      {/* Video Background/Player */}
       <div className="w-full h-full absolute inset-0 opacity-40">
-           <video 
-              src={MOCK_AD_VIDEOS[0]} 
-              autoPlay 
-              muted 
-              loop 
-              playsInline
-              className="w-full h-full object-cover blur-sm"
-          />
+           <video src={MOCK_AD_VIDEOS[0]} autoPlay muted loop playsInline className="w-full h-full object-cover blur-sm" />
       </div>
 
       <div className="relative z-10 w-full max-w-lg p-6">
-        {/* Ad Container */}
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
             <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
@@ -78,28 +61,28 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
                 </div>
             </div>
 
-            {/* Main Video Ad Area */}
             <div className="relative aspect-video bg-black">
-                 <video 
-                    src={MOCK_AD_VIDEOS[0]} 
-                    autoPlay 
-                    muted 
-                    loop 
-                    playsInline
-                    className="w-full h-full object-cover"
-                />
+                 <video src={MOCK_AD_VIDEOS[0]} autoPlay muted loop playsInline className="w-full h-full object-cover" />
             </div>
 
-            {/* Footer Status */}
             <div className="p-6 text-center space-y-4">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-800">AriaTrip AI is generating your trip...</h2>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Analyzing 5,000+ travel possibilities to create your executable plan.
-                    </p>
+                    <h2 className="text-xl font-bold text-slate-800">AriaTrip AI is generating...</h2>
+                    
+                    {/* Model Indicator */}
+                    <div className="mt-2 flex justify-center">
+                        {isComplex ? (
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold border border-purple-200">
+                                <Cpu className="w-3 h-3" /> PRO ENGINE ENGAGED
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold border border-blue-200">
+                                <Zap className="w-3 h-3" /> TURBO ENGINE ENGAGED
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                {/* AI Status Indicator */}
                 <div className="bg-indigo-50 rounded-lg p-3 flex items-center justify-center gap-3">
                     {isAiReady ? (
                         <CheckCircle className="w-5 h-5 text-emerald-600" />

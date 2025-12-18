@@ -3,10 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AriaTrip AI - Elegant Travel Planner & Itinerary Generator</title>
-    <meta name="description" content="Generate a detailed, executable travel itinerary in seconds. AriaTrip AI creates map-based trip plans, optimized routes, and local recommendations for Japan, Europe, and worldwide." />
+    <title>AriaTrip AI - Elegant Travel Planner</title>
+    <meta name="description" content="Generate an executable, map-based travel plan in 30 seconds with AriaTrip AI." />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%238B5CF6'/><path d='M50 25 L80 80 L50 65 L20 80 Z' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/></svg>">
-    
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ariatrip.vercel.app/">
+    <meta property="og:title" content="AriaTrip AI - Free Smart Travel Planner">
+    <meta property="og:description" content="Plan your perfect trip in 30 seconds. Map-based itineraries, logical routes, and local secrets.">
+    <meta property="og:image" content="https://ariatrip.vercel.app/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ariatrip.vercel.app/">
+    <meta property="twitter:title" content="AriaTrip AI - Free Smart Travel Planner">
+    <meta property="twitter:description" content="Plan your perfect trip in 30 seconds. Map-based itineraries, logical routes, and local secrets.">
+
+
     <!-- Google AdSense Verification -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4167007075228353"
      crossorigin="anonymous"></script>
@@ -52,7 +66,7 @@
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
     "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?external=react",
-    "@google/genai": "https://esm.sh/@google/genai@0.1.0",
+    "@google/genai": "https://esm.sh/@google/genai",
     "lucide-react": "https://esm.sh/lucide-react@0.263.1?external=react",
     "react-leaflet": "https://esm.sh/react-leaflet@4.2.1?external=react,leaflet",
     "leaflet": "https://esm.sh/leaflet@1.9.4",
@@ -69,8 +83,7 @@
 </script>
 </head>
   <body class="bg-slate-50 text-slate-900 antialiased overflow-hidden" oncontextmenu="return false;">
-    
-    <noscript>
+  <noscript>
       <div style="padding: 20px; font-family: sans-serif; line-height: 1.6;">
         <h1>AriaTrip AI Travel Planner</h1>
         <p>You need to enable JavaScript to run this app. AriaTrip AI is a free, intelligent travel itinerary generator that creates map-based trip plans for Japan, Korea, Europe, and more.</p>
@@ -84,8 +97,8 @@
       </div>
     </noscript>
 
-    <div id="root" class="h-screen w-screen flex flex-col">
-      <!-- SEO PRE-RENDER SKELETON: This content is visible to bots before React loads -->
+    <div id="root" class="h-screen w-screen flex flex-col"></div>
+    <!-- SEO PRE-RENDER SKELETON: This content is visible to bots before React loads -->
       <div style="opacity: 0; position: absolute; pointer-events: none;">
         <h1>AriaTrip AI - Free AI Travel Itinerary Generator</h1>
         <p>Plan your perfect trip to Tokyo, Paris, London, and New York in seconds. No login required.</p>
@@ -98,7 +111,6 @@
           <li>Europe Trip Generator</li>
         </ul>
       </div>
-    </div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

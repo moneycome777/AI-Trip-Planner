@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserPreferences, Language } from '../types';
 import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
-import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History } from 'lucide-react';
+import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
+
 
 interface Props {
   onSubmit: (prefs: UserPreferences) => void;
@@ -171,6 +172,15 @@ const POPULAR_DESTINATIONS: Record<string, string[]> = {
     ]
 };
 
+const KNOWLEDGE_BASE_LINKS = [
+    { title: "What is an AI trip planner?", path: "/what-is-an-ai-trip-planner" },
+    { title: "Is AI travel planning accurate?", path: "/is-an-ai-trip-planner-accurate" },
+    { title: "Best AI trip planner of 2024", path: "/best-ai-trip-planner" },
+    { title: "AI vs Travel Agent", path: "/ai-trip-planner-vs-travel-agent" },
+    { title: "Can AI build itineraries?", path: "/can-ai-create-a-travel-itinerary" },
+    { title: "How do I plan a trip?", path: "/how-do-i-plan-a-trip" }
+];
+
 // Marketing Copy Helper
 const getMarketingCopy = (lang: Language) => {
     if (lang === '中文') {
@@ -255,7 +265,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
   const location = useLocation();
-  const t = UI_TEXT[formData.language];
+  const t = UI_TEXT[formData.language] || UI_TEXT['English'];
   const marketing = getMarketingCopy(formData.language);
 
   // Auto-fill destination from router state (e.g. clicked from Destinations page)
@@ -665,6 +675,38 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
             </form>
       </div>
 
+      {/* Educational SEO Hub */}
+      <div className="max-w-4xl w-full mb-10 text-slate-800 relative z-10 mx-4">
+            <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-10 shadow-sm border border-white/50">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-900 flex items-center gap-3">
+                            <Sparkles className="w-8 h-8 text-indigo-500" /> Travel Knowledge Hub
+                        </h2>
+                        <p className="text-slate-500 mt-1 font-medium italic">Expert insights on planning the perfect vacation with AI.</p>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {KNOWLEDGE_BASE_LINKS.map((link, i) => (
+                        <Link 
+                            key={i} 
+                            to={link.path}
+                            className="flex items-center justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-indigo-200 hover:translate-x-1 transition-all group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="bg-indigo-50 p-2.5 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                    <HelpCircle className="w-5 h-5 text-indigo-600 group-hover:text-white" />
+                                </div>
+                                <span className="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{link.title}</span>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 transition-colors" />
+                        </Link>
+                    ))}
+                </div>
+            </div>
+      </div>
+
       {/* SEO & Content Section */}
       <div className="max-w-4xl w-full space-y-12 mb-10 text-slate-800 relative z-10 mx-4">
             
@@ -685,7 +727,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                 ))}
             </div>
 
-            {/* Testimonials - New Section */}
+            {/* Testimonials */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  {[
                      { name: "Sarah J.", role: "Solo Traveler", text: "I used to spend weeks planning. AriaTrip did it in 30 seconds. The map view is a game changer!", loc: "London, UK" },
