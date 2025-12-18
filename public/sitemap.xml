@@ -1,93 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ariatrip.vercel.app/</loc>
-    <lastmod>2024-03-27</lastmod>
-    <priority>1.0</priority>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/destinations</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/how-do-i-plan-a-trip</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/what-is-the-best-way-to-plan-a-trip</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/how-long-does-it-take-to-plan-a-trip</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/what-should-i-plan-first-when-traveling</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/is-it-better-to-plan-a-trip-yourself-or-use-a-planner</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/what-is-an-ai-trip-planner</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/is-an-ai-trip-planner-accurate</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/can-ai-create-a-travel-itinerary</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/best-ai-trip-planner</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/ai-trip-planner-vs-travel-agent</loc>
-    <priority>0.9</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-
-  <!-- New URLs -->
-  <url><loc>https://ariatrip.vercel.app/how-many-days-in-tokyo</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/best-itinerary-for-paris</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/3-day-itinerary-london</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/things-to-do-in-new-york</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/best-places-to-visit-in-japan</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/how-much-does-a-trip-to-singapore-cost</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/how-to-plan-a-trip-on-a-budget</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/is-switzerland-expensive-to-visit</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/best-time-to-visit-kyoto</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/how-far-in-advance-to-plan-trip</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-
-  <url>
-    <loc>https://ariatrip.vercel.app/about</loc>
-    <priority>0.5</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/contact</loc>
-    <priority>0.5</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://ariatrip.vercel.app/privacy</loc>
-    <priority>0.3</priority>
-    <changefreq>yearly</changefreq>
-  </url>
+<url><loc>https://ariatrip.vercel.app/</loc><lastmod>2024-03-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+<url><loc>https://ariatrip.vercel.app/destinations</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-do-i-plan-a-trip</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/what-is-the-best-way-to-plan-a-trip</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-long-does-it-take-to-plan-a-trip</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/what-should-i-plan-first-when-traveling</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/is-it-better-to-plan-a-trip-yourself-or-use-a-planner</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/what-is-an-ai-trip-planner</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/is-an-ai-trip-planner-accurate</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/can-ai-create-a-travel-itinerary</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/best-ai-trip-planner</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/ai-trip-planner-vs-travel-agent</loc><changefreq>monthly</priority><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-many-days-in-tokyo</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/best-itinerary-for-paris</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/3-day-itinerary-london</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/things-to-do-in-new-york</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/best-places-to-visit-in-japan</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-much-does-a-trip-to-singapore-cost</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-to-plan-a-trip-on-a-budget</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/is-switzerland-expensive-to-visit</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/best-time-to-visit-kyoto</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/how-far-in-advance-to-plan-trip</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://ariatrip.vercel.app/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+<url><loc>https://ariatrip.vercel.app/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+<url><loc>https://ariatrip.vercel.app/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
-
