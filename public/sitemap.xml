@@ -65,7 +65,7 @@
 
   <!-- New URLs -->
   <url><loc>https://ariatrip.vercel.app/how-many-days-in-tokyo</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ariatrip.vercel.app/best-itinerary-for-paris</loc><priority>0.9</priority><<changefreq>monthly</changefreq>/url>
+  <url><loc>https://ariatrip.vercel.app/best-itinerary-for-paris</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ariatrip.vercel.app/3-day-itinerary-london</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ariatrip.vercel.app/things-to-do-in-new-york</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ariatrip.vercel.app/best-places-to-visit-in-japan</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
