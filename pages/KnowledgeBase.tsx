@@ -256,11 +256,288 @@ const KNOWLEDGE_DATA: Record<string, SEOContent> = {
         points: ["6 Months Out: Book long-haul flights.", "3 Months Out: Book popular hotels and 'hard-to-get' restaurants.", "1 Month Out: Build your daily itinerary using AriaTrip AI.", "2 Weeks Out: Check visa requirements and travel insurance."],
         detailedContent: "Planning too early can lead to missing out on late-deal flights, but planning too late ensures high prices for accommodation. The 'Sweet Spot' is 4 months for most travelers.",
         faqs: [{ q: "Can I plan a trip in a week?", a: "Yes, AI planners like AriaTrip are designed exactly for this scenario." }, { q: "Do flights get cheaper last minute?", a: "Rarely for international routes; usually they get much more expensive." }]
+    },
+    'how-to-travel-with-kids': {
+        title: "How to travel with kids",
+        directAnswer: "Traveling with kids requires slowing down your pace, booking accommodations with kitchens or multiple rooms, and planning no more than one major activity per day. Always have snacks, entertainment, and a flexible mindset.",
+        definition: "Family travel planning focuses on logistics that prioritize comfort, safety, and engagement for children of varying ages.",
+        points: ["Book direct flights whenever possible to avoid layover meltdowns.", "Choose Airbnbs or suites over standard hotel rooms.", "Pack a 'survival kit' with snacks, wipes, and new small toys.", "Schedule downtime every afternoon for naps or pool time."],
+        detailedContent: "The biggest mistake parents make is trying to replicate their pre-kids travel style. AriaTrip AI's 'Family' mode specifically spaces out activities and suggests parks or interactive museums instead of long historical tours. Remember, a successful family trip is about shared experiences, not checking off a list.",
+        faqs: [{ q: "What age is best to start traveling with kids?", a: "Any age! Babies are surprisingly portable, while toddlers require more active entertainment." }, { q: "Should I bring a stroller?", a: "Yes, a lightweight travel stroller is essential for airports and long walking days." }]
+    },
+    'best-travel-insurance': {
+        title: "Best travel insurance",
+        directAnswer: "The best travel insurance depends on your needs, but top providers generally include World Nomads (for adventure), Allianz (for comprehensive coverage), and SafetyWing (for digital nomads). Always ensure coverage for medical emergencies and trip cancellations.",
+        definition: "Travel insurance is a financial product designed to cover unexpected costs incurred before or during a trip, such as medical expenses or lost luggage.",
+        points: ["Medical coverage is the most critical component.", "Check if 'Cancel for Any Reason' (CFAR) is included or available as an add-on.", "Read the fine print regarding extreme sports or pre-existing conditions.", "Compare annual plans vs. single-trip plans if you travel frequently."],
+        detailedContent: "Never travel internationally without health coverage. Your domestic health insurance rarely covers you abroad. While AriaTrip AI helps you plan a safe route, travel insurance protects you from the unpredictable, like a sudden illness or a canceled flight due to weather.",
+        faqs: [{ q: "Is travel insurance worth it?", a: "Absolutely. A minor medical emergency abroad can cost thousands of dollars." }, { q: "Does my credit card offer travel insurance?", a: "Many premium travel cards do, but you must check the specific coverage limits." }]
+    },
+    'how-to-pack-for-a-trip': {
+        title: "How to pack for a trip",
+        directAnswer: "To pack efficiently, use the 'rolling method' or packing cubes to save space, stick to a neutral color palette so all clothes mix and match, and always pack a week's worth of clothes regardless of the trip's total length (plan to do laundry).",
+        definition: "Strategic packing is the process of selecting versatile, lightweight items to minimize luggage size while maximizing outfit combinations.",
+        points: ["Use packing cubes to compress clothes and stay organized.", "Wear your bulkiest items (boots, heavy coats) on the plane.", "Pack a capsule wardrobe with 3 bottoms and 5-7 tops.", "Always carry essential medications and a change of clothes in your personal item."],
+        detailedContent: "Overpacking is the most common travel mistake. Dragging a heavy suitcase across cobblestone streets in Europe will quickly ruin your day. AriaTrip AI recommends packing light so you can easily navigate public transit and enjoy a more agile travel experience.",
+        faqs: [{ q: "Should I roll or fold my clothes?", a: "Rolling saves space and reduces wrinkles for most fabrics." }, { q: "How many shoes should I bring?", a: "Maximum three pairs: one for walking, one for dressing up, and one casual/comfort pair." }]
+    },
+    'solo-travel-tips': {
+        title: "Solo travel tips",
+        directAnswer: "For a successful solo trip, share your itinerary with someone back home, stay in social accommodations like hostels or boutique guesthouses to meet people, trust your intuition regarding safety, and embrace the freedom to change your plans at any moment.",
+        definition: "Solo travel is the act of journeying alone, offering ultimate flexibility and opportunities for self-discovery.",
+        points: ["Download offline maps (like Google Maps) before arriving.", "Don't overshare your location in real-time on public social media.", "Join free walking tours on your first day to get oriented and meet others.", "Bring a book or journal for dining alone."],
+        detailedContent: "Solo travel can be intimidating but is incredibly rewarding. Using AriaTrip AI is perfect for solo travelers because it acts as your digital companion, ensuring you always know where you're going and what's nearby, reducing the anxiety of navigating a new place alone.",
+        faqs: [{ q: "Is solo travel safe?", a: "Yes, generally, if you exercise the same common sense you would in your home city." }, { q: "Will I get lonely?", a: "It's possible, but staying in social environments and joining group tours helps mitigate loneliness." }]
+    },
+    'sustainable-travel-guide': {
+        title: "Sustainable travel guide",
+        directAnswer: "To travel sustainably, prioritize trains over short-haul flights, support local businesses rather than international chains, carry a reusable water bottle, and respect local wildlife and ecosystems by staying on marked trails.",
+        definition: "Sustainable travel (or eco-tourism) involves minimizing your negative impact on the environment and local communities while maximizing the positive economic benefits.",
+        points: ["Offset your carbon emissions for necessary flights.", "Avoid single-use plastics by bringing your own utensils and bags.", "Choose eco-certified accommodations.", "Never participate in animal tourism that involves riding or touching wild animals."],
+        detailedContent: "As global tourism increases, so does our responsibility to protect the places we visit. AriaTrip AI encourages sustainable choices by highlighting public transit routes and walking paths, helping you reduce your carbon footprint while experiencing the destination more intimately.",
+        faqs: [{ q: "Is sustainable travel more expensive?", a: "Not necessarily. Taking public transit and eating at local markets is often cheaper than taxis and tourist traps." }, { q: "How can I find eco-friendly hotels?", a: "Look for certifications like LEED, Green Key, or EarthCheck when booking." }]
+    },
+    'best-travel-apps-2024': {
+        title: "Best travel apps for 2024",
+        directAnswer: "The best travel apps for 2024 include AriaTrip AI for itinerary generation, Google Maps for offline navigation, Google Translate for real-time translation, and Splitwise for managing group expenses.",
+        definition: "Travel applications are mobile or web-based software designed to assist with booking, navigation, communication, and organization during a trip.",
+        points: ["AriaTrip AI: Best for instant itinerary generation.", "Google Maps: Essential for offline maps and transit directions.", "Google Translate: Crucial for reading menus and basic communication.", "Splitwise: The best way to track shared expenses with friends."],
+        detailedContent: "Technology has made travel infinitely easier. Instead of carrying guidebooks and phrasebooks, your smartphone is now your ultimate travel tool. AriaTrip AI integrates seamlessly into your workflow by providing the overarching plan, while apps like Google Maps help you execute it on the ground.",
+        faqs: [{ q: "Do I need an international data plan?", a: "It's highly recommended. Alternatively, you can buy a local eSIM via apps like Airalo." }, { q: "Are these apps free?", a: "Most essential travel apps, including AriaTrip AI, offer robust free versions." }]
+    },
+    'how-to-find-cheap-flights': {
+        title: "How to find cheap flights",
+        directAnswer: "To find cheap flights, use flight aggregators like Google Flights or Skyscanner, be flexible with your travel dates (flying mid-week is often cheaper), set up price alerts, and consider flying into alternative nearby airports.",
+        definition: "Flight hacking is the practice of using search strategies and flexibility to secure airfare at significantly lower prices than average.",
+        points: ["Use Google Flights' 'Explore' feature if you are flexible on the destination.", "Set up email price alerts for your desired route months in advance.", "Check if booking two one-way tickets on different airlines is cheaper than a round-trip.", "Clear your browser cookies or use Incognito mode when searching repeatedly."],
+        detailedContent: "Airfare is often the most expensive part of a trip. By saving money on flights, you can allocate more of your budget to experiences and accommodation. AriaTrip AI helps you maximize those experiences once you arrive, ensuring every dollar saved on flights is well spent.",
+        faqs: [{ q: "Is there a 'best day' to book flights?", a: "The myth of booking on a Tuesday is largely outdated; prices fluctuate constantly based on demand algorithms." }, { q: "Are budget airlines worth it?", a: "Yes, for short flights, but always factor in the hidden costs of baggage and seat selection." }]
+    },
+    'what-to-do-if-flight-is-canceled': {
+        title: "What to do if your flight is canceled",
+        directAnswer: "If your flight is canceled, immediately get in line at the customer service desk while simultaneously calling the airline's customer service number. Know your rights regarding compensation and hotel vouchers, and use apps to search for alternative routes.",
+        definition: "Flight disruption management involves the immediate steps taken to secure alternative travel arrangements and claim owed compensation.",
+        points: ["Call the airline while waiting in the physical line; whoever answers first wins.", "Know your passenger rights (e.g., EU261 in Europe offers strong compensation).", "Ask for meal vouchers and hotel accommodations if the delay is overnight and the airline's fault.", "Keep all receipts for any expenses incurred due to the cancellation."],
+        detailedContent: "Cancellations are stressful, but staying calm and knowing your rights is key. If your trip is delayed by a day, you can use AriaTrip AI to quickly regenerate a condensed version of your itinerary, ensuring you still hit the highlights despite the lost time.",
+        faqs: [{ q: "Will travel insurance cover a canceled flight?", a: "Yes, comprehensive policies usually cover delays and cancellations, reimbursing you for lost prepaid expenses." }, { q: "Do airlines have to put me on another carrier?", a: "In the US, they are not legally required to, but they often will if you ask politely and firmly." }]
+    },
+    'how-to-avoid-tourist-traps': {
+        title: "How to avoid tourist traps",
+        directAnswer: "To avoid tourist traps, walk at least three blocks away from major landmarks before eating, avoid restaurants with pictures on the menu or staff aggressively ushering people inside, and research local blogs instead of relying solely on top 10 lists.",
+        definition: "Tourist traps are businesses (usually restaurants or shops) located in high-traffic areas that offer low-quality goods or services at inflated prices.",
+        points: ["Never eat in a restaurant directly facing a major monument (like the Colosseum or Eiffel Tower).", "Look for places where the menu is only in the local language.", "Avoid shops selling generic, mass-produced souvenirs.", "Use AriaTrip AI to find highly-rated, authentic spots slightly off the beaten path."],
+        detailedContent: "Authenticity is the holy grail of travel. Tourist traps not only waste your money but also deprive you of genuine cultural experiences. AriaTrip AI's algorithms are designed to filter out these low-value locations, prioritizing highly-rated, authentic experiences.",
+        faqs: [{ q: "Are all popular places tourist traps?", a: "No, many famous landmarks are genuinely incredible. The 'traps' are usually the businesses immediately surrounding them." }, { q: "How can I find where locals eat?", a: "Ask your hotel receptionist or taxi driver where *they* eat, not where they recommend tourists go." }]
+    },
+    'best-carry-on-luggage': {
+        title: "Best carry-on luggage",
+        directAnswer: "The best carry-on luggage balances durability, weight, and organization. Top brands include Away (for hard shells), Travelpro (for soft-sided durability preferred by flight crews), and Monos (for sleek design).",
+        definition: "Carry-on luggage refers to suitcases or backpacks designed to meet airline size restrictions, allowing passengers to keep their bags in the cabin.",
+        points: ["Hard-shell vs. Soft-sided: Hard shells protect fragile items; soft-sided bags can squeeze into tight overhead bins.", "Wheels: Four spinner wheels are best for smooth airport floors; two inline wheels are better for cobblestones.", "Weight: Ensure the empty bag is lightweight to maximize your packing allowance.", "Warranty: Look for brands offering lifetime warranties."],
+        detailedContent: "Traveling carry-on only is the ultimate travel hack. It saves you money on baggage fees, prevents lost luggage, and allows you to move quickly through airports. When you use AriaTrip AI to plan a fast-paced, multi-city trip, traveling light becomes essential for catching trains and navigating new cities.",
+        faqs: [{ q: "What is the standard carry-on size?", a: "It varies by airline, but 22 x 14 x 9 inches is a safe benchmark for most major US airlines." }, { q: "Are backpacks better than suitcases?", a: "Backpacks are superior for trips involving lots of walking, stairs, or uneven terrain." }]
+    },
+    'how-to-use-esim-for-travel': {
+        title: "How to use an eSIM for travel",
+        directAnswer: "An eSIM is a digital SIM card that allows you to activate a cellular plan without a physical card. To use one, download an app like Airalo, purchase a data plan for your destination, and follow the on-screen instructions to install it via your phone's settings.",
+        definition: "An eSIM (embedded SIM) is a programmable SIM card embedded directly into a device, allowing users to switch carriers digitally.",
+        points: ["Ensure your phone is unlocked and eSIM compatible (most modern smartphones are).", "Purchase and install the eSIM *before* you leave your home country.", "Turn off your primary SIM's data roaming to avoid unexpected charges.", "Activate the eSIM line once you land at your destination."],
+        detailedContent: "Staying connected is crucial for modern travel. You need data to use navigation apps, translate languages, and access your AriaTrip AI itinerary on the go. eSIMs are significantly cheaper and more convenient than buying physical SIM cards at the airport or paying exorbitant roaming fees to your home carrier.",
+        faqs: [{ q: "Can I keep my normal phone number active?", a: "Yes, you can use your primary SIM for calls/texts (via Wi-Fi calling) and the eSIM for data." }, { q: "What happens if I run out of data?", a: "You can easily top up your data plan directly through the eSIM provider's app." }]
+    },
+    'best-travel-credit-cards': {
+        title: "Best travel credit cards",
+        directAnswer: "The best travel credit cards offer high rewards on travel purchases, no foreign transaction fees, and perks like lounge access or travel insurance. Top contenders include the Chase Sapphire Preferred, Capital One Venture X, and Amex Platinum.",
+        definition: "Travel credit cards are financial products designed to reward users with points or miles for travel-related spending, which can be redeemed for flights or hotels.",
+        points: ["Look for cards with no foreign transaction fees (usually saves you 3% on every purchase abroad).", "Consider the sign-up bonus, which can often cover a round-trip flight.", "Evaluate the annual fee against the perks offered (e.g., a $395 fee might be worth it if it includes a $300 travel credit).", "Check the transfer partners to ensure the points are valuable for your preferred airlines."],
+        detailedContent: "Using a travel credit card strategically can significantly offset the cost of your vacations. By earning points on everyday purchases, you can fund the flights and hotels for the itineraries you build with AriaTrip AI, making luxury travel much more accessible.",
+        faqs: [{ q: "Are travel credit cards worth the annual fee?", a: "Yes, if you travel at least 2-3 times a year and utilize the card's benefits and credits." }, { q: "Do I need excellent credit to get one?", a: "Most premium travel cards require a good to excellent credit score (typically 670+)." }]
+    },
+    'how-to-beat-jet-lag': {
+        title: "How to beat jet lag",
+        directAnswer: "To beat jet lag, start adjusting your sleep schedule a few days before departure, stay hydrated on the flight, adapt to the local time zone immediately upon arrival (no napping!), and get plenty of sunlight exposure during the day.",
+        definition: "Jet lag is a temporary sleep disorder caused by traveling quickly across multiple time zones, disrupting the body's internal clock (circadian rhythm).",
+        points: ["Avoid alcohol and caffeine on the flight, as they disrupt sleep and cause dehydration.", "Set your watch to the destination time zone as soon as you board the plane.", "If you arrive in the morning, force yourself to stay awake until at least 9:00 PM local time.", "Use melatonin supplements strategically to help induce sleep at the new bedtime."],
+        detailedContent: "Jet lag can ruin the first few days of a carefully planned vacation. AriaTrip AI often recommends lighter, outdoor activities (like walking tours or visiting parks) for your first day to help you stay awake and get sunlight exposure, rather than scheduling intense museum visits where you might fall asleep.",
+        faqs: [{ q: "How long does jet lag last?", a: "It typically takes one day to recover for every time zone crossed." }, { q: "Is flying east or west worse?", a: "Flying east is generally harder on the body because it requires advancing your internal clock." }]
+    },
+    'travel-safety-tips': {
+        title: "Travel safety tips",
+        directAnswer: "To stay safe while traveling, research your destination's common scams, keep your valuables secure (use a money belt or hidden pouch), be aware of your surroundings, and avoid walking alone in unfamiliar, poorly lit areas at night.",
+        definition: "Travel safety encompasses the precautions and situational awareness practiced to protect oneself from theft, scams, or physical harm while abroad.",
+        points: ["Leave a copy of your passport and itinerary with someone at home.", "Don't flash expensive jewelry, cameras, or large amounts of cash.", "Use ATMs located inside banks rather than on the street to avoid card skimmers.", "Learn basic emergency phrases in the local language."],
+        detailedContent: "While the world is generally safe, tourists are often targeted for petty theft. AriaTrip AI helps keep you safe by routing you through well-traveled, logical paths and suggesting reputable accommodations, reducing the chances of you ending up lost in a sketchy neighborhood.",
+        faqs: [{ q: "Should I carry my passport with me?", a: "It's usually safer to leave your physical passport locked in your hotel safe and carry a photocopy or digital picture." }, { q: "Are money belts necessary?", a: "They are highly recommended in cities known for pickpocketing, like Barcelona or Rome." }]
+    },
+    'how-to-travel-with-pets': {
+        title: "How to travel with pets",
+        directAnswer: "Traveling with pets requires extensive preparation: ensure your pet is microchipped and up-to-date on vaccinations, research airline pet policies carefully, book pet-friendly accommodations, and acclimate your pet to their travel carrier well in advance.",
+        definition: "Pet travel involves the logistical and regulatory processes required to safely transport domestic animals domestically or internationally.",
+        points: ["Check the specific entry requirements for your destination country (some require months of quarantine or specific blood tests).", "Choose direct flights to minimize stress and the risk of mishandling.", "Never sedate your pet for a flight unless explicitly advised by a veterinarian.", "Pack a familiar blanket or toy to comfort them in the carrier."],
+        detailedContent: "Traveling with a pet changes the entire dynamic of a trip. You must prioritize their comfort and safety. While AriaTrip AI focuses on human activities, you can use the chat feature to ask for pet-friendly parks or cafes to integrate into your generated itinerary.",
+        faqs: [{ q: "Can my dog fly in the cabin with me?", a: "Small dogs and cats can usually fly in the cabin if their carrier fits under the seat, but you must pay a fee and book in advance." }, { q: "Are Airbnbs pet-friendly?", a: "Many are, but you must specifically filter for 'Pets Allowed' and always communicate with the host beforehand." }]
+    },
+    'how-to-plan-a-road-trip': {
+        title: "How to plan a road trip",
+        directAnswer: "To plan a successful road trip, map out your primary route but leave room for detours, get your vehicle serviced before departure, book accommodations in advance during peak seasons, and download offline maps and playlists.",
+        definition: "Road trip planning is the process of organizing a long-distance journey by car, focusing on route optimization, vehicle readiness, and flexible scheduling.",
+        points: ["Limit driving to 4-6 hours per day to prevent fatigue.", "Pack an emergency roadside kit (jumper cables, flashlight, first aid).", "Use apps like GasBuddy to find the cheapest fuel along your route.", "Plan your stops around scenic viewpoints or quirky roadside attractions."],
+        detailedContent: "The beauty of a road trip lies in the journey, not just the destination. AriaTrip AI can help you identify interesting towns and landmarks along your route, ensuring you don't just drive past hidden gems. Remember to factor in rest stops and meal breaks when calculating your daily driving time.",
+        faqs: [{ q: "How much should I budget for gas?", a: "Calculate your total mileage, divide by your car's MPG, and multiply by the average gas price along your route, then add a 20% buffer." }, { q: "Is it better to rent a car or drive my own?", a: "Renting saves wear and tear on your personal vehicle and offers peace of mind if the rental includes roadside assistance." }]
+    },
+    'best-travel-destinations-for-couples': {
+        title: "Best travel destinations for couples",
+        directAnswer: "The best travel destinations for couples include Santorini (for romance and sunsets), Kyoto (for culture and peaceful walks), the Amalfi Coast (for luxury and scenery), and Costa Rica (for shared adventures).",
+        definition: "Couples travel destinations are locations that offer a blend of romantic ambiance, shared activities, and opportunities for connection.",
+        points: ["Santorini, Greece: Iconic sunsets and luxury cave hotels.", "Kyoto, Japan: Serene temples, traditional ryokans, and incredible food.", "Amalfi Coast, Italy: Dramatic coastlines, boat tours, and world-class wine.", "Costa Rica: Rainforest hikes, hot springs, and wildlife spotting."],
+        detailedContent: "Choosing a destination as a couple requires balancing both partners' interests. AriaTrip AI excels at this by allowing you to input multiple preferences (e.g., 'relaxing beaches' AND 'historical sites') to generate an itinerary that satisfies both travelers, preventing arguments and ensuring a harmonious trip.",
+        faqs: [{ q: "How do we compromise on a destination?", a: "Each person lists their top 3 must-haves, and you find a destination that intersects those lists." }, { q: "Are all-inclusive resorts good for couples?", a: "Yes, if your primary goal is relaxation and minimizing decision fatigue." }]
+    },
+    'how-to-save-money-for-travel': {
+        title: "How to save money for travel",
+        directAnswer: "To save money for travel, set up a dedicated travel savings account, automate a portion of your paycheck to transfer directly into it, cut back on daily discretionary spending (like dining out), and use a travel rewards credit card for everyday purchases.",
+        definition: "Travel saving is the disciplined financial practice of allocating funds specifically for future journeys.",
+        points: ["Create a separate, high-yield savings account just for travel.", "Automate your savings: transfer $50-$100 every payday.", "Cancel unused subscriptions and redirect that money to your travel fund.", "Sell unwanted items online to boost your savings quickly."],
+        detailedContent: "Saving for travel requires making it a financial priority. Once you have a budget in mind—which you can estimate using AriaTrip AI's budget features—you can break that total down into manageable monthly savings goals. Visualizing your itinerary can provide the motivation needed to stick to your budget.",
+        faqs: [{ q: "How much should I save before booking?", a: "Aim to have at least the cost of flights and accommodation saved before making any non-refundable bookings." }, { q: "Is it okay to go into debt for travel?", a: "It is highly discouraged. The stress of debt will outlast the joy of the vacation." }]
+    },
+    'what-to-pack-in-a-personal-item': {
+        title: "What to pack in a personal item",
+        directAnswer: "Your personal item should contain all your essentials: passport/ID, wallet, medications, electronics (laptop, chargers, power bank), a change of underwear, basic toiletries, and entertainment for the flight.",
+        definition: "A personal item is the smaller bag (like a backpack or purse) that airlines allow you to bring on board, which must fit under the seat in front of you.",
+        points: ["All travel documents and valuables (never check these).", "Essential daily medications.", "Electronics and lithium-ion batteries (which cannot be checked).", "A reusable water bottle (empty it before security)."],
+        detailedContent: "Your personal item is your lifeline if your checked bag or carry-on gets lost or gate-checked. Packing it strategically ensures you have everything you need to survive the first 24 hours at your destination. When using AriaTrip AI to plan a tight itinerary, having your essentials on hand means you can start exploring immediately upon arrival.",
+        faqs: [{ q: "What size is a personal item?", a: "Typically around 18 x 14 x 8 inches, but always check your specific airline's rules." }, { q: "Can I pack liquids in my personal item?", a: "Yes, but they must follow the TSA 3-1-1 rule (3.4 oz or less, all fitting in one quart-sized bag)." }]
+    },
+    'how-to-survive-a-long-haul-flight': {
+        title: "How to survive a long-haul flight",
+        directAnswer: "To survive a long-haul flight, dress in comfortable layers, stay hydrated by drinking plenty of water (avoid alcohol), bring a neck pillow and noise-canceling headphones, and get up to stretch your legs every few hours.",
+        definition: "Long-haul flight survival involves strategies to maintain physical comfort and mental well-being during flights lasting longer than 6 hours.",
+        points: ["Wear compression socks to prevent deep vein thrombosis (DVT).", "Bring an eye mask and earplugs to block out cabin noise and light.", "Download movies, podcasts, and books beforehand—don't rely on in-flight Wi-Fi.", "Moisturize your skin and use saline nasal spray to combat the dry cabin air."],
+        detailedContent: "Arriving exhausted can ruin the first day of your trip. By managing your comfort on the plane, you arrive ready to execute the itinerary you built with AriaTrip AI. Remember to adjust your watch to your destination's time zone as soon as you board to start mentally preparing for the shift.",
+        faqs: [{ q: "Should I take sleeping pills on a flight?", a: "Consult your doctor, but many travelers prefer natural aids like melatonin or magnesium over heavy sedatives." }, { q: "Where is the best seat for a long flight?", a: "Aisle seats are best for easy access to the restroom and stretching, while window seats are better for sleeping." }]
+    },
+    'best-places-to-travel-alone-as-a-woman': {
+        title: "Best places to travel alone as a woman",
+        directAnswer: "The best and safest places for solo female travelers include Iceland, Japan, New Zealand, Switzerland, and Portugal. These countries boast low crime rates, excellent public transportation, and a strong culture of respect for women.",
+        definition: "Solo female travel destinations are locations globally recognized for their safety, ease of navigation, and welcoming atmosphere for women traveling independently.",
+        points: ["Iceland: Consistently ranked the safest country in the world.", "Japan: Incredible public transit, very low crime, and solo-dining culture.", "New Zealand: Friendly locals and well-organized infrastructure for backpackers.", "Portugal: Affordable, safe, and easy to navigate with English widely spoken."],
+        detailedContent: "Safety is the primary concern for solo female travelers. Choosing a destination with a proven track record of safety allows you to relax and enjoy the experience. AriaTrip AI can further enhance your safety by planning routes that utilize well-lit, busy public transit lines rather than requiring you to navigate unfamiliar areas on foot at night.",
+        faqs: [{ q: "Is it safe to go out at night alone?", a: "In these recommended countries, generally yes, but always trust your instincts and stick to well-populated areas." }, { q: "Should I wear a fake wedding ring?", a: "In some cultures it can deter unwanted attention, but in the countries listed above, it's rarely necessary." }]
+    },
+    'how-to-get-over-travel-anxiety': {
+        title: "How to get over travel anxiety",
+        directAnswer: "To overcome travel anxiety, plan your logistics meticulously, arrive at the airport early, practice mindfulness or deep breathing exercises, and focus on the exciting experiences awaiting you rather than the 'what-ifs'.",
+        definition: "Travel anxiety is the feeling of fear, stress, or apprehension associated with planning or undertaking a journey.",
+        points: ["Use AriaTrip AI to create a detailed itinerary so you know exactly what to expect each day.", "Pack days in advance to avoid last-minute panic.", "Familiarize yourself with the layout of your arrival airport and your route to the hotel.", "Accept that things will go wrong, and view them as adventures rather than disasters."],
+        detailedContent: "Uncertainty is the root of most travel anxiety. By having a solid plan, you remove the stress of decision-making on the road. AriaTrip AI acts as your safety net, providing a clear, logical path for your trip, allowing you to focus on the joy of travel rather than the logistics.",
+        faqs: [{ q: "What if I get lost?", a: "Download offline maps on your phone. Getting lost is often how you find the best hidden spots!" }, { q: "How do I deal with a fear of flying?", a: "Distraction is key. Load up an iPad with your favorite shows, or speak to your doctor about anti-anxiety medication for the flight." }]
+    },
+    'what-is-slow-travel': {
+        title: "What is slow travel?",
+        directAnswer: "Slow travel is an approach to tourism that emphasizes connection to local people, cultures, food, and music. It involves staying in one place longer, traveling less frantically, and prioritizing quality of experience over quantity of sights seen.",
+        definition: "Slow travel is a mindset that rejects the 'checklist' approach to tourism in favor of deep, immersive experiences in a single location.",
+        points: ["Rent an apartment instead of a hotel to experience daily local life.", "Shop at local markets and cook your own meals.", "Spend an entire afternoon in a single cafe or park rather than rushing between museums.", "Use local public transport instead of tourist buses or taxis."],
+        detailedContent: "In a world of fast-paced, multi-city tours, slow travel is the antidote to burnout. When using AriaTrip AI, you can specify a 'Relaxed' or 'Slow' pacing preference. The AI will then generate an itinerary that focuses on deep exploration of a few key areas, rather than a frantic dash across the city.",
+        faqs: [{ q: "Do I need a lot of time for slow travel?", a: "No, you can practice slow travel on a weekend trip by simply choosing to explore one neighborhood deeply instead of the whole city." }, { q: "Is slow travel cheaper?", a: "Often yes, because you spend less on transit between cities and can cook your own meals." }]
+    },
+    'how-to-take-good-travel-photos': {
+        title: "How to take good travel photos",
+        directAnswer: "To take good travel photos, wake up early to catch the 'golden hour' and avoid crowds, use the rule of thirds to compose your shots, look for unique angles rather than shooting from eye level, and include people to add scale and emotion.",
+        definition: "Travel photography is the art of capturing the essence, culture, and landscape of a destination through compelling visual storytelling.",
+        points: ["Shoot during the 'Golden Hour' (shortly after sunrise and before sunset) for the best light.", "Turn on the grid lines on your phone camera to help with composition.", "Don't just photograph famous monuments; capture details like food, street signs, and local textures.", "Wipe your smartphone lens before taking a picture—it makes a huge difference!"],
+        detailedContent: "You don't need a professional camera to take great travel photos; a modern smartphone is more than capable. AriaTrip AI can help you plan your photography by organizing your itinerary so you arrive at the most scenic spots during the best lighting conditions.",
+        faqs: [{ q: "Should I ask permission before photographing locals?", a: "Yes, always ask for permission. A simple smile and pointing to your camera is usually understood universally." }, { q: "How do I get photos of myself when traveling alone?", a: "Use a small tripod with a Bluetooth remote, or politely ask a fellow tourist (offer to take theirs first!)." }]
+    },
+    'best-travel-shoes-for-walking': {
+        title: "Best travel shoes for walking",
+        directAnswer: "The best travel shoes for walking are lightweight, supportive, and versatile enough to wear with multiple outfits. Top recommendations include Hoka One One (for maximum cushioning), Allbirds (for lightweight comfort), and Ecco (for a slightly dressier look).",
+        definition: "Travel walking shoes are footwear specifically designed to provide comfort and support during long days of sightseeing on various terrains.",
+        points: ["Prioritize comfort over style—blisters will ruin your trip.", "Ensure the shoes are broken in *before* you leave home.", "Look for breathable materials if traveling to a hot climate, or waterproof materials for rainy destinations.", "Pack a maximum of three pairs of shoes total to save luggage space."],
+        detailedContent: "AriaTrip AI itineraries are designed to maximize your time, which often means walking 10,000 to 20,000 steps a day. Having the right footwear is non-negotiable. If your feet hurt, you won't enjoy the beautiful sights you've traveled so far to see.",
+        faqs: [{ q: "Are running shoes good for travel?", a: "Yes, they offer great support, but they might not blend in if you plan to visit upscale restaurants." }, { q: "Should I bring sandals?", a: "Yes, a comfortable pair of walking sandals (like Tevas or Birkenstocks) is great for warm destinations and gives your feet a break from enclosed shoes." }]
+    },
+    'how-to-pack-a-suitcase-to-maximize-space': {
+        title: "How to pack a suitcase to maximize space",
+        directAnswer: "To maximize suitcase space, roll your clothes instead of folding them, use packing cubes to compress and organize items, stuff socks and underwear inside your shoes, and wear your bulkiest items (like jackets and boots) on the plane.",
+        definition: "Space-maximizing packing is the strategic arrangement of luggage contents to fit the maximum amount of items into the smallest possible volume.",
+        points: ["Rolling clothes tightly prevents wrinkles and saves more space than traditional folding.", "Packing cubes act like mini-drawers, compressing clothes and keeping categories separate.", "Utilize every inch of 'dead space,' such as the insides of shoes or hats.", "Choose versatile clothing in a cohesive color palette so you can mix and match fewer items."],
+        detailedContent: "Efficient packing is crucial, especially if you're moving between multiple cities on an AriaTrip AI generated itinerary. Traveling with just a carry-on allows you to navigate train stations and cobblestone streets much easier than dragging a massive checked bag.",
+        faqs: [{ q: "Do vacuum bags work for travel?", a: "Yes, they save a lot of space, but remember they don't reduce weight, so you might still incur overweight baggage fees." }, { q: "How many outfits do I need for a 2-week trip?", a: "Pack for one week and plan to do laundry once. You only need 7 tops, 3 bottoms, and 2 pairs of shoes." }]
+    },
+    'what-to-do-if-you-lose-your-passport': {
+        title: "What to do if you lose your passport",
+        directAnswer: "If you lose your passport abroad, immediately report it to the local police to get a report, then contact your country's nearest embassy or consulate to apply for an emergency replacement passport. You will need passport photos and proof of citizenship.",
+        definition: "A lost passport protocol is the series of legal and administrative steps required to replace a missing international travel document while in a foreign country.",
+        points: ["Always keep digital copies of your passport and ID on your phone and emailed to yourself.", "Go to the local police station first; the embassy will require a police report.", "Locate the nearest embassy or consulate and check their emergency walk-in hours.", "Bring extra passport photos with you on your trip just in case."],
+        detailedContent: "Losing a passport is stressful, but embassies handle this daily. While AriaTrip AI plans your fun activities, it's your responsibility to safeguard your documents. We recommend keeping your physical passport locked in your hotel safe and carrying a photocopy for daily use unless specifically required.",
+        faqs: [{ q: "How long does it take to get an emergency passport?", a: "Usually 24 to 72 hours, depending on the embassy and the circumstances." }, { q: "Can I fly home without a passport?", a: "No, you cannot board an international flight without a valid passport or an official emergency travel document issued by your embassy." }]
+    },
+    'how-to-avoid-pickpockets-in-europe': {
+        title: "How to avoid pickpockets in Europe",
+        directAnswer: "To avoid pickpockets in Europe, keep your valuables in a hidden money belt or cross-body bag worn in front of you, never leave your phone on a restaurant table, be hyper-aware in crowded tourist areas and train stations, and ignore distraction tactics.",
+        definition: "Pickpocket prevention involves situational awareness and physical security measures to protect personal belongings from theft in high-risk areas.",
+        points: ["Never keep your wallet or phone in your back pocket.", "Use a bag with zippers, and keep your hand over the zipper in crowded areas.", "Be wary of strangers bumping into you, spilling something on you, or asking you to sign a petition.", "Leave your passport and excess cash in the hotel safe."],
+        detailedContent: "Major European cities are incredibly safe regarding violent crime, but petty theft is common around major landmarks. When following an AriaTrip AI itinerary to popular spots like the Eiffel Tower or the Colosseum, elevate your situational awareness. Pickpockets target distracted tourists.",
+        faqs: [{ q: "Are anti-theft bags worth it?", a: "Yes, bags with slash-proof straps and locking zippers provide excellent peace of mind." }, { q: "What should I do if I catch a pickpocket?", a: "Yell loudly to draw attention, but do not engage physically. Report the incident to the police." }]
+    },
+    'best-travel-apps-for-europe': {
+        title: "Best travel apps for Europe",
+        directAnswer: "The best travel apps for Europe include Trainline (for booking trains across borders), Citymapper (for navigating local public transit), Google Translate (with offline languages downloaded), and WhatsApp (for communicating with locals and tour guides).",
+        definition: "European travel apps are mobile applications specifically useful for navigating the transportation, language, and logistical challenges unique to the European continent.",
+        points: ["Trainline: Aggregates train and bus routes across multiple European countries.", "Citymapper: Offers more detailed and accurate public transit directions than Google Maps in major cities.", "Google Translate: Use the camera feature to translate menus and signs instantly.", "Rick Steves Audio Europe: Free, excellent audio walking tours for major historical sites."],
+        detailedContent: "Technology makes independent travel easier than ever. While AriaTrip AI provides your overarching itinerary and daily plan, these tactical apps help you execute that plan on the ground. We highly recommend downloading these apps and familiarizing yourself with them before you leave home.",
+        faqs: [{ q: "Do I need a specific app for taxis?", a: "Uber works in many cities, but local apps like FreeNow or Bolt are often more popular and cheaper depending on the country." }, { q: "Is there an app for finding public restrooms?", a: "Yes, apps like 'Flush' or 'Where is Public Toilet' can be lifesavers in Europe." }]
+    },
+    'how-to-use-your-phone-abroad': {
+        title: "How to use your phone abroad",
+        directAnswer: "To use your phone abroad without huge fees, ensure your phone is unlocked and purchase a local prepaid SIM card upon arrival, or buy an eSIM online before you leave. Alternatively, check if your home carrier offers an affordable international day pass.",
+        definition: "International mobile usage involves configuring a smartphone to access cellular networks in foreign countries while managing roaming costs.",
+        points: ["eSIMs (like Airalo or Holafly) are the easiest option if your phone is compatible; you download the data plan via an app.", "Local physical SIM cards (bought at the airport or convenience stores) are usually the cheapest option.", "Turn off 'Data Roaming' in your settings before your plane takes off to avoid accidental charges.", "Download offline maps and translation files on Wi-Fi to minimize data usage."],
+        detailedContent: "Staying connected is vital for navigation, translation, and accessing your AriaTrip AI itinerary on the go. We strongly recommend the eSIM route for modern smartphones, as it allows you to keep your home number active for texts/calls while using the foreign network for cheap data.",
+        faqs: [{ q: "Will my WhatsApp still work with a new SIM card?", a: "Yes, WhatsApp is tied to your phone, not the SIM card. It will ask if you want to keep your old number—say yes." }, { q: "How do I know if my phone is unlocked?", a: "Contact your current carrier. If you bought the phone outright, it's likely unlocked. If you are on a payment plan, it might be locked." }]
+    },
+    'what-is-travel-insurance-and-do-i-need-it': {
+        title: "What is travel insurance and do I need it?",
+        directAnswer: "Travel insurance protects you from financial losses related to trip cancellations, medical emergencies abroad, lost luggage, and flight delays. Yes, you absolutely need it, primarily for the emergency medical coverage, as your home health insurance rarely covers international care.",
+        definition: "Travel insurance is a financial product designed to cover the costs and reduce the risk associated with unexpected events during domestic or international travel.",
+        points: ["Medical Evacuation: The most critical coverage. An airlift home can cost $100,000+ without insurance.", "Trip Cancellation: Reimburses you if you must cancel due to illness or a family death.", "Baggage Loss/Delay: Provides funds to buy essentials if the airline loses your bag.", "Read the fine print: Many policies exclude 'extreme sports' (like scuba diving or skiing) unless you buy an add-on."],
+        detailedContent: "AriaTrip AI plans the perfect trip, but we cannot prevent illness or airline strikes. Travel insurance is a small price to pay for peace of mind. Never travel internationally without at least basic emergency medical coverage.",
+        faqs: [{ q: "Does my credit card offer travel insurance?", a: "Many premium travel cards do, but you must check the specific coverage limits, which are often lower than standalone policies." }, { q: "When should I buy travel insurance?", a: "Ideally, within 14 days of making your first trip deposit, which often qualifies you for 'Cancel for Any Reason' upgrades." }]
+    },
+    'best-time-to-book-a-flight': {
+        title: "Best time to book a flight",
+        directAnswer: "The best time to book an international flight is generally 2 to 6 months in advance. For domestic flights, 1 to 3 months in advance is ideal. Booking too early (11 months out) or too late (within 3 weeks) usually results in higher prices.",
+        definition: "The booking window is the optimal timeframe before departure during which airline ticket prices are statistically at their lowest.",
+        points: ["The 'Goldilocks Window' for international travel is 2-6 months prior to departure.", "If traveling during peak seasons (summer, holidays), book even earlier (4-8 months).", "Last-minute deals are incredibly rare nowadays; algorithms punish late bookers, assuming they are desperate business travelers.", "Set up Google Flights price alerts for your route as soon as you know you want to go."],
+        detailedContent: "Timing your booking correctly can save you hundreds of dollars. We recommend securing your flights first, then using AriaTrip AI to plan the day-to-day details. The AI can generate an itinerary in seconds, so you don't need to have the whole trip planned before you lock in a good airfare.",
+        faqs: [{ q: "Do flight prices go down on Tuesdays?", a: "No, this is an outdated myth. Prices change dynamically based on demand, not the day of the week." }, { q: "Should I wait for a sale?", a: "If you are within the 2-6 month window and see a 'good' price, book it. Waiting for a sale that may never come is risky." }]
+    },
+    'how-to-deal-with-jet-lag': {
+        title: "How to deal with jet lag",
+        directAnswer: "To minimize jet lag, immediately adopt the local time zone upon arrival, get plenty of natural sunlight during the day to reset your circadian rhythm, avoid long naps (keep them under 30 minutes), and stay hydrated.",
+        definition: "Jet lag is a temporary sleep disorder that occurs when your body's internal clock is out of sync with the time zone you have traveled to.",
+        points: ["If you arrive in the morning, force yourself to stay awake until at least 9 PM local time.", "Sunlight is the strongest cue for your body clock; spend your first day outdoors.", "Avoid heavy meals and excessive alcohol or caffeine on your first day.", "Consider taking a low dose of melatonin (0.5mg - 3mg) 30 minutes before your target bedtime in the new time zone."],
+        detailedContent: "Jet lag can steal the first two days of your vacation if not managed properly. AriaTrip AI itineraries are designed to be practical; we often suggest lighter, outdoor activities (like walking tours or parks) for your arrival day to help you stay awake and get sunlight, rather than dark museums.",
+        faqs: [{ q: "Is jet lag worse going east or west?", a: "It is generally worse traveling East, as you 'lose' time and have to advance your body clock, which is harder than delaying it." }, { q: "Can I adjust my sleep schedule before I leave?", a: "Yes, shifting your bedtime by an hour or two closer to your destination's time zone a few days before departure can help." }]
+    },
+    'what-to-eat-in-italy': {
+        title: "What to eat in Italy",
+        directAnswer: "In Italy, eat regional specialties: Pizza in Naples, Carbonara and Cacio e Pepe in Rome, Risotto and Ossobuco in Milan, fresh seafood and Pesto in Cinque Terre, and Bistecca alla Fiorentina in Florence. Always finish with local gelato.",
+        definition: "Italian cuisine is highly regionalized, relying on fresh, seasonal, and locally sourced ingredients rather than a single unified national menu.",
+        points: ["Rome: Pasta Carbonara, Cacio e Pepe, Amatriciana, and fried artichokes.", "Naples: Authentic Neapolitan Pizza Margherita and sfogliatelle pastries.", "Florence: Florentine steak (served rare), ribollita soup, and wild boar ragu.", "Bologna: Tagliatelle al ragù (authentic bolognese), tortellini in brodo, and mortadella."],
+        detailedContent: "One of the biggest mistakes tourists make is ordering dishes outside their region (e.g., ordering pizza in Venice or risotto in Naples). AriaTrip AI can help you avoid this by suggesting authentic, region-specific dining experiences and local food tours in your customized itinerary.",
+        faqs: [{ q: "Do Italians eat pasta every day?", a: "Many do, but usually as a 'primo' (first course) in a smaller portion, followed by a 'secondo' (meat or fish)." }, { q: "Is it rude to ask for parmesan on seafood pasta?", a: "Yes, in Italy, mixing cheese with seafood is generally considered a culinary sin." }]
     }
 };
 
 const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
     const data = KNOWLEDGE_DATA[slug];
+
+    // Ensure scroll to top on every slug change and component mount
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [slug]);
 
     useEffect(() => {
         if (!data) return;
@@ -308,8 +585,8 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
     if (!data) return <div className="p-20 text-center">Page not found</div>;
 
     return (
-        <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
-            
+        <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12 animate-fadeIn">
+           
             {/* H1 - Exact Phrase */}
             <div className="text-center space-y-4">
                 <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
@@ -319,12 +596,12 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
             </div>
 
             {/* GEO Section: Direct Answer First */}
-            <section className="bg-indigo-600 text-white p-8 rounded-3xl shadow-xl shadow-indigo-100 animate-fadeIn relative overflow-hidden">
+            <section className="bg-indigo-600 text-white p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                     <Sparkles className="w-24 h-24" />
                 </div>
-                <h2 className="text-indigo-100 text-sm font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" /> Quick Answer
+                <h2 className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" /> Best Answer
                 </h2>
                 <p className="text-xl md:text-2xl font-medium leading-relaxed">
                     {data.directAnswer}
@@ -367,24 +644,24 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
 
                 {/* Sidebar CTA */}
                 <div className="lg:col-span-1">
-                    <div className="sticky top-24 bg-white p-6 rounded-3xl shadow-lg border border-slate-100 space-y-6">
-                        <div className="bg-indigo-50 p-4 rounded-2xl">
-                            <h4 className="font-bold text-indigo-900 mb-2">Ready to plan?</h4>
-                            <p className="text-sm text-indigo-700 leading-snug">Let AriaTrip AI build your logical route in seconds.</p>
+                    <div className="sticky top-24 bg-white p-8 rounded-[2rem] shadow-2xl border border-slate-100 space-y-6">
+                        <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                            <h4 className="font-black text-slate-900 mb-2">Ready to plan?</h4>
+                            <p className="text-sm text-slate-500 leading-snug">Let AriaTrip AI group your activities logically in 30 seconds.</p>
                         </div>
                         <Link 
                             to="/" 
-                            className="flex items-center justify-center gap-2 w-full py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-indigo-600 transition shadow-lg shadow-indigo-100"
+                            className="flex items-center justify-center gap-3 w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition shadow-xl shadow-slate-200"
                         >
-                            Start Planning <ArrowRight className="w-4 h-4" />
+                            Start Planning <ArrowRight className="w-5 h-5" />
                         </Link>
                     </div>
                 </div>
             </div>
 
             {/* FAQ Section */}
-            <section className="bg-slate-50 p-8 md:p-12 rounded-[3rem] border border-slate-200">
-                <h3 className="text-3xl font-bold text-slate-900 mb-10 text-center flex items-center justify-center gap-3">
+            <section className="bg-slate-50 p-8 md:p-12 rounded-[3rem] border border-slate-200 scroll-mt-24">
+                <h3 className="text-3xl font-black text-slate-900 mb-10 text-center flex items-center justify-center gap-3">
                     <HelpCircle className="w-8 h-8 text-indigo-500" /> Frequently Asked Questions
                 </h3>
                 <div className="space-y-8 max-w-3xl mx-auto">
@@ -399,10 +676,10 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
 
             {/* Footer Navigation */}
             <div className="pt-10 border-t border-slate-200 text-center">
-                <p className="text-sm text-slate-400 font-medium uppercase tracking-widest mb-6">More Trip Planning Resources</p>
-                <div className="flex flex-wrap justify-center gap-4">
-                     {Object.entries(KNOWLEDGE_DATA).map(([slug, content]) => (
-                         <Link key={slug} to={`/${slug}`} className="text-indigo-600 hover:underline text-sm font-bold">
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-8">Related Travel Hub Content</p>
+                <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+                     {Object.entries(KNOWLEDGE_DATA).slice(0, 10).map(([slug, content]) => (
+                         <Link key={slug} to={`/${slug}`} className="text-indigo-600 hover:text-indigo-800 text-sm font-bold transition">
                              {content.title}
                          </Link>
                      ))}

@@ -146,8 +146,6 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   };
 
   const handleBookTrip = () => {
-    const rawDest = preferences.destination.split(',')[0].trim().replace(/\s+/g, '-');
-    // const url = `https://www.skyscanner.com/transport/flights/${preferences.departFrom ? 'everywhere' : 'everywhere'}/${rawDest}`;
     const url = `https://www.skyscanner.com/`;
     window.open(url, '_blank');
   };
@@ -160,8 +158,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
   };
 
   return (
-    // Clean full height layout, no fixed hacks needed as Navbar is removed via parent
-    <div ref={containerRef} className="flex h-full w-full overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div ref={containerRef} className="flex h-full w-full overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative">
       
       {showAd && (
           <AdUnlockModal 
@@ -210,9 +207,9 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
         </div>
       </div>
 
-      {/* Right Panel */}
+      {/* Right Panel - Map */}
       <div 
-        className={`${mobileView === 'map' ? 'block' : 'hidden'} lg:block h-full relative z-10 bg-slate-50`}
+        className={`${mobileView === 'map' ? 'flex' : 'hidden'} lg:flex h-full relative z-10 bg-slate-50 flex-col overflow-hidden`}
         style={{ width: window.innerWidth >= 1024 ? `${100 - leftPanelWidth}%` : '100%' }}
       >
         <Map 

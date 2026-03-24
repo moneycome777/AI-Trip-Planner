@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
     <title>AriaTrip AI - Elegant Travel Planner</title>
     <meta name="description" content="Generate an executable, map-based travel plan in 30 seconds with AriaTrip AI." />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%238B5CF6'/><path d='M50 25 L80 80 L50 65 L20 80 Z' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/></svg>">
@@ -20,12 +21,40 @@
     <meta property="twitter:title" content="AriaTrip AI - Free Smart Travel Planner">
     <meta property="twitter:description" content="Plan your perfect trip in 30 seconds. Map-based itineraries, logical routes, and local secrets.">
 
-
     <!-- Google AdSense Verification -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4167007075228353"
      crossorigin="anonymous"></script>
 
-    <meta name="google-site-verification" content="ei0Jk5_cTfEnZs791seK24N4WnY-Vv2luqmOTvS4BXs" />
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "AriaTrip AI",
+      "url": "https://ariatrip.vercel.app/",
+      "description": "AriaTrip AI is a free, smart travel planner that generates executable, map-based itineraries in seconds. Say goodbye to rigid templates and hello to personalized, logical routes.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ariatrip.vercel.app/destinations?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AriaTrip AI Travel Planner",
+      "operatingSystem": "Web",
+      "applicationCategory": "TravelApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "AI-powered travel itinerary generator that creates optimized, map-based travel plans with zero backtracking."
+    }
+    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -35,6 +64,12 @@
       crossorigin=""
     />
     <style>
+      html, body, #root {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
       /* Custom scrollbar for itinerary panel */
       .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -44,15 +79,10 @@
           scrollbar-width: none;
       }
       
-      /* Leaflet Map z-index fixes */
-      .leaflet-pane { z-index: 10 !important; }
-      .leaflet-top, .leaflet-bottom { z-index: 20 !important; }
-
       /* Security: Disable selection and drag */
       body {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none; /* Standard syntax */
+        -webkit-user-select: none;
+        user-select: none;
         -webkit-touch-callout: none;
       }
       img {
@@ -61,58 +91,40 @@
         pointer-events: none;
       }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?external=react",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?deps=react@18.2.0",
     "@google/genai": "https://esm.sh/@google/genai",
-    "lucide-react": "https://esm.sh/lucide-react@0.263.1?external=react",
-    "react-leaflet": "https://esm.sh/react-leaflet@4.2.1?external=react,leaflet",
+    "lucide-react": "https://esm.sh/lucide-react@0.263.1?deps=react@18.2.0",
+    "react-leaflet": "https://esm.sh/react-leaflet@4.2.1?deps=react@18.2.0,leaflet@1.9.4",
     "leaflet": "https://esm.sh/leaflet@1.9.4",
-    "vite": "https://aistudiocdn.com/vite@^7.2.4",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
     "@emailjs/browser": "https://esm.sh/@emailjs/browser@3.11.0",
     "jspdf": "https://esm.sh/jspdf@2.5.1",
     "jspdf-autotable": "https://esm.sh/jspdf-autotable@3.8.2",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
-    "react/": "https://esm.sh/react@^19.2.1/",
-    "@vercel/analytics/": "https://esm.sh/@vercel/analytics@^1.6.1/"
+    "@vercel/analytics/react": "https://esm.sh/@vercel/analytics@1.6.1/react?deps=react@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@vercel/analytics/": "https://esm.sh/@vercel/analytics@^1.6.1/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
-</head>
-  <body class="bg-slate-50 text-slate-900 antialiased overflow-hidden" oncontextmenu="return false;">
-  <noscript>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased" oncontextmenu="return false;">
+    <noscript>
       <div style="padding: 20px; font-family: sans-serif; line-height: 1.6;">
         <h1>AriaTrip AI Travel Planner</h1>
-        <p>You need to enable JavaScript to run this app. AriaTrip AI is a free, intelligent travel itinerary generator that creates map-based trip plans for Japan, Korea, Europe, and more.</p>
-        <h2>Features</h2>
-        <ul>
-          <li>Geospatial Algorithm Routing</li>
-          <li>Local Food & Sightseeing Recommendations</li>
-          <li>Instant Itinerary Generation without Login</li>
-        </ul>
-        <a href="/destinations">View Popular Destinations</a>
+        <p>You need to enable JavaScript to run this app.</p>
       </div>
     </noscript>
 
-    <div id="root" class="h-screen w-screen flex flex-col"></div>
-    <!-- SEO PRE-RENDER SKELETON: This content is visible to bots before React loads -->
-      <div style="opacity: 0; position: absolute; pointer-events: none;">
-        <h1>AriaTrip AI - Free AI Travel Itinerary Generator</h1>
-        <p>Plan your perfect trip to Tokyo, Paris, London, and New York in seconds. No login required.</p>
-        <h2>How it works</h2>
-        <p>Our AI analyzes thousands of travel points to create a logical, step-by-step route for your vacation. Whether you love food, history, or shopping, AriaTrip creates a personalized plan for you.</p>
-        <h3>Popular Destinations</h3>
-        <ul>
-          <li>Japan Travel Guide</li>
-          <li>Korea Itinerary Planner</li>
-          <li>Europe Trip Generator</li>
-        </ul>
-      </div>
+    <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import emailjs from '@emailjs/browser';
 import { AlertTriangle } from 'lucide-react';
 

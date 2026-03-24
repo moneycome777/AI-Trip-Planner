@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, Lock, Map as MapIcon, Loader2, SplitSquareHorizontal, Hotel, Calendar, Info, BedDouble, Wallet, ArrowLeft, Download, Clock, Sun, Moon, Utensils, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X } from 'lucide-react';
+import { Train, AlertTriangle, CloudSun, Backpack, Lock, Loader2, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Clock, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -169,7 +169,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
         // Section Header for Day
         tableRows.push([{ content: `Day ${day.day_number}: ${day.theme}`, colSpan: 4, styles: { fillColor: [243, 244, 246], fontStyle: 'bold', textColor: [31, 41, 55] } }]);
         
-        day.activities.forEach((act, index) => {
+        day.activities.forEach((act) => {
             tableRows.push([
                 act.place_name,
                 act.action,
