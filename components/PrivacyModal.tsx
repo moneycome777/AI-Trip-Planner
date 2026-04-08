@@ -62,7 +62,8 @@ const PrivacyModal: React.FC<Props> = ({ onClose }) => {
 
              <section className="bg-indigo-50 p-4 rounded-lg mt-6">
                 <h4 className="font-bold text-indigo-900 mb-2">Contact Us</h4>
-                <p>If you have any questions about these terms, please contact us at: <br/><strong>motivateeveryday46@gmail.com</strong></p>
+                // <p>If you have any questions about these terms, please contact us at: <br/><strong>motivateeveryday46@gmail.com</strong></p>
+                <p>If you have any questions about these terms, please contact us.</strong></p>
             </section>
         </div>
 
