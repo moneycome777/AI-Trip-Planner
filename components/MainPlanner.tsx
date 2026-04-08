@@ -48,7 +48,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
       setSavedTripDest(prefs.destination);
     } catch (error: any) {
       console.error("Failed to generate trip", error);
-      alert("We couldn't generate a trip right now. Please check your connection.");
+      alert(error.message || "We couldn't generate a trip right now. Please check your connection.");
       setShowNavbar(true);
       setAppState(AppState.LANDING);
     }

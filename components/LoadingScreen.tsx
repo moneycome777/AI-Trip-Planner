@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, PlayCircle, CheckCircle, Cpu, Zap } from 'lucide-react';
 import { MOCK_AD_VIDEOS } from '../constants';
 import { UserPreferences } from '../types';
-import { isComplexRequest } from '../services/geminiService';
 
 interface Props {
   onAdComplete: () => void;
@@ -10,12 +9,12 @@ interface Props {
   preferences?: UserPreferences | null;
 }
 
-const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady, preferences }) => {
+const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
   const [adFinished, setAdFinished] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
 
-  // Determine if we used the Pro model using the shared utility
-  const isComplex = preferences ? isComplexRequest(preferences) : false;
+  // We no longer use the Pro model, so it's never complex
+  const isComplex = false;
 
   useEffect(() => {
     const devMode = localStorage.getItem('tripgenie_dev_mode') === 'true';

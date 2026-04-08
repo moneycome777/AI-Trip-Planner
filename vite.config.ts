@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       // Stringify the API key to ensure it's embedded as a string in the build
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
     }
   };
 });

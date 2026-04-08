@@ -6,28 +6,6 @@ import emailjs from '@emailjs/browser';
 
 // --- CONFIGURATION ---
 const MODEL_FLASH = "gemini-3-flash-preview";
-const MODEL_PRO = "gemini-3-pro-preview";
-
-/**
- * Define complexity: 
- * - More than 2 cities
- * - More than 8 days
- * - Constraints longer than 150 chars
- * - Multiple specific travel styles
- */
-export const isComplexRequest = (prefs: UserPreferences): boolean => {
-    const cityCount = prefs.destination.split(',').length;
-    const dayMatch = prefs.duration.match(/\d+/);
-    const dayCount = dayMatch ? parseInt(dayMatch[0]) : 0;
-    const constraintLength = prefs.constraints?.length || 0;
-    
-    return cityCount > 2 || dayCount > 8 || constraintLength > 150 || (prefs.style?.length || 0) > 5;
-};
-
-export const isComplexChat = (message: string): boolean => {
-    const complexKeywords = ['restructure', 'optimize', 'compare', 'efficiency', 'accessibility', 'medical', 'advanced', 'rewrite'];
-    return message.length > 200 || complexKeywords.some(kw => message.toLowerCase().includes(kw));
-};
 
 // --- SCHEMAS ---
 const tripSchema = {
@@ -139,8 +117,6 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
   }
 
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
-  const complex = isComplexRequest(prefs);
-  const selectedModel = complex ? MODEL_PRO : MODEL_FLASH;
 
   const prompt = `
     Act as an expert local travel planner (AriaTrip AI).
@@ -189,23 +165,36 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
         - It MUST include the sum of all itemized 'cost_estimate' fields.
         - PLUS, it MUST include a realistic buffer for unlisted expenses (e.g., bottled water, snacks, random taxi rides, restroom fees).
         - You MUST explain what is included in this buffer in the 'budget_breakdown' field.
+    13. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
   `;
 
   try {
     const response = await ai.models.generateContent({
-      model: selectedModel,
+      model: MODEL_FLASH,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
         responseSchema: tripSchema,
-        temperature: complex ? 0.5 : 0.3,
+        temperature: 0.3,
+        maxOutputTokens: 8192,
       },
     });
 
     const text = response.text;
     if (!text) throw new Error("No response from AI");
 
-    return JSON.parse(text) as TripPlan;
+    try {
+        let cleanedText = text.trim();
+        if (cleanedText.startsWith('```')) {
+            cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+        }
+        // Also replace unescaped newlines in strings if possible, but standard JSON.parse will handle valid JSON.
+        // The prompt instruction should prevent unescaped newlines.
+        return JSON.parse(cleanedText) as TripPlan;
+    } catch (e) {
+        console.error("JSON Parse Error in generateTripPlan. Raw text:", text);
+        throw new Error("Failed to parse AI response as JSON.");
+    }
   } catch (error: any) {
       console.error("Gemini API Error:", error);
     
@@ -240,6 +229,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
     2. Decide if the user is asking a general question ("chat") OR if they want to update the plan ("modify").
     3. If modifying, ensure the new plan maintains logical routing (Geospatial Clustering).
     4. Maintain the dual-currency format for any new costs mentioned.
+    5. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
 
     Output JSON structure:
     {
@@ -257,12 +247,23 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
                 responseMimeType: "application/json",
                 responseSchema: chatSchema,
                 temperature: 0.5,
+                maxOutputTokens: 8192,
             },
         });
 
         const text = response.text;
         if (!text) throw new Error("No response from AI");
-        return JSON.parse(text) as ChatResponse;
+        
+        try {
+            let cleanedText = text.trim();
+            if (cleanedText.startsWith('```')) {
+                cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+            }
+            return JSON.parse(cleanedText) as ChatResponse;
+        } catch (e) {
+            console.error("JSON Parse Error in chatWithAI. Raw text:", text);
+            throw new Error("Failed to parse AI response as JSON.");
+        }
     } catch (error: any) {
         console.error("Gemini Chat Error:", error);
         
@@ -290,6 +291,7 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     CURRENCY: Show costs in Destination currency AND 'Depart From' currency (${prefs.departFrom || "USD"}).
     Format: "Local (~Depart)".
     Include a 'budget_breakdown' explaining the group tour fees.
+    **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
     `;
     try {
         const response = await ai.models.generateContent({
@@ -299,12 +301,23 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
                 responseMimeType: "application/json",
                 responseSchema: tripSchema,
                 temperature: 0.2,
+                maxOutputTokens: 8192,
             },
         });
         
         const text = response.text;
         if (!text) throw new Error("No response from AI");
-        return JSON.parse(text) as TripPlan;
+        
+        try {
+            let cleanedText = text.trim();
+            if (cleanedText.startsWith('```')) {
+                cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+            }
+            return JSON.parse(cleanedText) as TripPlan;
+        } catch (e) {
+            console.error("JSON Parse Error in generateStandardTour. Raw text:", text);
+            throw new Error("Failed to parse AI response as JSON.");
+        }
     } catch (error : any) {
         console.error("Gemini API Error:", error);
         // Fallback for standard tour as well if quota hit
