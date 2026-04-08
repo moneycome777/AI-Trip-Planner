@@ -193,7 +193,7 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
 
   try {
     const response = await ai.models.generateContent({
-      model: MODEL_FLASH,
+      model: selectedModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -228,9 +228,6 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
         throw new Error("API Key is missing.");
     }
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
-    const complex = isComplexChat(userMessage);
-    // const selectedModel = complex ? MODEL_PRO : MODEL_FLASH;
-    const selectedModel = MODEL_FLASH;
 
     const prompt = `
     You are AriaTrip AI, an intelligent travel assistant.
@@ -254,7 +251,7 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
 
     try {
         const response = await ai.models.generateContent({
-            model: selectedModel,
+            model: MODEL_FLASH,
             contents: prompt,
             config: {
                 responseMimeType: "application/json",

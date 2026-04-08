@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { UserPreferences, Language } from '../types';
 import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
-import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, Info, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
+import { EXAMPLE_ITINERARIES } from '../data/exampleItineraries';
+import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, PlaneTakeoff, DollarSign, Activity as ActivityIcon, Users, Map as MapIcon, Shield, Plus, X, Car, History, Sparkles, HelpCircle, ArrowRight, Compass } from 'lucide-react';
 
 
 interface Props {
@@ -236,7 +237,7 @@ const UI_TEXT: Record<Language, any> = {
   'French': { whereLabel: "Où aller ? (Ajouter plusieurs)", wherePlaceholder: "ex. Tokyo", departLabel: "De ?", departPlaceholder: "ex. Paris", whenLabel: "Quand ?", whenPlaceholder: "ex. 5 jours", advanced: "Avancé", layoverLabel: "Escale (facultatif)", layoverPlaceholder: "ex. Dubaï", hotelLabel: "Hôtel (facultatif)", hotelPlaceholder: "ex. Hilton", styleLabel: "Style", constraintsLabel: "Demandes (facultatif)", constraintsPlaceholder: "ex. Pas épicé", budgetLabel: "Budget", pacingLabel: "Rythme", transportLabel: "Transport", button: "Générer" },
   'Portuguese': { whereLabel: "Para onde? (Adicionar múltiplos)", wherePlaceholder: "ex. Tóquio", departLabel: "De onde?", departPlaceholder: "ex. Lisboa", whenLabel: "Quanto?", whenPlaceholder: "ex. 5 dias", advanced: "Avançado", layoverLabel: "Escala (opcional)", layoverPlaceholder: "ex. Dubai", hotelLabel: "Hotel (opcional)", hotelPlaceholder: "ex. Hilton", styleLabel: "Estilo", constraintsLabel: "Pedidos (opcional)", constraintsPlaceholder: "ex. Sem picante", budgetLabel: "Orçamento", pacingLabel: "Ritmo", transportLabel: "Transporte", button: "Gerar" },
   'Russian': { whereLabel: "Куда? (Добавить несколько)", wherePlaceholder: "напр. Токио", departLabel: "Откуда?", departPlaceholder: "напр. Москва", whenLabel: "Сколько?", whenPlaceholder: "напр. 5 дней", advanced: "Настройки", layoverLabel: "Пересадка (необязательно)", layoverPlaceholder: "напр. Дубай", hotelLabel: "Отель (необязательно)", hotelPlaceholder: "напр. Хилтон", styleLabel: "Стиль", constraintsLabel: "Пожелания (необязательно)", constraintsPlaceholder: "напр. не острое", budgetLabel: "Бюджет", pacingLabel: "Темп", transportLabel: "Транспорт", button: "Создать" },
-  'Indonesian': { whereLabel: "Ke mana? (Tambah beberapa)", wherePlaceholder: "cth. Tokyo", departLabel: "Dari?", departPlaceholder: "cth. Jakarta", whenLabel: "Lama?", whenPlaceholder: "cth. 5 hari", advanced: "Lanjutan", layoverLabel: "Transit (opsional)", layoverPlaceholder: "cth. Dubai", hotelLabel: "Hotel (opsional)", hotelPlaceholder: "cth. Hilton", styleLabel: "Gaya", constraintsLabel: "Khusus (opsional)", constraintsPlaceholder: "cth. Tidak pedas", budgetLabel: "Anggaran", pacingLabel: "Kecepatan", transportLabel: "Transportasi", button: "Buat" },
+  'Indonesian': { whereLabel: "Ke mana? (Tambah beberapa)", wherePlaceholder: "cth. Tokyo", departLabel: "Dari?", departPlaceholder: "cth. Jakarta", whenLabel: "Lama?", whenPlaceholder: "cth. 5 hari", advanced: "Lanjutan", layoverLabel: "Transit (opsional)", layoverPlaceholder: "cth. Dubai", hotelLabel: "Hotel (opsional)", hotelPlaceholder: "cth. Hilton", styleLabel: "Gaya", constraintsLabel: "Khusus (opsional)", constraintsPlaceholder: "cth. Tidak pedas", budgetLabel: "Anggaran", pacingLabel: "Keสะดุด", transportLabel: "Transportasi", button: "Buat" },
   'Korean': { whereLabel: "어디로? (여러 개 추가)", wherePlaceholder: "예: 도쿄", departLabel: "출발?", departPlaceholder: "예: 서울", whenLabel: "기간?", whenPlaceholder: "예: 5일", advanced: "설정", layoverLabel: "경유 (선택 사항)", layoverPlaceholder: "예: 두바이", hotelLabel: "호텔 (선택 사항)", hotelPlaceholder: "예: 힐튼", styleLabel: "스타일", constraintsLabel: "요청 (선택 사항)", constraintsPlaceholder: "예: 매운거 X", budgetLabel: "예산", pacingLabel: "강도", transportLabel: "교통", button: "생성" },
   'Thai': { whereLabel: "ไปที่ไหน? (เพิ่มหลายรายการ)", wherePlaceholder: "เช่น โตเกียว", departLabel: "จาก?", departPlaceholder: "เช่น กทม", whenLabel: "นาน?", whenPlaceholder: "เช่น 5 วัน", advanced: "ขั้นสูง", layoverLabel: "แวะพัก (ไม่จำเป็น)", layoverPlaceholder: "เช่น ดูไบ", hotelLabel: "โรงแรม (ไม่จำเป็น)", hotelPlaceholder: "เช่น ฮิลตัน", styleLabel: "สไตล์", constraintsLabel: "ขอพิเศษ (ไม่จำเป็น)", constraintsPlaceholder: "เช่น ไม่เผ็ด", budgetLabel: "งบ", pacingLabel: "ความแน่น", transportLabel: "การเดินทาง", button: "สร้าง" }
 };
@@ -267,6 +268,11 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
   const location = useLocation();
   const t = UI_TEXT[formData.language] || UI_TEXT['English'];
   const marketing = getMarketingCopy(formData.language);
+
+  // Auto-scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   // Auto-fill destination from router state (e.g. clicked from Destinations page)
   useEffect(() => {
@@ -364,10 +370,10 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
   };
 
   return (
-    <div className="w-full flex-grow flex flex-col items-center justify-start pt-8 pb-10" dir={formData.language === 'Arabic' ? 'rtl' : 'ltr'}>
+    <div className="w-full max-w-4xl mx-auto p-4 md:p-8 space-y-8 animate-fadeIn flex-grow flex flex-col justify-center">
       
       {/* Main Application Container */}
-      <div className="max-w-xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden mb-12 flex-shrink-0 border border-white/60 relative z-10 mx-4">
+      <div className="max-w-xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-indigo-100/50 overflow-hidden mb-12 flex-shrink-0 border border-white/60 relative z-10 mx-auto">
             
             {/* Header */}
             <div className="p-8 text-center border-b border-white/50 relative">
@@ -573,9 +579,9 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                     <div>
                         <label className="block text-xs font-bold text-slate-400 mb-1">{t.transportLabel}</label>
                         <div className="relative">
-                            <Car className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                            <Car className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3.5' : 'left-3.5'}`} />
                             <select 
-                                className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                className={`w-full py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
                                 value={formData.transportMode}
                                 onChange={(e) => setFormData({...formData, transportMode: e.target.value as any})}
                             >
@@ -588,9 +594,9 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                         <div>
                              <label className="block text-xs font-bold text-slate-400 mb-1">{t.budgetLabel}</label>
                              <div className="relative">
-                                <DollarSign className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                                <DollarSign className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3.5' : 'left-3.5'}`} />
                                 <select 
-                                    className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                    className={`w-full py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
                                     value={formData.budget}
                                     onChange={(e) => setFormData({...formData, budget: e.target.value as any})}
                                 >
@@ -601,9 +607,9 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                         <div>
                              <label className="block text-xs font-bold text-slate-400 mb-1">{t.pacingLabel}</label>
                              <div className="relative">
-                                <ActivityIcon className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                                <ActivityIcon className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3.5' : 'left-3.5'}`} />
                                 <select 
-                                    className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                                    className={`w-full py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none cursor-pointer text-slate-700 ${formData.language === 'Arabic' ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
                                     value={formData.pacing}
                                     onChange={(e) => setFormData({...formData, pacing: e.target.value as any})}
                                 >
@@ -616,11 +622,11 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                     <div>
                     <label className="block text-xs font-bold text-slate-400 mb-1">{t.layoverLabel}</label>
                     <div className="relative">
-                        <Clock className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                        <Clock className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3.5' : 'left-3.5'}`} />
                         <input
                         type="text"
                         placeholder={t.layoverPlaceholder}
-                        className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                        className={`w-full py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
                         value={formData.layover || ''}
                         onChange={(e) => setFormData({ ...formData, layover: e.target.value })}
                         />
@@ -630,11 +636,11 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                     <div>
                     <label className="block text-xs font-bold text-slate-400 mb-1">{t.hotelLabel}</label>
                     <div className="relative">
-                        <Hotel className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3' : 'left-3'}`} />
+                        <Hotel className={`absolute top-2.5 text-slate-400 w-4 h-4 ${formData.language === 'Arabic' ? 'right-3.5' : 'left-3.5'}`} />
                         <input
                         type="text"
                         placeholder={t.hotelPlaceholder}
-                        className={`w-full py-2 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-9 pl-3' : 'pl-9 pr-3'}`}
+                        className={`w-full py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none ${formData.language === 'Arabic' ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
                         value={formData.hotel || ''}
                         onChange={(e) => setFormData({ ...formData, hotel: e.target.value })}
                         />
@@ -675,8 +681,63 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
             </form>
       </div>
 
+      {/* Example Itineraries Section */}
+      <div className="max-w-4xl w-full mb-10 text-slate-800 relative z-10 mx-auto px-4">
+            <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-10 shadow-sm border border-white/50">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-900 flex items-center gap-3">
+                            <Compass className="w-8 h-8 text-indigo-500" /> Example Itineraries
+                        </h2>
+                        <p className="text-slate-500 mt-1 font-medium italic">See what AriaTrip AI can build for you in seconds.</p>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {EXAMPLE_ITINERARIES.map((example: any, i: number) => (
+                        <Link 
+                            key={i} 
+                            to={`/example/${example.slug}`}
+                            className="group block bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100"
+                        >
+                            <div className="relative h-48 overflow-hidden">
+                                <img 
+                                    src={example.image} 
+                                    alt={example.title} 
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    referrerPolicy="no-referrer"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div className="absolute bottom-4 left-4 right-4">
+                                    <span className="bg-indigo-500 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md mb-2 inline-block">
+                                        {example.preferences.duration}
+                                    </span>
+                                    <h3 className="text-white font-bold text-lg leading-tight group-hover:text-indigo-200 transition-colors">
+                                        {example.title}
+                                    </h3>
+                                </div>
+                            </div>
+                            <div className="p-4">
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                    {example.preferences.style.slice(0, 3).map((s: string) => (
+                                        <span key={s} className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                                            {s}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="flex items-center justify-between text-sm font-bold text-indigo-600 group-hover:text-indigo-700">
+                                    <span>View Itinerary</span>
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+      </div>
+
       {/* Educational SEO Hub */}
-      <div className="max-w-4xl w-full mb-10 text-slate-800 relative z-10 mx-4">
+      <div className="max-w-4xl w-full mb-10 text-slate-800 relative z-10 mx-auto px-4">
             <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-10 shadow-sm border border-white/50">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
@@ -708,7 +769,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
       </div>
 
       {/* SEO & Content Section */}
-      <div className="max-w-4xl w-full space-y-12 mb-10 text-slate-800 relative z-10 mx-4">
+      <div className="max-w-4xl w-full space-y-12 mb-10 text-slate-800 relative z-10 mx-auto px-4">
             
             {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -769,7 +830,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
       </div>
 
       {/* Footer */}
-      <footer className="w-full max-w-4xl pt-8 pb-4 text-center text-slate-500 text-sm relative z-10">
+      <footer className="w-full max-w-4xl pt-8 pb-4 text-center text-slate-500 text-sm relative z-10 mx-auto">
             <div className="flex justify-center gap-6 mb-4 font-medium">
                 <Link to="/privacy" className="hover:text-indigo-600 transition">Privacy Policy</Link>
                 <Link to="/privacy" className="hover:text-indigo-600 transition">Terms of Service</Link>

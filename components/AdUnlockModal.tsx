@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, PlayCircle, Lock } from 'lucide-react';
+import { X, PlayCircle } from 'lucide-react';
 import { MOCK_AD_VIDEOS } from '../constants';
 
 interface Props {
@@ -53,7 +53,7 @@ const AdUnlockModal: React.FC<Props> = ({
             {canClose ? (
                 <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-5 h-5"/></button>
             ) : (
-                <span className="text-xs text-gray-400">Sponsored</span>
+                <span className="text-xs text-gray-400">Sponsored ({timeLeft}s)</span>
             )}
         </div>
 

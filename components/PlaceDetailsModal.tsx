@@ -50,7 +50,7 @@ const PlaceDetailsModal: React.FC<Props> = ({ activity, onClose }) => {
             {/* Booking Action */}
             {(activity.type === 'sightseeing' || activity.type === 'other' || activity.type === 'transport') && (
                  <a 
-                    href={`https://www.klook.com/search?query=${searchQuery}`}
+                    href={`https://www.klook.com/search?query=${searchQuery}&aid=117630`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-orange-500/30 transition transform hover:scale-[1.02] mb-6"

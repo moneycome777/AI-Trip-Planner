@@ -30,7 +30,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
             localStorage.removeItem(CACHE_KEY_PREFS);
         }
     }
-  }, [setShowNavbar]);
+  }, []);
 
   const handlePreferencesSubmit = async (prefs: UserPreferences) => {
     setPreferences(prefs);
@@ -48,18 +48,9 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
       setSavedTripDest(prefs.destination);
     } catch (error: any) {
       console.error("Failed to generate trip", error);
-      
-      // Determine the error message
-      let msg = "We couldn't generate a trip right now.";
-      if (error.message.includes("API Key is missing")) {
-          msg = "Configuration Error: API Key is missing. Please check your environment variables.";
-      } else if (error.message.includes("Quota Exceeded")) {
-          msg = "Traffic Limit: You have hit the free tier limit. Please wait 1 minute and try again.";
-      } else if (error.message.includes("Model not found")) {
-          msg = "System Error: The AI Model is currently unavailable. Please check the code configuration.";
-      }
-
-      alert(msg);
+      alert("We couldn't generate a trip right now. Please check your connection.");
+      setShowNavbar(true);
+      setAppState(AppState.LANDING);
     }
   };
 
@@ -73,15 +64,6 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
     setAppState(AppState.LANDING);
     setShowNavbar(true); 
     setIsAiReady(false);
-
-    // Refresh saved dest from cache to be sure
-    const cachedPrefs = localStorage.getItem(CACHE_KEY_PREFS);
-    if (cachedPrefs) {
-        try {
-            const p = JSON.parse(cachedPrefs);
-            setSavedTripDest(p.destination);
-        } catch(e) {}
-    }
   };
 
   const handleResume = () => {
@@ -96,7 +78,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   };
 
   return (
-    <div className="w-full min-h-full relative flex flex-col">
+    <div className={`w-full relative flex flex-col ${appState === AppState.DASHBOARD ? 'h-full' : 'min-h-full'}`}>
       {appState === AppState.LANDING && (
         <PreferencesForm 
             onSubmit={handlePreferencesSubmit} 

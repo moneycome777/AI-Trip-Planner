@@ -15,9 +15,10 @@ interface Props {
   initialPlan: TripPlan;
   preferences: UserPreferences;
   onNewTrip: () => void;
+  isExample?: boolean;
 }
 
-const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => {
+const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip, isExample = false }) => {
   const [plan, setPlan] = useState<TripPlan>(initialPlan);
   const [selectedDay, setSelectedDay] = useState<number | undefined>(undefined);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -100,7 +101,9 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip }) => 
           setPlan(response.modified_plan);
           setModCount(prev => prev + 1);
           // Persist the modification to cache so it survives refresh/navigation
-          localStorage.setItem(CACHE_KEY_PLAN, JSON.stringify(response.modified_plan));
+          if (!isExample) {
+              localStorage.setItem(CACHE_KEY_PLAN, JSON.stringify(response.modified_plan));
+          }
       }
     } catch (e) {
       const errorMsg: ChatMessage = { id: Date.now().toString(), role: 'model', text: "Sorry, I encountered an error. Please try again." };
