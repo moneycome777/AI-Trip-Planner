@@ -1,118 +1,160 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
-import L from 'leaflet';
+import { APIProvider, Map as GoogleMap, AdvancedMarker, Pin, useMap, useApiLoadingStatus } from '@vis.gl/react-google-maps';
 import { TripPlan, DayPlan } from '../types';
 import { ArrowLeft, Eye, EyeOff, MousePointerClick } from 'lucide-react';
 import { DAY_COLORS } from '../constants';
 
-// Fix Leaflet default icon issue in React
-const DefaultIcon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-const createCustomIcon = (number: number, color: string) => {
-    const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.3));">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-        <circle cx="12" cy="10" r="3" fill="white"></circle>
-    </svg>
-    `;
-    
-    return L.divIcon({
-        className: 'custom-icon',
-        html: `<div style="position: relative; display: flex; justify-content: center;">
-                 ${svg}
-                 <span style="position: absolute; top: -6px; right: -6px; background: ${color}; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">${number}</span>
-               </div>`,
-        iconSize: [36, 36],
-        iconAnchor: [18, 36],
-        popupAnchor: [0, -36]
-    });
-};
-
-const MapResizer: React.FC<{ trigger?: any }> = ({ trigger }) => {
+// Component to handle bounds updating
+const MapUpdater = ({ days }: { days: DayPlan[] }) => {
   const map = useMap();
+
   useEffect(() => {
-    const resize = () => {
-      map.invalidateSize();
-    };
-    
-    resize();
-    const timers = [100, 300, 600, 1000, 2000].map(delay => setTimeout(resize, delay));
-    
-    window.addEventListener('resize', resize);
-    return () => {
-      timers.forEach(clearTimeout);
-      window.removeEventListener('resize', resize);
-    };
-  }, [map, trigger]);
+    if (!map || days.length === 0) return;
+
+    const bounds = new window.google.maps.LatLngBounds();
+    let hasPoints = false;
+
+    days.forEach(day => {
+      day.activities.forEach(act => {
+        const lat = Number(act.latitude);
+        const lng = Number(act.longitude);
+        if (!isNaN(lat) && !isNaN(lng) && act.latitude != null && act.longitude != null) {
+          bounds.extend({ lat, lng });
+          hasPoints = true;
+        }
+      });
+    });
+
+    if (hasPoints) {
+      map.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+    }
+  }, [days, map]);
+
   return null;
 };
 
-interface MapUpdaterProps {
-    days: DayPlan[];
-}
+// Component to handle polylines
+const PolylineRenderer = ({ days }: { days: DayPlan[] }) => {
+  const map = useMap();
+  const [polylines, setPolylines] = useState<google.maps.Polyline[]>([]);
 
-const MapUpdater: React.FC<MapUpdaterProps> = ({ days }) => {
-    const map = useMap();
+  useEffect(() => {
+    if (!map) return;
 
-    useEffect(() => {
-        if (days.length === 0) return;
-        const bounds = L.latLngBounds([]);
-        let hasPoints = false;
+    // Clear old polylines
+    polylines.forEach(p => p.setMap(null));
+    const newPolylines: google.maps.Polyline[] = [];
 
-        days.forEach(day => {
-            day.activities.forEach(act => {
-                const lat = Number(act.latitude);
-                const lng = Number(act.longitude);
-                if (
-                    !isNaN(lat) && 
-                    !isNaN(lng) && 
-                    act.latitude != null && 
-                    (act.latitude as any) !== '' &&
-                    act.longitude != null && 
-                    (act.longitude as any) !== ''
-                ) {
-                    bounds.extend([lat, lng]);
-                    hasPoints = true;
-                }
-            });
-        });
+    days.forEach(day => {
+      const colorIndex = (day.day_number - 1) % DAY_COLORS.length;
+      const dayColor = DAY_COLORS[colorIndex];
+      const path: google.maps.LatLngLiteral[] = [];
 
-        if (hasPoints) {
-            setTimeout(() => {
-                map.flyToBounds(bounds, { padding: [50, 50], duration: 1.5 });
-            }, 100);
+      day.activities.forEach(act => {
+        const lat = Number(act.latitude);
+        const lng = Number(act.longitude);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          path.push({ lat, lng });
         }
-    }, [days, map]);
+      });
 
-    return null;
+      if (path.length > 1) {
+        const polyline = new window.google.maps.Polyline({
+          path,
+          geodesic: true,
+          strokeColor: dayColor,
+          strokeOpacity: 0.8,
+          strokeWeight: 4,
+          map
+        });
+        newPolylines.push(polyline);
+      }
+    });
+
+    setPolylines(newPolylines);
+
+    return () => {
+      newPolylines.forEach(p => p.setMap(null));
+    };
+  }, [days, map]);
+
+  return null;
 };
 
-const MarkerWithLogic: React.FC<{
-    position: [number, number];
-    icon: L.DivIcon;
-    children: React.ReactNode;
-}> = ({ position, icon, children }) => {
-    const map = useMap();
+const MapContent = ({ daysToRender }: { daysToRender: DayPlan[] }) => {
+  const status = useApiLoadingStatus();
+
+  if (status !== 'LOADED') {
     return (
-        <Marker 
-            position={position} 
-            icon={icon}
-            eventHandlers={{
-                click: () => {
-                    map.flyTo(position, Math.max(map.getZoom(), 14), { duration: 1.5 });
-                }
-            }}
-        >
-            {children}
-        </Marker>
+      <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-500 p-6 text-center">
+        <div>
+          {status === 'AUTH_FAILURE' ? (
+            <>
+              <p className="font-bold mb-2 text-red-500">Map Authentication Failed</p>
+              <p className="text-sm">Your API key is restricted. Please ensure this URL is added to your Google Cloud Console.</p>
+            </>
+          ) : status === 'FAILED' ? (
+            <>
+              <p className="font-bold mb-2 text-red-500">Map Failed to Load</p>
+              <p className="text-sm">Please check your network connection.</p>
+            </>
+          ) : (
+            <p className="font-bold mb-2">Loading Map...</p>
+          )}
+        </div>
+      </div>
     );
+  }
+
+  // Double check that marker library is loaded to prevent crash
+  if (!window.google?.maps?.marker) {
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-500 p-6 text-center">
+        <div>
+          <p className="font-bold mb-2 text-red-500">Map Libraries Missing</p>
+          <p className="text-sm">The required Google Maps libraries failed to load.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <GoogleMap
+      defaultZoom={3}
+      defaultCenter={{ lat: 0, lng: 0 }}
+      mapId="DEMO_MAP_ID"
+      disableDefaultUI={true}
+      zoomControl={true}
+    >
+      <MapUpdater days={daysToRender} />
+      <PolylineRenderer days={daysToRender} />
+
+      {daysToRender.map((day) => {
+          const colorIndex = (day.day_number - 1) % DAY_COLORS.length;
+          const dayColor = DAY_COLORS[colorIndex];
+          
+          return (
+              <React.Fragment key={day.day_number}>
+                  {day.activities.map((act, actIndex) => {
+                      const lat = Number(act.latitude);
+                      const lng = Number(act.longitude);
+                      if (isNaN(lat) || isNaN(lng) || act.latitude == null || act.longitude == null) return null;
+
+                      return (
+                          <AdvancedMarker 
+                              key={`${day.day_number}-${actIndex}`}
+                              position={{ lat, lng }}
+                              title={act.place_name}
+                          >
+                              <Pin background={dayColor} borderColor={'#ffffff'} glyphColor={'#ffffff'} />
+                          </AdvancedMarker>
+                      );
+                  })}
+              </React.Fragment>
+          );
+      })}
+    </GoogleMap>
+  );
 };
 
 interface Props {
@@ -123,6 +165,7 @@ interface Props {
 
 const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
   const [visibleDays, setVisibleDays] = useState<number[]>([]);
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
   useEffect(() => {
       setVisibleDays(tripPlan.days.map(d => d.day_number));
@@ -141,6 +184,17 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
       ? tripPlan.days.filter(d => d.day_number === selectedDay) 
       : tripPlan.days.filter(d => visibleDays.includes(d.day_number));
   }, [tripPlan, selectedDay, visibleDays]);
+
+  if (!apiKey) {
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-500 p-6 text-center">
+        <div>
+          <p className="font-bold mb-2">Google Maps API Key Missing</p>
+          <p className="text-sm">Please add VITE_GOOGLE_MAPS_API_KEY to your environment variables.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full relative flex flex-col overflow-hidden">
@@ -187,68 +241,9 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
       </div>
 
       <div className="flex-1 w-full min-h-0 relative">
-          <MapContainer 
-            center={[0, 0]} 
-            zoom={2} 
-            style={{ height: '100%', width: '100%', position: 'absolute', inset: 0 }}
-            zoomControl={false}
-          >
-            <MapResizer trigger={selectedDay || daysToRender.length} />
-            <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-            />
-            
-            <MapUpdater days={daysToRender} />
-
-            {daysToRender.map((day) => {
-                const colorIndex = (day.day_number - 1) % DAY_COLORS.length;
-                const dayColor = DAY_COLORS[colorIndex];
-                const positions: [number, number][] = [];
-                
-                return (
-                    <React.Fragment key={day.day_number}>
-                        {day.activities.map((act, actIndex) => {
-                            const lat = Number(act.latitude);
-                            const lng = Number(act.longitude);
-                            if (
-                                isNaN(lat) || 
-                                isNaN(lng) || 
-                                act.latitude == null || 
-                                (act.latitude as any) === '' ||
-                                act.longitude == null || 
-                                (act.longitude as any) === ''
-                            ) return null;
-                            const pos: [number, number] = [lat, lng];
-                            positions.push(pos);
-
-                            return (
-                                <MarkerWithLogic 
-                                    key={`${day.day_number}-${actIndex}`}
-                                    position={pos}
-                                    icon={createCustomIcon(actIndex + 1, dayColor)}
-                                >
-                                    <Popup>
-                                        <div className="p-1">
-                                            <div className="text-[10px] font-bold uppercase mb-1" style={{ color: dayColor }}>Day {day.day_number}</div>
-                                            <div className="font-bold text-sm mb-0.5 text-slate-900">{act.place_name}</div>
-                                            <div className="text-xs text-slate-500">{act.action}</div>
-                                        </div>
-                                    </Popup>
-                                </MarkerWithLogic>
-                            );
-                        })}
-                        
-                        {positions.length > 1 && (
-                            <Polyline 
-                                positions={positions} 
-                                pathOptions={{ color: dayColor, weight: 4, opacity: 0.8, dashArray: selectedDay ? undefined : '10, 10' }} 
-                            />
-                        )}
-                    </React.Fragment>
-                );
-            })}
-          </MapContainer>
+        <APIProvider apiKey={apiKey}>
+          <MapContent daysToRender={daysToRender} />
+        </APIProvider>
       </div>
     </div>
   );

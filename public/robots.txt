@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ariatrip.vercel.app/sitemap.xml
+Sitemap: https://ariatrip.site/sitemap.xml
