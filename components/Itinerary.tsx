@@ -2,10 +2,61 @@
 
 import React, { useState, useEffect } from 'react';
 import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, Lock, Loader2, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Clock, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X } from 'lucide-react';
+import { Train, AlertTriangle, CloudSun, Backpack, Lock, Loader2, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Clock, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { fetchImagesForQuery } from '../services/unsplashService';
+
+// Image Carousel Component
+const ImageCarousel = ({ images, alt }: { images: string[], alt: string }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    if (!images || images.length === 0) return null;
+
+    const nextImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
+    return (
+        <div className="relative w-full max-w-sm mx-auto h-56 rounded-2xl overflow-hidden mb-5 shadow-md group border border-white/50">
+            <img 
+                src={images[currentIndex]} 
+                alt={`${alt} - ${currentIndex + 1}`} 
+                className="w-full h-full object-cover transition-opacity duration-500"
+                referrerPolicy="no-referrer"
+            />
+            
+            {images.length > 1 && (
+                <>
+                    <button 
+                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm"
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button 
+                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm"
+                    >
+                        <ChevronRight className="w-5 h-5" />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 bg-black/30 px-2 py-1 rounded-full backdrop-blur-sm">
+                        {images.map((_, idx) => (
+                            <div key={idx} className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentIndex ? 'bg-white scale-110' : 'bg-white/50'}`} />
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
 
 interface Props {
   tripPlan: TripPlan;
@@ -43,7 +94,7 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
             <p className="text-xs text-slate-500 leading-relaxed mb-2">{activity.action}</p>
             
             {(activity.transport_tip || activity.cost_estimate) && (
-                <div className="flex flex-wrap gap-2 text-[10px] font-medium opacity-80">
+                <div className="flex flex-wrap gap-2 text-[10px] font-medium opacity-80 mb-3">
                     {activity.transport_tip && (
                         <span className="flex items-center gap-1 text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
                             <Train className="w-3 h-3" /> {activity.transport_tip}
@@ -56,6 +107,19 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
                     )}
                 </div>
             )}
+
+            {/* Social & Booking Links */}
+            <div className="flex flex-wrap gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+                <a href={`https://www.klook.com/en-US/search/result/?query=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition">
+                    <Ticket className="w-3 h-3" /> Klook Deals
+                </a>
+                <a href={`https://www.tiktok.com/search?q=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-full hover:bg-slate-200 transition">
+                    <Video className="w-3 h-3" /> TikTok
+                </a>
+                <a href={`https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-pink-50 text-pink-600 px-2 py-1 rounded-full hover:bg-pink-100 transition">
+                    <Camera className="w-3 h-3" /> Instagram
+                </a>
+            </div>
 
             {/* Hover visual cue */}
             <div className="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -75,6 +139,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
   const [showExportAd, setShowExportAd] = useState(false);
   const [showFormatSelection, setShowFormatSelection] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
+  const [dayImages, setDayImages] = useState<Record<number, string[]>>({});
   
   // Day Colors for Map Mapping
   const DAY_COLORS = ['#3B82F6', '#F59E0B', '#10B981', '#EC4899', '#8B5CF6', '#EF4444', '#06B6D4'];
@@ -86,7 +151,23 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
     if (devMode) {
         setUnlockedDelay(true); // Auto unlock if dev mode
     }
-  }, []);
+
+    // Fetch Unsplash images for each day
+    const fetchImages = async () => {
+      const newImages: Record<number, string[]> = {};
+      for (const day of tripPlan.days) {
+        // Try to find an image based on the first activity or the theme
+        const query = day.activities.length > 0 ? `${day.activities[0].place_name}` : `${day.theme}`;
+        const urls = await fetchImagesForQuery(query);
+        if (urls && urls.length > 0) {
+          newImages[day.day_number] = urls;
+        }
+      }
+      setDayImages(newImages);
+    };
+
+    fetchImages();
+  }, [tripPlan]);
 
   const handleUnlock = () => {
       // If dev mode, unlock immediately
@@ -352,11 +433,13 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
 
                 {tripPlan.days.map((day, idx) => {
                     const dayColor = DAY_COLORS[idx % DAY_COLORS.length];
+                    const images = dayImages[day.day_number];
+
                     return (
-                        <div key={day.day_number} className="relative">
+                        <div key={day.day_number} className="relative mb-8 bg-white/40 rounded-2xl p-2 border border-white/50 shadow-sm">
                              {/* Day Header Stick */}
                             <div 
-                                className="sticky top-0 bg-white/90 backdrop-blur-md py-3 cursor-pointer z-10 border-b border-white/50 mb-2 flex items-center justify-between rounded-b-xl shadow-sm px-2"
+                                className="sticky top-0 bg-white/95 backdrop-blur-md py-3 cursor-pointer z-10 border-b border-slate-100 mb-4 flex items-center justify-between rounded-xl shadow-sm px-3"
                                 onClick={() => onDayClick(day.day_number)}
                             >
                                 <div className="flex items-center gap-3">
@@ -372,6 +455,15 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                                     Map
                                 </button>
                             </div>
+
+                            {/* Carousel Image for the Day */}
+                            {images ? (
+                                <ImageCarousel images={images} alt={day.theme} />
+                            ) : (
+                                <div className="w-full max-w-sm mx-auto h-56 rounded-2xl bg-slate-200 animate-pulse mb-5 flex items-center justify-center text-slate-400 text-xs font-medium shadow-sm">
+                                    Loading visuals...
+                                </div>
+                            )}
 
                             {/* Activities */}
                             <div className="">

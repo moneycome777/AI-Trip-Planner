@@ -41,7 +41,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip, isExa
   const FREE_COMPARE_LIMIT = 1;
 
   // Resizable panel state
-  const [leftPanelWidth, setLeftPanelWidth] = useState(35); 
+  const [leftPanelWidth, setLeftPanelWidth] = useState(60); 
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 

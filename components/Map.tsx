@@ -241,7 +241,7 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
       </div>
 
       <div className="flex-1 w-full min-h-0 relative">
-        <APIProvider apiKey={apiKey}>
+        <APIProvider apiKey={apiKey} libraries={['marker']}>
           <MapContent daysToRender={daysToRender} />
         </APIProvider>
       </div>
