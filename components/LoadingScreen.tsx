@@ -12,6 +12,7 @@ interface Props {
 const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
   const [adFinished, setAdFinished] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // We no longer use the Pro model, so it's never complex
   const isComplex = false;
@@ -21,11 +22,39 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
     setIsDevMode(devMode);
     if (devMode) {
         setAdFinished(true);
+        setProgress(100);
         return;
     }
-    const timer = setTimeout(() => setAdFinished(true), 10000); 
-    return () => clearTimeout(timer);
-  }, []);
+    
+    // Progress bar logic
+    const startTime = Date.now();
+    const targetTime = 30000; // 30 seconds
+    
+    const interval = setInterval(() => {
+        if (isAiReady) {
+            setProgress(100);
+            setAdFinished(true);
+            clearInterval(interval);
+            return;
+        }
+        
+        const elapsed = Date.now() - startTime;
+        let newProgress = 0;
+        
+        if (elapsed < targetTime) {
+            // Linear progress up to 90% over 30 seconds
+            newProgress = (elapsed / targetTime) * 90;
+        } else {
+            // Asymptotically approach 99% after 30 seconds
+            const extraTime = elapsed - targetTime;
+            newProgress = 90 + (9 * (1 - Math.exp(-extraTime / 10000)));
+        }
+        
+        setProgress(Math.min(99, newProgress));
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isAiReady]);
 
   useEffect(() => {
       if (isDevMode && isAiReady) onAdComplete();
@@ -81,31 +110,44 @@ const LoadingScreen: React.FC<Props> = ({ onAdComplete, isAiReady }) => {
                     </div>
                 </div>
 
-                <div className="bg-slate-50 rounded-2xl p-5 flex items-center justify-center gap-3 border border-slate-100">
-                    {isAiReady ? (
-                        <CheckCircle className="w-6 h-6 text-emerald-600" />
-                    ) : (
-                        <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
-                    )}
-                    <span className={`text-base font-bold ${isAiReady ? 'text-emerald-700' : 'text-slate-600'}`}>
-                        {isAiReady ? "Trip Generation Complete!" : "AI Processing..."}
-                    </span>
+                <div className="bg-slate-50 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 border border-slate-100">
+                    <div className="flex items-center gap-3 w-full justify-center">
+                        {isAiReady ? (
+                            <CheckCircle className="w-6 h-6 text-emerald-600" />
+                        ) : (
+                            <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+                        )}
+                        <span className={`text-base font-bold ${isAiReady ? 'text-emerald-700' : 'text-slate-600'}`}>
+                            {isAiReady ? "Trip Generation Complete!" : "AI Processing..."}
+                        </span>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mt-2">
+                        <div 
+                            className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                    <div className="text-xs text-slate-400 font-medium">
+                        {Math.floor(progress)}%
+                    </div>
                 </div>
 
                 <button
                     onClick={handleContinue}
-                    disabled={!adFinished || !isAiReady}
+                    disabled={!isAiReady}
                     className={`w-full py-5 rounded-[1.5rem] font-black text-lg shadow-xl transition-all transform flex items-center justify-center gap-3
-                        ${(adFinished && isAiReady) 
+                        ${isAiReady 
                             ? 'bg-slate-900 text-white hover:bg-black hover:scale-[1.02] active:scale-[0.98] cursor-pointer' 
                             : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-80'
                         }
                     `}
                 >
-                    {(adFinished && isAiReady) ? (
+                    {isAiReady ? (
                         <>View My Plan <PlayCircle className="w-6 h-6" /></>
                     ) : (
-                        <>{!adFinished ? `Please wait (${Math.max(0, 0)}s)...` : "Finalizing details..."}</>
+                        <>Finalizing details...</>
                     )}
                 </button>
             </div>
