@@ -119,7 +119,8 @@ export const MOCK_TRIP_PLAN: TripPlan = {
           latitude: 35.5494,
           longitude: 139.7798,
           type: "transport",
-          transport_tip: "Take Keikyu Line to Shinagawa"
+          transport_tip: "Take Keikyu Line to Shinagawa",
+          travel_time_to_next: "45 mins"
         },
         {
           place_name: "Shibuya Crossing",
@@ -127,7 +128,8 @@ export const MOCK_TRIP_PLAN: TripPlan = {
           latitude: 35.6595,
           longitude: 139.7004,
           type: "sightseeing",
-          description: "The busiest pedestrian crossing in the world."
+          description: "The busiest pedestrian crossing in the world.",
+          travel_time_to_next: "10 mins"
         },
         {
           place_name: "Ichiran Ramen",
@@ -149,7 +151,8 @@ export const MOCK_TRIP_PLAN: TripPlan = {
           latitude: 35.7148,
           longitude: 139.7967,
           type: "sightseeing",
-          transport_tip: "Ginza Line to Asakusa"
+          transport_tip: "Ginza Line to Asakusa",
+          travel_time_to_next: "5 mins"
         },
         {
           place_name: "Nakamise Shopping Street",
@@ -157,7 +160,8 @@ export const MOCK_TRIP_PLAN: TripPlan = {
           latitude: 35.7138,
           longitude: 139.7963,
           type: "food",
-          cost_estimate: "1500 JPY"
+          cost_estimate: "1500 JPY",
+          travel_time_to_next: "15 mins"
         },
         {
           place_name: "Tokyo Skytree",
@@ -178,7 +182,8 @@ export const MOCK_TRIP_PLAN: TripPlan = {
           action: "Shop for kawaii fashion",
           latitude: 35.6715,
           longitude: 139.7031,
-          type: "sightseeing"
+          type: "sightseeing",
+          travel_time_to_next: "10 mins"
         },
         {
           place_name: "Meiji Shrine",
