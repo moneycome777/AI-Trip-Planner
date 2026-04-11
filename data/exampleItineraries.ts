@@ -59,6 +59,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 139.6993,
             type: 'sightseeing',
             cost_estimate: 'Free',
+            travel_time_to_next: '10 mins',
             description: 'AriaTrip AI groups activities geographically. Notice how we start here before the crowds arrive.'
           },
           {
@@ -68,6 +69,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 139.7028,
             type: 'sightseeing',
             cost_estimate: '¥1,000',
+            travel_time_to_next: '15 mins',
             description: 'Just a 5-minute walk from Meiji Jingu. Zero backtracking!'
           },
           {
@@ -92,6 +94,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 139.7967,
             type: 'sightseeing',
             cost_estimate: 'Free',
+            travel_time_to_next: '20 mins',
             description: 'AriaTrip AI knows this is best visited early morning.'
           },
           {
@@ -101,6 +104,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 139.7890,
             type: 'sightseeing',
             cost_estimate: '¥3,800',
+            travel_time_to_next: '25 mins',
             description: 'A must-do modern experience. Book tickets weeks in advance!'
           },
           {
@@ -126,6 +130,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             type: 'transport',
             cost_estimate: 'Included in JR Pass',
             transport_tip: 'Sit on the right side (Seat E) for views of Mt. Fuji!',
+            travel_time_to_next: '30 mins',
             description: 'AriaTrip AI even gives you seating tips for the best views.'
           },
           {
@@ -135,6 +140,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.7850,
             type: 'sightseeing',
             cost_estimate: '¥400',
+            travel_time_to_next: '15 mins',
             description: 'A UNESCO World Heritage site.'
           },
           {
@@ -159,6 +165,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.6668,
             type: 'sightseeing',
             cost_estimate: 'Free',
+            travel_time_to_next: '10 mins',
             description: 'Arrive by 7:30 AM to beat the crowds.'
           },
           {
@@ -168,6 +175,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.6738,
             type: 'sightseeing',
             cost_estimate: '¥500',
+            travel_time_to_next: '25 mins',
             description: 'Right next to the Bamboo Grove.'
           },
           {
@@ -192,6 +200,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.7727,
             type: 'sightseeing',
             cost_estimate: 'Free',
+            travel_time_to_next: '20 mins',
             description: 'AriaTrip AI suggests hiking past the halfway point where crowds thin out.'
           },
           {
@@ -201,6 +210,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.7632,
             type: 'food',
             cost_estimate: '¥3,000',
+            travel_time_to_next: '15 mins',
             description: 'Perfect spot for lunch after a morning hike.'
           },
           {
@@ -225,6 +235,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.4959,
             type: 'transport',
             cost_estimate: '¥570',
+            travel_time_to_next: '15 mins',
             description: 'Seamless inter-city routing.'
           },
           {
@@ -234,6 +245,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.5262,
             type: 'sightseeing',
             cost_estimate: '¥600',
+            travel_time_to_next: '20 mins',
             description: 'A symbol of Osaka\'s power and history.'
           },
           {
@@ -258,6 +270,7 @@ export const DEMO_ITINERARY: ExampleItinerary = {
             longitude: 135.5065,
             type: 'food',
             cost_estimate: '¥4,000',
+            travel_time_to_next: '45 mins',
             description: 'Pick up some high-quality matcha or snacks to take home.'
           },
           {
@@ -327,6 +340,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7100,
               type: 'sightseeing',
               cost_estimate: '¥500',
+              travel_time_to_next: '15 mins',
               description: 'A peaceful escape in the middle of the city.'
             },
             {
@@ -336,6 +350,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.6995,
               type: 'food',
               cost_estimate: '¥3,000',
+              travel_time_to_next: '10 mins',
               description: 'Nostalgic food alley near Shinjuku Station.'
             },
             {
@@ -360,6 +375,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.6993,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '10 mins',
               description: 'Located in a dense forest right next to Harajuku.'
             },
             {
@@ -369,6 +385,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7028,
               type: 'sightseeing',
               cost_estimate: '¥1,000',
+              travel_time_to_next: '15 mins',
               description: 'Bustling street full of trendy shops.'
             },
             {
@@ -393,6 +410,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7967,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '5 mins',
               description: 'Historic temple in Asakusa.'
             },
             {
@@ -402,6 +420,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7963,
               type: 'food',
               cost_estimate: '¥2,000',
+              travel_time_to_next: '20 mins',
               description: 'Street leading up to Senso-ji.'
             },
             {
@@ -426,6 +445,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7730,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '5 mins',
               description: 'The center of Japan\'s otaku culture.'
             },
             {
@@ -435,6 +455,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7710,
               type: 'food',
               cost_estimate: '¥2,500',
+              travel_time_to_next: '15 mins',
               description: 'A quirky and fun dining experience.'
             },
             {
@@ -459,6 +480,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7707,
               type: 'food',
               cost_estimate: '¥4,000',
+              travel_time_to_next: '20 mins',
               description: 'Bustling market with amazing street food.'
             },
             {
@@ -468,6 +490,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7890,
               type: 'sightseeing',
               cost_estimate: '¥3,800',
+              travel_time_to_next: '15 mins',
               description: 'Interactive and visually stunning art museum.'
             },
             {
@@ -535,6 +558,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.1419,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '15 mins',
               description: 'The King\'s official London residence.'
             },
             {
@@ -544,6 +568,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.1273,
               type: 'sightseeing',
               cost_estimate: '£27',
+              travel_time_to_next: '5 mins',
               description: 'Site of royal coronations and weddings.'
             },
             {
@@ -568,6 +593,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.0759,
               type: 'sightseeing',
               cost_estimate: '£33',
+              travel_time_to_next: '10 mins',
               description: 'Historic castle and former prison.'
             },
             {
@@ -577,6 +603,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.0754,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '15 mins',
               description: 'Often confused with London Bridge.'
             },
             {
@@ -601,6 +628,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.1270,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '15 mins',
               description: 'World-class museum of human history and culture.'
             },
             {
@@ -610,6 +638,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -0.1240,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '10 mins',
               description: 'Lively area with shops, restaurants, and entertainment.'
             },
             {
@@ -677,6 +706,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.7034,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '15 mins',
               description: 'Vibrant entertainment and business district.'
             },
             {
@@ -701,6 +731,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.1069,
               type: 'transport',
               cost_estimate: '¥2,470',
+              travel_time_to_next: '30 mins',
               description: 'Comfortable train ride to the hot spring town.'
             },
             {
@@ -710,6 +741,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 139.0167,
               type: 'sightseeing',
               cost_estimate: '¥1,200',
+              travel_time_to_next: '20 mins',
               description: 'Beautiful lake with views of Mt. Fuji on clear days.'
             },
             {
@@ -734,6 +766,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.7588,
               type: 'transport',
               cost_estimate: '¥13,000',
+              travel_time_to_next: '20 mins',
               description: 'Fast and efficient travel to the ancient capital.'
             },
             {
@@ -743,6 +776,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.7850,
               type: 'sightseeing',
               cost_estimate: '¥400',
+              travel_time_to_next: '15 mins',
               description: 'Famous temple offering great views of Kyoto.'
             },
             {
@@ -767,6 +801,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.7727,
               type: 'sightseeing',
               cost_estimate: 'Free',
+              travel_time_to_next: '25 mins',
               description: 'Iconic shrine dedicated to the Shinto god of rice.'
             },
             {
@@ -776,6 +811,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.7292,
               type: 'sightseeing',
               cost_estimate: '¥500',
+              travel_time_to_next: '30 mins',
               description: 'One of Kyoto\'s most famous landmarks.'
             },
             {
@@ -800,6 +836,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.8430,
               type: 'sightseeing',
               cost_estimate: '¥200 for deer crackers',
+              travel_time_to_next: '10 mins',
               description: 'Large park home to hundreds of sacred deer.'
             },
             {
@@ -824,6 +861,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 135.5013,
               type: 'food',
               cost_estimate: '¥3,000',
+              travel_time_to_next: '15 mins',
               description: 'Osaka\'s vibrant entertainment and food district.'
             },
             {
@@ -906,6 +944,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -73.9855,
               type: 'sightseeing',
               cost_estimate: '$0',
+              travel_time_to_next: '10 mins',
               description: 'The Crossroads of the World.'
             },
             {
@@ -915,6 +954,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -73.9787,
               type: 'sightseeing',
               cost_estimate: '$40',
+              travel_time_to_next: '15 mins',
               description: 'Famous complex of commercial buildings.'
             },
             {
@@ -939,6 +979,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -74.0445,
               type: 'sightseeing',
               cost_estimate: '$24',
+              travel_time_to_next: '20 mins',
               description: 'A symbol of freedom and hope.'
             },
             {
@@ -948,6 +989,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -74.0131,
               type: 'sightseeing',
               cost_estimate: '$33',
+              travel_time_to_next: '15 mins',
               description: 'Moving tribute to the victims of 9/11.'
             },
             {
@@ -972,6 +1014,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -73.9665,
               type: 'sightseeing',
               cost_estimate: '$15',
+              travel_time_to_next: '20 mins',
               description: 'New York\'s backyard.'
             },
             {
@@ -996,6 +1039,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: -74.0048,
               type: 'sightseeing',
               cost_estimate: '$0',
+              travel_time_to_next: '15 mins',
               description: 'Built on a historic freight rail line.'
             },
             {
@@ -1063,6 +1107,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 103.8440,
               type: 'sightseeing',
               cost_estimate: '0 SGD',
+              travel_time_to_next: '10 mins',
               description: 'Historic district with rich heritage.'
             },
             {
@@ -1072,6 +1117,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 103.8447,
               type: 'food',
               cost_estimate: '8 SGD',
+              travel_time_to_next: '20 mins',
               description: 'One of Singapore\'s best hawker centers.'
             },
             {
@@ -1096,6 +1142,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 103.8159,
               type: 'sightseeing',
               cost_estimate: '0 SGD',
+              travel_time_to_next: '25 mins',
               description: 'Beautiful tropical gardens.'
             },
             {
@@ -1105,6 +1152,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 103.8545,
               type: 'sightseeing',
               cost_estimate: '0 SGD',
+              travel_time_to_next: '15 mins',
               description: 'Iconic views of the city skyline.'
             },
             {
@@ -1129,6 +1177,7 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
               longitude: 103.8238,
               type: 'sightseeing',
               cost_estimate: '0 SGD',
+              travel_time_to_next: '40 mins',
               description: 'Resort island with beaches and attractions.'
             },
             {
