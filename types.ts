@@ -34,6 +34,7 @@ export interface Activity {
   latitude: number;
   longitude: number;
   transport_tip?: string;
+  travel_time_to_next?: string;
   type: 'sightseeing' | 'food' | 'transport' | 'hotel' | 'other';
   cost_estimate?: string;
   description?: string;
