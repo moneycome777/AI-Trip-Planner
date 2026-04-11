@@ -50,6 +50,7 @@ const tripSchema = {
                 latitude: { type: Type.NUMBER },
                 longitude: { type: Type.NUMBER },
                 transport_tip: { type: Type.STRING },
+                travel_time_to_next: { type: Type.STRING, description: "Estimated travel time to the NEXT activity (e.g. '15 mins', '1 hour'). Leave empty for the last activity of the day." },
                 type: { type: Type.STRING, enum: ["sightseeing", "food", "transport", "hotel", "other"] },
                 cost_estimate: { type: Type.STRING }
               },
@@ -164,7 +165,9 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
         - It MUST include the sum of all itemized 'cost_estimate' fields.
         - PLUS, it MUST include a realistic buffer for unlisted expenses (e.g., bottled water, snacks, random taxi rides, restroom fees).
         - You MUST explain what is included in this buffer in the 'budget_breakdown' field.
-    13. **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
+    13. **TIMELINE & TRAVEL TIME**:
+        - For every activity (except the last one of the day), provide a realistic 'travel_time_to_next' estimate based on the chosen transport mode and distance.
+    14. **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
     14. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
   `;
 
