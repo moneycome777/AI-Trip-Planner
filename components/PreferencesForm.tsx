@@ -1,6 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { animate } from 'motion/react';
 import { UserPreferences, Language } from '../types';
 import { TRAVEL_STYLES, BUDGET_LEVELS, PACING_STYLES, TRANSPORT_MODES } from '../constants';
 import { EXAMPLE_ITINERARIES } from '../data/exampleItineraries';
@@ -243,6 +244,43 @@ const UI_TEXT: Record<Language, any> = {
   'Thai': { whereLabel: "ไปที่ไหน? (เพิ่มหลายรายการ)", wherePlaceholder: "เช่น โตเกียว", departLabel: "จาก?", departPlaceholder: "เช่น กทม", whenLabel: "นาน?", whenPlaceholder: "เช่น 5 วัน", advanced: "ขั้นสูง", layoverLabel: "แวะพัก (ไม่จำเป็น)", layoverPlaceholder: "เช่น ดูไบ", hotelLabel: "โรงแรม (ไม่จำเป็น)", hotelPlaceholder: "เช่น ฮิลตัน", styleLabel: "สไตล์", constraintsLabel: "ขอพิเศษ (ไม่จำเป็น)", constraintsPlaceholder: "เช่น ไม่เผ็ด", budgetLabel: "งบ", pacingLabel: "ความแน่น", transportLabel: "การเดินทาง", button: "สร้าง" }
 };
 
+const StatCounter = ({ value, label, suffix = "", delay = 0, incrementInterval = 15000 }: { value: number, label: string, suffix?: string, delay?: number, incrementInterval?: number }) => {
+    const [count, setCount] = useState(0);
+    const [isInitialDone, setIsInitialDone] = useState(false);
+    
+    useEffect(() => {
+        const controls = animate(0, value, {
+            duration: 2,
+            delay: delay,
+            ease: "easeOut",
+            onUpdate: (latest) => setCount(Math.floor(latest)),
+            onComplete: () => setIsInitialDone(true)
+        });
+        return () => controls.stop();
+    }, [value, delay]);
+
+    useEffect(() => {
+        if (!isInitialDone) return;
+        
+        const interval = setInterval(() => {
+            setCount(prev => prev + Math.floor(Math.random() * 2) + 1);
+        }, incrementInterval + Math.random() * 5000);
+        
+        return () => clearInterval(interval);
+    }, [isInitialDone, incrementInterval]);
+
+    return (
+        <div className="flex flex-col items-center p-4">
+            <div className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
+                {count.toLocaleString()}{suffix}
+            </div>
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                {label}
+            </div>
+        </div>
+    );
+};
+
 const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTripDest }) => {
   const [formData, setFormData] = useState<UserPreferences>({
     destination: '',
@@ -264,6 +302,31 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
     
   // Date Picker State
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const videoSteps = [
+    { id: 0, label: '1. Input Preferences', start: 0, end: 10 },
+    { id: 1, label: '2. Explore Plan', start: 10, end: 23 },
+    { id: 2, label: '3. AI Customization', start: 23, end: 30 }
+  ];
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const time = videoRef.current.currentTime;
+      const step = videoSteps.find(s => time >= s.start && time < s.end);
+      if (step && step.id !== activeStep) {
+        setActiveStep(step.id || 0);
+      }
+    }
+  };
+
+  const seekToStep = (start: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = start;
+      videoRef.current.play();
+    }
+  };
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
   const location = useLocation();
@@ -692,6 +755,97 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
                 )}
             </div>
             </form>
+      </div>
+
+      {/* Social Proof Stats */}
+      <div className="max-w-4xl w-full mb-10 relative z-10 mx-auto px-4">
+            <div className="bg-white/40 backdrop-blur-sm rounded-3xl border border-white/50 shadow-sm py-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+                    <StatCounter value={12482} label="Plans Generated" suffix="+" />
+                    <StatCounter value={8930} label="Happy Travelers" suffix="+" delay={0.2} />
+                    <StatCounter value={142} label="Countries Covered" delay={0.4} />
+                </div>
+                <div className="flex items-center justify-center gap-2 mt-4">
+                    <div className="flex -space-x-2">
+                        {[1, 2, 3, 4].map((i) => (
+                            <img 
+                                key={i}
+                                src={`https://i.pravatar.cc/100?u=${i + 10}`} 
+                                className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                                alt="User"
+                            />
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-1.5 ml-2">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">42 people planning right now</span>
+                    </div>
+                </div>
+            </div>
+      </div>
+
+      {/* Video Demo Section */}
+      <div className="max-w-4xl w-full mb-10 text-slate-800 relative z-10 mx-auto px-4">
+            <div className="bg-white/60 backdrop-blur-md rounded-[2.5rem] p-8 shadow-sm border border-white/50">
+                <div className="text-center mb-6">
+                    <h2 className="text-3xl font-black text-slate-900 flex items-center justify-center gap-3">
+                        <Sparkles className="w-8 h-8 text-indigo-500" /> See AriaTrip in Action
+                    </h2>
+                    <p className="text-slate-500 mt-1 font-medium italic">Watch how easy it is to plan your next adventure.</p>
+                </div>
+
+                {/* Video Steps Pills */}
+                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                    {videoSteps.map((step) => (
+                        <button
+                            key={step.id}
+                            onClick={() => seekToStep(step.start)}
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all duration-300 border ${
+                                activeStep === step.id
+                                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200 scale-105'
+                                    : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-300 hover:text-indigo-600'
+                            }`}
+                        >
+                            {step.label}
+                        </button>
+                    ))}
+                </div>
+                
+                <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white/80 group">
+                    <video 
+                        ref={videoRef}
+                        onTimeUpdate={handleTimeUpdate}
+                        className="w-full h-full object-cover"
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        poster="https://picsum.photos/seed/travel-video/1280/720"
+                    >
+                        <source src="/Ariatrip%20demo.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+
+                    {/* CTA Overlay at the end of the video */}
+                    <div className={`absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center transition-all duration-500 z-20 ${
+                        activeStep === 2 && videoRef.current && videoRef.current.currentTime > 28 ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    }`}>
+                        <div className="bg-white p-8 rounded-[2rem] shadow-2xl text-center max-w-sm mx-4 transform transition-transform duration-500 scale-100">
+                            <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <Globe className="w-8 h-8 text-indigo-600" />
+                            </div>
+                            <h4 className="text-2xl font-black text-slate-900 mb-2">Ready to Explore?</h4>
+                            <p className="text-slate-500 text-sm mb-6 font-medium">Generate your personalized itinerary, book hotels, and export to PDF in seconds.</p>
+                            <button 
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                            >
+                                Start Planning Now <ArrowRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
       </div>
 
       {/* Example Itineraries Section */}
