@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame } from 'lucide-react';
+import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame, Clock } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -68,7 +68,7 @@ interface Props {
   isExample?: boolean;
 }
 
-const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () => void, dayColor: string }> = ({ activity, index, onClick, dayColor }) => {
+const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () => void, dayColor: string, isLast: boolean }> = ({ activity, index, onClick, dayColor, isLast }) => {
   const isHotel = activity.type === 'hotel' || activity.place_name.toLowerCase().includes('hotel');
   
   return (
@@ -127,6 +127,15 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
                 <MousePointerClick className="w-4 h-4 text-indigo-300" />
             </div>
         </div>
+
+        {/* Travel Time to Next */}
+        {!isLast && activity.travel_time_to_next && (
+            <div className="absolute left-3 bottom-[-14px] translate-x-[-50%] z-20 flex flex-col items-center">
+                <div className="bg-white text-indigo-600 text-[9px] font-black px-2 py-0.5 rounded-full border border-indigo-100 shadow-sm flex items-center gap-1 whitespace-nowrap animate-pulse">
+                    <Clock className="w-2.5 h-2.5" /> {activity.travel_time_to_next}
+                </div>
+            </div>
+        )}
     </div>
   );
 };
@@ -140,6 +149,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
   const [isDevMode, setIsDevMode] = useState(false);
   const [dayImages, setDayImages] = useState<Record<number, string[]>>({});
   const [hotelImages, setHotelImages] = useState<Record<string, string[]>>({});
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   
   // Day Colors for Map Mapping
   const DAY_COLORS = ['#3B82F6', '#F59E0B', '#10B981', '#EC4899', '#8B5CF6', '#EF4444', '#06B6D4'];
@@ -176,6 +186,13 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
 
     fetchImages();
   }, [tripPlan]);
+
+  // Scroll to top when tab changes
+  useEffect(() => {
+      if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+  }, [activeTab]);
 
   const handleExportClick = () => {
       if (isDevMode || isExample) {
@@ -396,7 +413,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 space-y-6 pb-32">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-5 space-y-6 pb-32">
         
         {/* TAB 1: DAILY SCHEDULE */}
         {activeTab === 'schedule' && (
@@ -468,6 +485,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                                         activity={act} 
                                         index={actIdx} 
                                         dayColor={dayColor}
+                                        isLast={actIdx === day.activities.length - 1}
                                         onClick={() => onPlaceClick(act)} 
                                     />
                                 ))}
