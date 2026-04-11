@@ -108,7 +108,6 @@ export const MOCK_TRIP_PLAN: TripPlan = {
   packing_list: ["Universal Power Adapter", "Comfortable Walking Shoes", "Coin Purse (Cash is King)"],
   weather_forecast: "Sunny with mild breeze. Highs of 18°C, Lows of 10°C.",
   transport_advice: "Get a Suica/Pasmo card on Apple Wallet. Trains are the fastest way around.",
-  flight_delay_backup: "If delayed, head to the Haneda Garden Spa connected to Terminal 3.",
   days: [
     {
       day_number: 1,

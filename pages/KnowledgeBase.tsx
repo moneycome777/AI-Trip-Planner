@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Info, Sparkles, ArrowRight, HelpCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 interface SEOContent {
     title: string;
@@ -586,6 +587,10 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
 
     return (
         <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12 animate-fadeIn">
+            <SEO 
+                title={`${data.title} - AriaTrip AI Travel Knowledge`} 
+                description={data.directAnswer} 
+            />
            
             {/* H1 - Exact Phrase */}
             <div className="text-center space-y-4">

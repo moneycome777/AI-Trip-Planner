@@ -6,6 +6,7 @@ interface Props {
   messages: ChatMessage[];
   onSendMessage: (msg: string) => void;
   isUpdating: boolean;
+  isExample?: boolean;
 }
 
 const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating }) => {

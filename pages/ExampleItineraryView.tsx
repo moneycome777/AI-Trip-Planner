@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { EXAMPLE_ITINERARIES } from '../data/exampleItineraries';
 import Dashboard from '../components/Dashboard';
+import SEO from '../components/SEO';
 
 interface Props {
   setShowNavbar: (show: boolean) => void;
@@ -17,7 +18,6 @@ const ExampleItineraryView: React.FC<Props> = ({ setShowNavbar }) => {
     if (!example) {
       navigate('/');
     } else {
-      document.title = `${example.title} - AriaTrip AI`;
       setShowNavbar(false);
     }
     
@@ -30,6 +30,10 @@ const ExampleItineraryView: React.FC<Props> = ({ setShowNavbar }) => {
 
   return (
     <div className="w-full h-full">
+      <SEO 
+        title={`${example.title} - AriaTrip AI`} 
+        description={`View this example AI-generated travel itinerary for ${example.preferences.destination}.`} 
+      />
       <Dashboard 
         initialPlan={example.plan} 
         preferences={example.preferences} 

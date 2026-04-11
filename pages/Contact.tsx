@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Send, Loader2, CheckCircle, AlertCircle, HelpCircle, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import SEO from '../components/SEO';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -40,6 +41,10 @@ const Contact: React.FC = () => {
 
   return (
     <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="Contact AriaTrip AI - Get Support & Share Feedback" 
+        description="Contact the AriaTrip AI team for support, feedback, partnership inquiries, or to report bugs. We are here to help you plan your perfect trip." 
+      />
       <div className="max-w-xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/60 overflow-hidden">
         <div className="bg-slate-900 p-8 text-white text-center">
             <h1 className="text-3xl font-bold mb-2">Contact Us</h1>

@@ -62,7 +62,6 @@ export interface TripPlan {
   packing_list: string[];
   weather_forecast: string;
   transport_advice: string;
-  flight_delay_backup?: string;
   days: DayPlan[];
 }
 

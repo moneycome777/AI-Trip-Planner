@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Zap, Shield, MessageSquare, ExternalLink } from 'lucide-react';
+import SEO from '../components/SEO';
 
 type Lang = 'EN' | 'CN';
 
@@ -8,6 +9,10 @@ const About: React.FC = () => {
 
   return (
     <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="About AriaTrip AI - The Future of Travel Planning" 
+        description="Learn about AriaTrip AI, the intelligent travel planner that uses advanced algorithms and local insights to create perfect, personalized itineraries." 
+      />
       <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
         
         {/* Header with Toggle */}

@@ -6,6 +6,8 @@ import LoadingScreen from './LoadingScreen';
 import Dashboard from './Dashboard';
 import { generateTripPlan } from '../services/geminiService';
 import { CACHE_KEY_PLAN, CACHE_KEY_PREFS } from '../constants';
+import SEO from './SEO';
+import { DEMO_ITINERARY } from '../data/exampleItineraries';
 
 interface Props {
   setShowNavbar: (show: boolean) => void;
@@ -17,6 +19,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [isAiReady, setIsAiReady] = useState(false);
   const [savedTripDest, setSavedTripDest] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   useEffect(() => {
     const cachedPlan = localStorage.getItem(CACHE_KEY_PLAN);
@@ -64,6 +67,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
     setAppState(AppState.LANDING);
     setShowNavbar(true); 
     setIsAiReady(false);
+    setIsDemoMode(false);
   };
 
   const handleResume = () => {
@@ -77,12 +81,26 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
     }
   };
 
+  const handleDemo = () => {
+    const demoTrip = DEMO_ITINERARY;
+    setPreferences(demoTrip.preferences);
+    setTripPlan(demoTrip.plan);
+    setIsDemoMode(true);
+    setAppState(AppState.DASHBOARD);
+    setShowNavbar(false);
+  };
+
   return (
     <div className={`w-full relative flex flex-col ${appState === AppState.DASHBOARD ? 'h-full' : 'min-h-full'}`}>
+      <SEO 
+        title="AriaTrip AI - Free Smart Travel Planner" 
+        description="Generate an executable, map-based travel plan in 30 seconds with AriaTrip AI. Say goodbye to rigid templates and hello to personalized, logical routes." 
+      />
       {appState === AppState.LANDING && (
         <PreferencesForm 
             onSubmit={handlePreferencesSubmit} 
             onResume={savedTripDest ? handleResume : undefined}
+            onDemo={handleDemo}
             savedTripDest={savedTripDest}
         />
       )}
@@ -100,6 +118,7 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
           initialPlan={tripPlan} 
           preferences={preferences} 
           onNewTrip={handleReset}
+          isExample={isDemoMode}
         />
       )}
     </div>

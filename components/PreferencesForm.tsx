@@ -10,6 +10,7 @@ import { MapPin, Calendar, Hotel, Globe, ChevronDown, ChevronUp, Plane, Clock, P
 interface Props {
   onSubmit: (prefs: UserPreferences) => void;
   onResume?: () => void;
+  onDemo?: () => void;
   savedTripDest?: string | null;
 }
 
@@ -242,7 +243,7 @@ const UI_TEXT: Record<Language, any> = {
   'Thai': { whereLabel: "ไปที่ไหน? (เพิ่มหลายรายการ)", wherePlaceholder: "เช่น โตเกียว", departLabel: "จาก?", departPlaceholder: "เช่น กทม", whenLabel: "นาน?", whenPlaceholder: "เช่น 5 วัน", advanced: "ขั้นสูง", layoverLabel: "แวะพัก (ไม่จำเป็น)", layoverPlaceholder: "เช่น ดูไบ", hotelLabel: "โรงแรม (ไม่จำเป็น)", hotelPlaceholder: "เช่น ฮิลตัน", styleLabel: "สไตล์", constraintsLabel: "ขอพิเศษ (ไม่จำเป็น)", constraintsPlaceholder: "เช่น ไม่เผ็ด", budgetLabel: "งบ", pacingLabel: "ความแน่น", transportLabel: "การเดินทาง", button: "สร้าง" }
 };
 
-const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest }) => {
+const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTripDest }) => {
   const [formData, setFormData] = useState<UserPreferences>({
     destination: '',
     departFrom: '',
@@ -671,13 +672,25 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, savedTripDest })
                 )}
             </div>
 
-            <button
-                type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-4 rounded-2xl shadow-xl shadow-slate-200 transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
-            >
-                <Globe className="w-5 h-5" />
-                {t.button}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                    type="submit"
+                    className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-4 rounded-2xl shadow-xl shadow-slate-200 transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
+                >
+                    <Globe className="w-5 h-5" />
+                    {t.button}
+                </button>
+                {onDemo && (
+                    <button
+                        type="button"
+                        onClick={onDemo}
+                        className="flex-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-4 px-4 rounded-2xl shadow-sm transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
+                    >
+                        <Sparkles className="w-5 h-5" />
+                        Try Demo
+                    </button>
+                )}
+            </div>
             </form>
       </div>
 

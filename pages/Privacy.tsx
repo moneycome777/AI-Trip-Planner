@@ -1,9 +1,14 @@
 import React from 'react';
 import { Shield, FileText } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Privacy: React.FC = () => {
   return (
     <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="Privacy Policy & Terms of Service - AriaTrip AI" 
+        description="Read our Privacy Policy and Terms of Service to understand how AriaTrip AI protects your data and the rules for using our AI travel planning service." 
+      />
       <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-sm border border-white/50 p-8 md:p-12">
         <div className="text-center mb-12">
             <h1 className="text-4xl font-extrabold text-slate-900 mb-4">Privacy Policy & Terms of Service</h1>

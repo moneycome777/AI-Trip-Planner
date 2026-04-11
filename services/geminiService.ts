@@ -32,7 +32,6 @@ const tripSchema = {
     packing_list: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Essential items to pack" },
     weather_forecast: { type: Type.STRING, description: "Expected weather and clothing advice" },
     transport_advice: { type: Type.STRING, description: "Best way to get around (cards, apps, etc)" },
-    flight_delay_backup: { type: Type.STRING, description: "A contingency plan if flights are delayed" },
     days: {
       type: Type.ARRAY,
       items: {
@@ -165,51 +164,52 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
         - It MUST include the sum of all itemized 'cost_estimate' fields.
         - PLUS, it MUST include a realistic buffer for unlisted expenses (e.g., bottled water, snacks, random taxi rides, restroom fees).
         - You MUST explain what is included in this buffer in the 'budget_breakdown' field.
-    13. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
+    13. **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
+    14. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
   `;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL_FLASH,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: tripSchema,
-        temperature: 0.3,
-        maxOutputTokens: 8192,
-      },
-    });
+  let retries = 2;
+  while (retries > 0) {
+      try {
+        const response = await ai.models.generateContent({
+          model: MODEL_FLASH,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: tripSchema,
+            temperature: 0.3,
+            maxOutputTokens: 8192,
+          },
+        });
 
-    const text = response.text;
-    if (!text) throw new Error("No response from AI");
+        const text = response.text;
+        if (!text) throw new Error("No response from AI");
 
-    try {
-        let cleanedText = text.trim();
-        if (cleanedText.startsWith('```')) {
-            cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+        try {
+            let cleanedText = text.trim();
+            if (cleanedText.startsWith('```')) {
+                cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+            }
+            return JSON.parse(cleanedText) as TripPlan;
+        } catch (e) {
+            console.error("JSON Parse Error in generateTripPlan. Raw text:", text);
+            throw new Error("Failed to parse AI response as JSON.");
         }
-        // Also replace unescaped newlines in strings if possible, but standard JSON.parse will handle valid JSON.
-        // The prompt instruction should prevent unescaped newlines.
-        return JSON.parse(cleanedText) as TripPlan;
-    } catch (e) {
-        console.error("JSON Parse Error in generateTripPlan. Raw text:", text);
-        throw new Error("Failed to parse AI response as JSON.");
-    }
-  } catch (error: any) {
-      console.error("Gemini API Error:", error);
-    
-    // FALLBACK TO MOCK DATA ON QUOTA ERROR (429) OR MODEL ERROR (404) OR GENERAL ERROR FOR DEV
-    if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
-        console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
-        
-        // Trigger Email Alert
-        sendQuotaAlert(error, "generateTripPlan");
-
-        return MOCK_TRIP_PLAN;
-    }
-
-    throw error;
+      } catch (error: any) {
+        retries--;
+        if (retries === 0) {
+            console.error("Gemini API Error:", error);
+            if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
+                console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
+                sendQuotaAlert(error, "generateTripPlan");
+                return MOCK_TRIP_PLAN;
+            }
+            throw error;
+        }
+        console.warn("Retrying generateTripPlan due to error...");
+      }
   }
+  throw new Error("Failed to generate trip plan after retries.");
 };
 
 export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Promise<ChatResponse> => {
@@ -291,42 +291,51 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
     CURRENCY: Show costs in Destination currency AND 'Depart From' currency (${prefs.departFrom || "USD"}).
     Format: "Local (~Depart)".
     Include a 'budget_breakdown' explaining the group tour fees.
+    **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
     **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
     `;
-    try {
-        const response = await ai.models.generateContent({
-            model: MODEL_FLASH,
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: tripSchema,
-                temperature: 0.2,
-                maxOutputTokens: 8192,
-            },
-        });
-        
-        const text = response.text;
-        if (!text) throw new Error("No response from AI");
-        
+    
+    let retries = 2;
+    while (retries > 0) {
         try {
-            let cleanedText = text.trim();
-            if (cleanedText.startsWith('```')) {
-                cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+            const response = await ai.models.generateContent({
+                model: MODEL_FLASH,
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: tripSchema,
+                    temperature: 0.2,
+                    maxOutputTokens: 8192,
+                },
+            });
+            
+            const text = response.text;
+            if (!text) throw new Error("No response from AI");
+            
+            try {
+                let cleanedText = text.trim();
+                if (cleanedText.startsWith('```')) {
+                    cleanedText = cleanedText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+                }
+                return JSON.parse(cleanedText) as TripPlan;
+            } catch (e) {
+                console.error("JSON Parse Error in generateStandardTour. Raw text:", text);
+                throw new Error("Failed to parse AI response as JSON.");
             }
-            return JSON.parse(cleanedText) as TripPlan;
-        } catch (e) {
-            console.error("JSON Parse Error in generateStandardTour. Raw text:", text);
-            throw new Error("Failed to parse AI response as JSON.");
+        } catch (error : any) {
+            retries--;
+            if (retries === 0) {
+                console.error("Gemini API Error:", error);
+                if (error.toString().includes("429") || error.toString().includes("Quota")) {
+                     sendQuotaAlert(error, "generateStandardTour");
+                     return MOCK_TRIP_PLAN;
+                }
+                throw error;
+            }
+            console.warn("Retrying generateStandardTour due to error...");
         }
-    } catch (error : any) {
-        console.error("Gemini API Error:", error);
-        // Fallback for standard tour as well if quota hit
-        if (error.toString().includes("429") || error.toString().includes("Quota")) {
-             sendQuotaAlert(error, "generateStandardTour");
-             return MOCK_TRIP_PLAN;
-        }
-        throw error;
     }
+    throw new Error("Failed to generate standard tour after retries.");
 };
 
 export const modifyTripPlan = async (currentPlan: TripPlan, userInstruction: string): Promise<TripPlan> => {

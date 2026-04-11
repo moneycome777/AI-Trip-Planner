@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, Lock, Loader2, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Clock, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -25,7 +25,7 @@ const ImageCarousel = ({ images, alt }: { images: string[], alt: string }) => {
     };
 
     return (
-        <div className="relative w-full max-w-sm mx-auto h-56 rounded-2xl overflow-hidden mb-5 shadow-md group border border-white/50">
+        <div className="relative w-full h-56 rounded-2xl overflow-hidden mb-5 shadow-md group border border-white/50">
             <img 
                 src={images[currentIndex]} 
                 alt={`${alt} - ${currentIndex + 1}`} 
@@ -65,6 +65,7 @@ interface Props {
   onShowMap: () => void;
   onCompare: () => void;
   onPlaceClick: (activity: Activity) => void;
+  isExample?: boolean;
 }
 
 const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () => void, dayColor: string }> = ({ activity, index, onClick, dayColor }) => {
@@ -111,7 +112,7 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
             {/* Social & Booking Links */}
             <div className="flex flex-wrap gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
                 <a href={`https://www.klook.com/en-US/search/result/?query=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition">
-                    <Ticket className="w-3 h-3" /> Klook Deals
+                    <Ticket className="w-3 h-3" /> {activity.cost_estimate ? `Find Tickets (est. ${activity.cost_estimate})` : 'Klook Deals'}
                 </a>
                 <a href={`https://www.tiktok.com/search?q=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-full hover:bg-slate-200 transition">
                     <Video className="w-3 h-3" /> TikTok
@@ -132,14 +133,13 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
 
 type Tab = 'schedule' | 'info' | 'survival' | 'budget';
 
-const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap, onCompare, onPlaceClick }) => {
+const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap, onCompare, onPlaceClick, isExample = false }) => {
   const [activeTab, setActiveTab] = useState<Tab>('schedule');
-  const [unlockedDelay, setUnlockedDelay] = useState(false);
-  const [isUnlocking, setIsUnlocking] = useState(false);
   const [showExportAd, setShowExportAd] = useState(false);
   const [showFormatSelection, setShowFormatSelection] = useState(false);
   const [isDevMode, setIsDevMode] = useState(false);
   const [dayImages, setDayImages] = useState<Record<number, string[]>>({});
+  const [hotelImages, setHotelImages] = useState<Record<string, string[]>>({});
   
   // Day Colors for Map Mapping
   const DAY_COLORS = ['#3B82F6', '#F59E0B', '#10B981', '#EC4899', '#8B5CF6', '#EF4444', '#06B6D4'];
@@ -147,43 +147,38 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
   useEffect(() => {
     const devMode = localStorage.getItem('tripgenie_dev_mode') === 'true';
     setIsDevMode(devMode);
-    
-    if (devMode) {
-        setUnlockedDelay(true); // Auto unlock if dev mode
-    }
 
-    // Fetch Unsplash images for each day
+    // Fetch Unsplash images for each day and hotels
     const fetchImages = async () => {
       const newImages: Record<number, string[]> = {};
-      for (const day of tripPlan.days) {
-        // Try to find an image based on the first activity or the theme
+      const newHotelImages: Record<string, string[]> = {};
+
+      const dayPromises = tripPlan.days.map(async (day) => {
         const query = day.activities.length > 0 ? `${day.activities[0].place_name}` : `${day.theme}`;
         const urls = await fetchImagesForQuery(query);
         if (urls && urls.length > 0) {
           newImages[day.day_number] = urls;
         }
-      }
+      });
+
+      const hotelPromises = (tripPlan.suggested_hotels || []).map(async (hotel) => {
+        const urls = await fetchImagesForQuery(`${hotel.name} hotel`);
+        if (urls && urls.length > 0) {
+          newHotelImages[hotel.name] = urls;
+        }
+      });
+
+      await Promise.all([...dayPromises, ...hotelPromises]);
+
       setDayImages(newImages);
+      setHotelImages(newHotelImages);
     };
 
     fetchImages();
   }, [tripPlan]);
 
-  const handleUnlock = () => {
-      // If dev mode, unlock immediately
-      if (isDevMode) {
-          setUnlockedDelay(true);
-          return;
-      }
-      setIsUnlocking(true);
-      setTimeout(() => {
-          setIsUnlocking(false);
-          setUnlockedDelay(true);
-      }, 2000);
-  };
-
   const handleExportClick = () => {
-      if (isDevMode) {
+      if (isDevMode || isExample) {
           setShowFormatSelection(true);
       } else {
           setShowExportAd(true);
@@ -450,9 +445,9 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                                 </div>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); onShowMap(); onDayClick(day.day_number); }}
-                                    className="text-xs text-indigo-600 font-bold bg-indigo-50 px-3 py-1.5 rounded-full lg:hidden"
+                                    className="text-xs text-indigo-600 font-bold bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"
                                 >
-                                    Map
+                                    View on Map
                                 </button>
                             </div>
 
@@ -460,7 +455,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                             {images ? (
                                 <ImageCarousel images={images} alt={day.theme} />
                             ) : (
-                                <div className="w-full max-w-sm mx-auto h-56 rounded-2xl bg-slate-200 animate-pulse mb-5 flex items-center justify-center text-slate-400 text-xs font-medium shadow-sm">
+                                <div className="w-full h-56 rounded-2xl bg-slate-200 animate-pulse mb-5 flex items-center justify-center text-slate-400 text-xs font-medium shadow-sm">
                                     Loading visuals...
                                 </div>
                             )}
@@ -511,19 +506,27 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                         <BedDouble className="w-4 h-4 text-indigo-500" /> Recommended Stays
                     </h3>
                     {tripPlan.suggested_hotels?.map((hotel, idx) => (
-                        <div key={idx} className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/60">
-                            <div className="flex justify-between items-start mb-1">
+                        <div key={idx} className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/60 relative">
+                            {idx === 0 && (
+                                <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1 z-10">
+                                    <Flame className="w-3 h-3" /> Top AI Pick
+                                </span>
+                            )}
+                            {hotelImages[hotel.name] && hotelImages[hotel.name].length > 0 && (
+                                <ImageCarousel images={hotelImages[hotel.name]} alt={hotel.name} />
+                            )}
+                            <div className="flex justify-between items-start mb-1 mt-2">
                                 <span className="font-bold text-slate-900 text-sm">{hotel.name}</span>
                                 <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md">{hotel.price_range}</span>
                             </div>
                             <p className="text-xs text-slate-500 mb-3">{hotel.description}</p>
                             <a 
-                                href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(hotel.name)}`}
+                                href={`https://www.agoda.com/search?textToSearch=${encodeURIComponent(hotel.name)}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="block w-full text-center py-2 rounded-lg bg-indigo-50 text-indigo-600 text-xs font-bold hover:bg-indigo-100 transition"
+                                className="block w-full text-center py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition shadow-sm"
                             >
-                                Check Availability
+                                Check Availability on Agoda
                             </a>
                         </div>
                     ))}
@@ -558,32 +561,6 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                 <div className="bg-white/80 backdrop-blur-sm p-5 rounded-2xl shadow-sm border border-white/60">
                     <h4 className="font-bold flex items-center gap-2 text-slate-700 text-sm mb-2 uppercase"><Train className="w-4 h-4"/> Transport</h4>
                     <p className="text-sm text-slate-600 leading-relaxed">{tripPlan.transport_advice}</p>
-                </div>
-
-                {/* Locked Flight Delay Section */}
-                <div className={`p-5 rounded-2xl border-2 border-dashed transition-all ${unlockedDelay ? 'bg-emerald-50/80 border-emerald-200' : 'bg-slate-50/80 border-slate-300'}`}>
-                    <div className="flex justify-between items-center mb-3">
-                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                            <Clock className="w-4 h-4" /> Flight Delay Plan
-                        </h3>
-                        {!unlockedDelay && <Lock className="w-4 h-4 text-slate-400" />}
-                    </div>
-                    {unlockedDelay ? (
-                        <p className="text-sm text-emerald-800 animate-fadeIn leading-relaxed">
-                            {tripPlan.flight_delay_backup || "If your flight is delayed, head to the airport lounge (2F) or book a pod at the Capsule Hotel in Terminal 1. Relax, your trip is still on!"}
-                        </p>
-                    ) : (
-                        <div className="text-center py-2">
-                            <p className="text-xs text-slate-500 mb-4">Unlock expert advice for delayed flights & missed connections.</p>
-                            <button 
-                                onClick={handleUnlock}
-                                disabled={isUnlocking}
-                                className="bg-slate-900 text-white text-xs px-6 py-2.5 rounded-full font-bold hover:bg-slate-800 transition flex items-center justify-center gap-2 mx-auto disabled:opacity-70 shadow-lg shadow-slate-200"
-                            >
-                                {isUnlocking ? <><Loader2 className="w-3 h-3 animate-spin"/> Unlocking...</> : "Watch Ad to Unlock"}
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
         )}

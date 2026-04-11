@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Globe, Compass, Sun, Wind } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const DESTINATIONS = [
     { country: 'Japan', cities: ['Tokyo', 'Kyoto', 'Osaka', 'Hokkaido'], desc: 'Experience the perfect blend of tradition and futurism. Visit ancient temples, neon-lit streets, and enjoy world-class cuisine.', bg: 'bg-indigo-50/50 text-indigo-700' },
@@ -17,6 +18,10 @@ const DESTINATIONS = [
 const Destinations: React.FC = () => {
   return (
     <div className="min-h-full py-12 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="Top Travel Destinations - AriaTrip AI" 
+        description="Explore top travel destinations around the world. Get AI-generated itineraries for Japan, France, Italy, Thailand, USA, Spain, Australia, Greece, and Mexico." 
+      />
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
             <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-6">Explore Our Top Travel Destinations</h1>

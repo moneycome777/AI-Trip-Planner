@@ -7,25 +7,48 @@ interface Props {
   currentPlan: TripPlan;
   preferences: UserPreferences;
   onClose: () => void;
+  isExample?: boolean;
 }
 
-const ComparisonModal: React.FC<Props> = ({ currentPlan, preferences, onClose }) => {
+const ComparisonModal: React.FC<Props> = ({ currentPlan, preferences, onClose, isExample = false }) => {
   const [standardPlan, setStandardPlan] = useState<TripPlan | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchComparison = async () => {
         try {
+            if (isExample) {
+                // Mock standard plan for demo
+                const mockStandardPlan: TripPlan = {
+                    ...currentPlan,
+                    trip_summary: "Standard Group Tour",
+                    days: currentPlan.days.map(day => ({
+                        ...day,
+                        theme: "Generic Sightseeing",
+                        activities: [
+                            { place_name: "Generic Tourist Trap", action: "Follow the flag", type: "sightseeing", latitude: 0, longitude: 0 },
+                            { place_name: "Overpriced Souvenir Shop", action: "Mandatory 2-hour shopping stop", type: "other", latitude: 0, longitude: 0 },
+                            { place_name: "Buffet Restaurant", action: "Eat mediocre food with 50 other people", type: "food", latitude: 0, longitude: 0 }
+                        ]
+                    }))
+                };
+                setTimeout(() => {
+                    setStandardPlan(mockStandardPlan);
+                    setLoading(false);
+                }, 1500);
+                return;
+            }
+
             const result = await generateStandardTour(preferences);
             setStandardPlan(result);
         } catch (e) {
             console.error(e);
         } finally {
-            setLoading(false);
+            if (!isExample) setLoading(false);
         }
     };
     fetchComparison();
-  }, [preferences]);
+  }, [preferences, isExample, currentPlan]);
 
   return (
     <div className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">

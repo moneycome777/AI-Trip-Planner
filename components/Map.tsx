@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { APIProvider, Map as GoogleMap, AdvancedMarker, Pin, useMap, useApiLoadingStatus } from '@vis.gl/react-google-maps';
+import { APIProvider, Map as GoogleMap, AdvancedMarker, Pin, useMap, useApiLoadingStatus, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { TripPlan, DayPlan } from '../types';
 import { ArrowLeft, Eye, EyeOff, MousePointerClick } from 'lucide-react';
 import { DAY_COLORS } from '../constants';
@@ -83,6 +83,7 @@ const PolylineRenderer = ({ days }: { days: DayPlan[] }) => {
 
 const MapContent = ({ daysToRender }: { daysToRender: DayPlan[] }) => {
   const status = useApiLoadingStatus();
+  const markerLibrary = useMapsLibrary('marker');
 
   if (status !== 'LOADED') {
     return (
@@ -106,13 +107,12 @@ const MapContent = ({ daysToRender }: { daysToRender: DayPlan[] }) => {
     );
   }
 
-  // Double check that marker library is loaded to prevent crash
-  if (!window.google?.maps?.marker) {
+  // Wait for marker library to load
+  if (!markerLibrary) {
     return (
       <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-500 p-6 text-center">
         <div>
-          <p className="font-bold mb-2 text-red-500">Map Libraries Missing</p>
-          <p className="text-sm">The required Google Maps libraries failed to load.</p>
+          <p className="font-bold mb-2">Loading Map Libraries...</p>
         </div>
       </div>
     );
@@ -161,9 +161,10 @@ interface Props {
   tripPlan: TripPlan;
   selectedDay?: number;
   onBackToList?: () => void;
+  onClearSelection?: () => void;
 }
 
-const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
+const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList, onClearSelection }) => {
   const [visibleDays, setVisibleDays] = useState<number[]>([]);
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -233,6 +234,17 @@ const Map: React.FC<Props> = ({ tripPlan, selectedDay, onBackToList }) => {
                       );
                   })}
               </div>
+          </div>
+      )}
+
+      {selectedDay && onClearSelection && (
+          <div className="absolute top-4 right-4 z-[1000]">
+              <button 
+                  onClick={onClearSelection}
+                  className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-slate-200 text-sm font-bold text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center gap-2"
+              >
+                  <Eye className="w-4 h-4" /> Show Full Trip
+              </button>
           </div>
       )}
 

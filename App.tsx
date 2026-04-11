@@ -37,6 +37,7 @@ const App: React.FC = () => {
     }
   }, []);
 
+
   useEffect(() => {
     const titles: Record<string, string> = {
       '/': 'AriaTrip AI - Free Smart Travel Planner',
@@ -49,6 +50,7 @@ const App: React.FC = () => {
     const title = titles[location.pathname] || 'AriaTrip AI - Elegant Travel Planner';
     document.title = title;
   }, [location]);
+
 
   return (
     <div className={`w-full font-sans select-none flex flex-col relative text-slate-800 ${showNavbar ? 'min-h-full' : 'h-full overflow-hidden'}`}>

@@ -8,6 +8,273 @@ export interface ExampleItinerary {
   plan: TripPlan;
 }
 
+export const DEMO_ITINERARY: ExampleItinerary = {
+  slug: 'demo-ultimate-japan',
+  title: 'Demo: Ultimate Japan Experience',
+  image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+  preferences: {
+    destination: 'Tokyo, Kyoto, Osaka',
+    departFrom: 'Anywhere',
+    duration: '7 Days',
+    layover: '',
+    hotel: 'Luxury & Traditional',
+    style: ['Culture', 'Food', 'Sightseeing', 'Hidden Gems'],
+    constraints: 'Showcase the power of AriaTrip AI',
+    language: 'English',
+    budget: 'Luxury',
+    pacing: 'Balanced',
+    transportMode: 'Public Transport'
+  },
+  plan: {
+    trip_summary: 'Experience the magic of AriaTrip AI! This demo showcases our ability to seamlessly route multiple cities, provide hyper-local insights, estimate realistic budgets, and give you a survival guide—all generated in seconds.',
+    estimated_budget: '$3,500 USD (~¥525,000 JPY)',
+    budget_breakdown: 'This is a high-end demo budget. It includes Green Car (First Class) Shinkansen passes, premium omakase dining, private tea ceremonies, and luxury ryokan stays. Excludes international flights.',
+    suggested_dates: 'Late March (Cherry Blossom Season) or Mid-November (Autumn Foliage)',
+    date_reasoning: 'AriaTrip AI analyzes historical weather patterns to suggest the absolute best time to visit based on your preferences.',
+    suggested_hotels: [
+      { name: 'Aman Tokyo', price_range: '$1,200 - $2,000 USD', description: 'Ultra-luxury in the sky with panoramic views of the Imperial Palace Gardens.' },
+      { name: 'Hoshinoya Kyoto', price_range: '$800 - $1,500 USD', description: 'A riverside luxury ryokan accessible only by private boat. A true bucket-list experience.' }
+    ],
+    warnings: [
+      'AriaTrip AI Safety Tip: Kyoto buses get extremely crowded during peak seasons. We\'ve routed you near subway lines to avoid this.',
+      'Cultural Tip: Tipping is considered rude in Japan. Excellent service is standard.',
+      'Logistics: Forward your heavy luggage from Tokyo to Kyoto using the "Takuhaibin" service (approx. $15/bag).'
+    ],
+    packing_list: [
+      'Slip-on shoes (you will take them off frequently at temples and restaurants)',
+      'Pocket Wi-Fi or eSIM (crucial for navigating train schedules)',
+      'A coin purse (Japan is still surprisingly cash-heavy for small purchases)'
+    ],
+    weather_forecast: 'Spring (March-May): 10-20°C (50-68°F). Autumn (Sep-Nov): 15-25°C (59-77°F). Crisp, clear, and perfect for walking.',
+    transport_advice: 'AriaTrip AI recommends the 7-Day JR Pass. For local transit, add a digital Suica card to your Apple/Google Wallet before you arrive.',
+    days: [
+      {
+        day_number: 1,
+        theme: 'Tokyo: Neon & Nostalgia',
+        activities: [
+          {
+            place_name: 'Meiji Jingu Shrine',
+            action: 'Start your day with tranquility in this massive forested shrine.',
+            latitude: 35.6764,
+            longitude: 139.6993,
+            type: 'sightseeing',
+            cost_estimate: 'Free',
+            description: 'AriaTrip AI groups activities geographically. Notice how we start here before the crowds arrive.'
+          },
+          {
+            place_name: 'Harajuku & Takeshita Street',
+            action: 'Dive into youth culture and grab a famous Harajuku crepe.',
+            latitude: 35.6712,
+            longitude: 139.7028,
+            type: 'sightseeing',
+            cost_estimate: '¥1,000',
+            description: 'Just a 5-minute walk from Meiji Jingu. Zero backtracking!'
+          },
+          {
+            place_name: 'Shibuya Scramble Crossing & Omakase Dinner',
+            action: 'Witness the organized chaos, then enjoy a premium sushi dinner.',
+            latitude: 35.6595,
+            longitude: 139.7005,
+            type: 'food',
+            cost_estimate: '¥25,000',
+            description: 'AriaTrip AI finds the perfect balance of iconic sights and high-end culinary experiences.'
+          }
+        ]
+      },
+      {
+        day_number: 2,
+        theme: 'Tokyo: Tradition Meets Future',
+        activities: [
+          {
+            place_name: 'Senso-ji Temple (Asakusa)',
+            action: 'Explore Tokyo\'s oldest temple and shop at Nakamise street.',
+            latitude: 35.7148,
+            longitude: 139.7967,
+            type: 'sightseeing',
+            cost_estimate: 'Free',
+            description: 'AriaTrip AI knows this is best visited early morning.'
+          },
+          {
+            place_name: 'teamLab Planets TOKYO',
+            action: 'Walk barefoot through water in this immersive digital art museum.',
+            latitude: 35.6499,
+            longitude: 139.7890,
+            type: 'sightseeing',
+            cost_estimate: '¥3,800',
+            description: 'A must-do modern experience. Book tickets weeks in advance!'
+          },
+          {
+            place_name: 'Ginza High-End Shopping',
+            action: 'Stroll the luxury boutiques and enjoy a wagyu beef dinner.',
+            latitude: 35.6712,
+            longitude: 139.7665,
+            type: 'food',
+            cost_estimate: '¥30,000',
+            description: 'The Beverly Hills of Tokyo.'
+          }
+        ]
+      },
+      {
+        day_number: 3,
+        theme: 'Bullet Train to Ancient Kyoto',
+        activities: [
+          {
+            place_name: 'Shinkansen (Bullet Train)',
+            action: 'Ride the bullet train from Tokyo to Kyoto (approx 2h 15m).',
+            latitude: 35.6812,
+            longitude: 139.7671,
+            type: 'transport',
+            cost_estimate: 'Included in JR Pass',
+            transport_tip: 'Sit on the right side (Seat E) for views of Mt. Fuji!',
+            description: 'AriaTrip AI even gives you seating tips for the best views.'
+          },
+          {
+            place_name: 'Kiyomizu-dera Temple',
+            action: 'Visit the iconic wooden stage overlooking the city.',
+            latitude: 34.9948,
+            longitude: 135.7850,
+            type: 'sightseeing',
+            cost_estimate: '¥400',
+            description: 'A UNESCO World Heritage site.'
+          },
+          {
+            place_name: 'Gion District (Geisha Quarter)',
+            action: 'Evening stroll through preserved wooden streets. Keep an eye out for Geiko.',
+            latitude: 35.0037,
+            longitude: 135.7785,
+            type: 'sightseeing',
+            cost_estimate: 'Free',
+            description: 'AriaTrip AI schedules this for the evening when the lanterns are lit.'
+          }
+        ]
+      },
+      {
+        day_number: 4,
+        theme: 'Kyoto: Zen & Bamboo',
+        activities: [
+          {
+            place_name: 'Arashiyama Bamboo Grove',
+            action: 'Walk through the towering bamboo stalks.',
+            latitude: 35.0094,
+            longitude: 135.6668,
+            type: 'sightseeing',
+            cost_estimate: 'Free',
+            description: 'Arrive by 7:30 AM to beat the crowds.'
+          },
+          {
+            place_name: 'Tenryu-ji Temple',
+            action: 'Admire one of Kyoto\'s finest Zen gardens.',
+            latitude: 35.0155,
+            longitude: 135.6738,
+            type: 'sightseeing',
+            cost_estimate: '¥500',
+            description: 'Right next to the Bamboo Grove.'
+          },
+          {
+            place_name: 'Kinkaku-ji (Golden Pavilion)',
+            action: 'See the stunning gold-leaf covered Zen temple reflecting in the pond.',
+            latitude: 35.0394,
+            longitude: 135.7292,
+            type: 'sightseeing',
+            cost_estimate: '¥500',
+            description: 'AriaTrip AI optimizes the route from Arashiyama to Kinkaku-ji.'
+          }
+        ]
+      },
+      {
+        day_number: 5,
+        theme: 'Kyoto: The Thousand Gates',
+        activities: [
+          {
+            place_name: 'Fushimi Inari Taisha',
+            action: 'Hike the mountain trail lined with thousands of vermilion torii gates.',
+            latitude: 34.9671,
+            longitude: 135.7727,
+            type: 'sightseeing',
+            cost_estimate: 'Free',
+            description: 'AriaTrip AI suggests hiking past the halfway point where crowds thin out.'
+          },
+          {
+            place_name: 'Nishiki Market',
+            action: 'Sample local Kyoto delicacies at "Kyoto\'s Kitchen".',
+            latitude: 35.0049,
+            longitude: 135.7632,
+            type: 'food',
+            cost_estimate: '¥3,000',
+            description: 'Perfect spot for lunch after a morning hike.'
+          },
+          {
+            place_name: 'Traditional Tea Ceremony',
+            action: 'Experience the art of matcha preparation in a historic machiya.',
+            latitude: 35.0060,
+            longitude: 135.7680,
+            type: 'other',
+            cost_estimate: '¥5,000',
+            description: 'AriaTrip AI includes cultural immersion, not just sightseeing.'
+          }
+        ]
+      },
+      {
+        day_number: 6,
+        theme: 'Osaka: The Kitchen of Japan',
+        activities: [
+          {
+            place_name: 'Train to Osaka',
+            action: 'Short 30-minute train ride from Kyoto to Osaka.',
+            latitude: 34.7024,
+            longitude: 135.4959,
+            type: 'transport',
+            cost_estimate: '¥570',
+            description: 'Seamless inter-city routing.'
+          },
+          {
+            place_name: 'Osaka Castle',
+            action: 'Explore the historic castle and its massive stone walls.',
+            latitude: 34.6873,
+            longitude: 135.5262,
+            type: 'sightseeing',
+            cost_estimate: '¥600',
+            description: 'A symbol of Osaka\'s power and history.'
+          },
+          {
+            place_name: 'Dotonbori Food Tour',
+            action: 'Eat your way through Osaka: Takoyaki, Okonomiyaki, and Kushikatsu.',
+            latitude: 34.6687,
+            longitude: 135.5013,
+            type: 'food',
+            cost_estimate: '¥8,000',
+            description: 'Osaka\'s motto is "Kuidaore" (eat until you drop).'
+          }
+        ]
+      },
+      {
+        day_number: 7,
+        theme: 'Departure',
+        activities: [
+          {
+            place_name: 'Kuromon Ichiba Market',
+            action: 'Last-minute souvenir shopping and fresh seafood breakfast.',
+            latitude: 34.6654,
+            longitude: 135.5065,
+            type: 'food',
+            cost_estimate: '¥4,000',
+            description: 'Pick up some high-quality matcha or snacks to take home.'
+          },
+          {
+            place_name: 'Kansai International Airport (KIX)',
+            action: 'Take the Haruka Express to the airport for departure.',
+            latitude: 34.4320,
+            longitude: 135.2304,
+            type: 'transport',
+            cost_estimate: '¥1,500',
+            description: 'AriaTrip AI always ensures you have a smooth exit strategy.'
+          }
+        ]
+      }
+    ]
+  }
+};
+
 export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
   {
     slug: '5-days-in-tokyo',
@@ -48,7 +315,6 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
       ],
       weather_forecast: 'Mild in spring and autumn. Hot and humid in summer. Cold but dry in winter.',
       transport_advice: 'Use a Suica or Pasmo card (available on Apple Wallet) for all trains and buses.',
-      flight_delay_backup: 'If arriving late at Haneda/Narita, use the Airport Limousine Bus or a pre-booked taxi.',
       days: [
         {
           day_number: 1,
@@ -257,7 +523,6 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
       ],
       weather_forecast: 'Mild with a chance of rain year-round.',
       transport_advice: 'Use a contactless credit card or Apple/Google Pay for the Tube and buses (daily cap applies).',
-      flight_delay_backup: 'If arriving late, use the Heathrow Express or Elizabeth Line to reach central London quickly.',
       days: [
         {
           day_number: 1,
@@ -400,7 +665,6 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
       ],
       weather_forecast: 'Varies by region, but generally mild in spring and autumn.',
       transport_advice: 'Use the Shinkansen (bullet train) for intercity travel. Buy a JR Pass if it makes financial sense for your itinerary.',
-      flight_delay_backup: 'If you miss your Shinkansen, you can usually take the next unreserved train on the same day.',
       days: [
         {
           day_number: 1,
@@ -630,7 +894,6 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
       ],
       weather_forecast: 'Hot in summer, cold in winter. Spring and autumn are mild.',
       transport_advice: 'Use the subway for long distances and walk the rest. Avoid taxis during rush hour.',
-      flight_delay_backup: 'Take the AirTrain and subway from JFK or Newark if traffic is bad.',
       days: [
         {
           day_number: 1,
@@ -788,7 +1051,6 @@ export const EXAMPLE_ITINERARIES: ExampleItinerary[] = [
       ],
       weather_forecast: 'Hot and humid year-round with frequent rain showers.',
       transport_advice: 'The MRT is the best and cheapest way to get around. Taxis are relatively affordable but not necessary.',
-      flight_delay_backup: 'Changi Airport is an attraction itself; enjoy Jewel Changi if you have extra time.',
       days: [
         {
           day_number: 1,
