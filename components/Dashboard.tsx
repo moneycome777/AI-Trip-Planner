@@ -169,6 +169,7 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip, isExa
       >
         <Itinerary 
             tripPlan={plan} 
+            preferences={preferences}
             onDayClick={handleDayClick} 
             onNewTrip={onNewTrip} 
             onShowMap={() => setMobileView('map')}
