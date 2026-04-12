@@ -79,6 +79,17 @@ export const EMPTY_TRIP: any = {
 export const CACHE_KEY_PLAN = 'tripgenie_cached_plan';
 export const CACHE_KEY_PREFS = 'tripgenie_cached_prefs';
 
+// Affiliate Links (Placeholders - User should replace with their actual links)
+export const AFFILIATE_LINKS = {
+  KLOOK: "https://www.klook.com/en-US/?aid=517346", // Example AID
+  AIRALO: "https://airalo.tpx.gr/qxNl4VDY",
+  YESIM: "https://yesim.tpx.gr/2NPMruq5",
+  SAILY: "https://saily.tpx.gr/4oSZjq65",
+  LOCALRENT: "https://localrent.tpx.gr/ECyn32Qz",
+  GETRENTACAR: "https://getrentacar.tpx.gr/RbVwueKA",
+  AIRHELP: "https://airhelp.tpx.gr/BFPyQ1wY"
+};
+
 // Map Colors Palette
 export const DAY_COLORS = [
     '#3B82F6', // Blue
