@@ -167,7 +167,10 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
         - You MUST explain what is included in this buffer in the 'budget_breakdown' field.
     13. **TIMELINE & TRAVEL TIME**:
         - For every activity (except the last one of the day), provide a realistic 'travel_time_to_next' estimate based on the chosen transport mode and distance.
-    14. **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
+    14. **FLIGHT DELAYS & COMPENSATION**:
+        - If the user asks about flight delays, cancellations, or compensation rules, do NOT attempt to calculate or explain the rules yourself. 
+        - Instead, explicitly tell them to check the "Flight Protection" tool in the "Book" or "Survival" tab to get a guaranteed check and claim via AirHelp.
+    15. **CRITICAL**: Keep descriptions concise to avoid hitting token limits.
     14. **JSON FORMATTING**: Ensure the output is perfectly valid JSON. Do NOT include unescaped newlines or quotes within strings. Use \\n for newlines if needed.
   `;
 
