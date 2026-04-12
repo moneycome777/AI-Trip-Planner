@@ -1,12 +1,14 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { TripPlan, Activity } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame, Clock } from 'lucide-react';
+import { TripPlan, Activity, UserPreferences } from '../types';
+import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame, Clock, ShoppingBag } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
+import AffiliateTools from './AffiliateTools';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { fetchImagesForQuery } from '../services/unsplashService';
+import { AFFILIATE_LINKS } from '../constants';
 
 // Image Carousel Component
 const ImageCarousel = ({ images, alt }: { images: string[], alt: string }) => {
@@ -60,6 +62,7 @@ const ImageCarousel = ({ images, alt }: { images: string[], alt: string }) => {
 
 interface Props {
   tripPlan: TripPlan;
+  preferences: UserPreferences;
   onDayClick: (day: number | undefined) => void;
   onNewTrip: () => void;
   onShowMap: () => void;
@@ -111,7 +114,7 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
 
             {/* Social & Booking Links */}
             <div className="flex flex-wrap gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
-                <a href={`https://www.klook.com/en-US/search/result/?query=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition">
+                <a href={`${AFFILIATE_LINKS.KLOOK}&query=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition border border-orange-100">
                     <Ticket className="w-3 h-3" /> {activity.cost_estimate ? `Find Tickets (est. ${activity.cost_estimate})` : 'Klook Deals'}
                 </a>
                 <a href={`https://www.tiktok.com/search?q=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-full hover:bg-slate-200 transition">
@@ -140,9 +143,9 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
   );
 };
 
-type Tab = 'schedule' | 'info' | 'survival' | 'budget';
+type Tab = 'schedule' | 'info' | 'survival' | 'budget' | 'booking';
 
-const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap, onCompare, onPlaceClick, isExample = false }) => {
+const Itinerary: React.FC<Props> = ({ tripPlan, preferences, onDayClick, onNewTrip, onShowMap, onCompare, onPlaceClick, isExample = false }) => {
   const [activeTab, setActiveTab] = useState<Tab>('schedule');
   const [showExportAd, setShowExportAd] = useState(false);
   const [showFormatSelection, setShowFormatSelection] = useState(false);
@@ -409,6 +412,12 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
             >
                 <Wallet className="w-3.5 h-3.5" /> Budget
             </button>
+            <button 
+                onClick={() => setActiveTab('booking')}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${activeTab === 'booking' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+                <ShoppingBag className="w-3.5 h-3.5" /> Book
+            </button>
         </div>
       </div>
 
@@ -580,6 +589,23 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                     <h4 className="font-bold flex items-center gap-2 text-slate-700 text-sm mb-2 uppercase"><Train className="w-4 h-4"/> Transport</h4>
                     <p className="text-sm text-slate-600 leading-relaxed">{tripPlan.transport_advice}</p>
                 </div>
+
+                {/* Flight Delay - AirHelp */}
+                <div className="bg-blue-600 rounded-2xl p-5 text-white shadow-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="w-4 h-4 text-blue-200" />
+                        <h4 className="font-bold text-sm uppercase">Flight Delayed?</h4>
+                    </div>
+                    <p className="text-xs text-blue-100 mb-4">Get up to €600 in compensation if your flight was delayed or cancelled.</p>
+                    <a 
+                        href={AFFILIATE_LINKS.AIRHELP} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="block w-full text-center py-2 bg-white text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-50 transition"
+                    >
+                        Check Compensation Now
+                    </a>
+                </div>
             </div>
         )}
 
@@ -606,6 +632,14 @@ const Itinerary: React.FC<Props> = ({ tripPlan, onDayClick, onNewTrip, onShowMap
                     </div>
                 </div>
             </div>
+        )}
+
+        {/* TAB 5: BOOKING TOOLS */}
+        {activeTab === 'booking' && (
+            <AffiliateTools 
+                transportMode={preferences.transportMode} 
+                destination={preferences.destination} 
+            />
         )}
 
       </div>
