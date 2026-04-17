@@ -820,9 +820,11 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
                         loop 
                         muted 
                         playsInline
+                        controls
                         poster="https://picsum.photos/seed/travel-video/1280/720"
+                        onError={(e) => console.error("Video loading error:", e)}
                     >
-                        <source src="/Ariatrip%20demo.mp4" type="video/mp4" />
+                        <source src="/ariatrip-demo.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
 
