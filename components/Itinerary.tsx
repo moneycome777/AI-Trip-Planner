@@ -9,6 +9,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { fetchImagesForQuery } from '../services/unsplashService';
 import { AFFILIATE_LINKS } from '../constants';
+import EzoicAd from './EzoicAd';
 
 // Image Carousel Component
 const ImageCarousel = ({ images, alt }: { images: string[], alt: string }) => {
@@ -642,6 +643,7 @@ const Itinerary: React.FC<Props> = ({ tripPlan, preferences, onDayClick, onNewTr
             />
         )}
 
+        <EzoicAd id={101} />
       </div>
     </div>
   );

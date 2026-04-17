@@ -75,9 +75,85 @@ export const EMPTY_TRIP: any = {
   days: []
 };
 
-// Storage Keys
+// Cache keys
 export const CACHE_KEY_PLAN = 'tripgenie_cached_plan';
 export const CACHE_KEY_PREFS = 'tripgenie_cached_prefs';
+
+// Local Airport Code Database for Flight Booking
+// Keys must be lowercase for case-insensitive matching
+export const AIRPORT_MAPPING: Record<string, string> = {
+    // Malaysia
+    'kuala lumpur': 'KULM', 'kl': 'KULM', 'klia': 'KUL', 'sepang': 'KUL',
+    'penang': 'PEN', 'georgetown': 'PEN',
+    'langkawi': 'LGK',
+    'kota kinabalu': 'BKI', 'sabah': 'BKI',
+    'kuching': 'KCH', 'sarawak': 'KCH',
+    'johor bahru': 'JHB', 'senai': 'JHB',
+    
+    // Japan
+    'tokyo': 'TYOA', 'haneda': 'HND', 'narita': 'NRT',
+    'osaka': 'OSKA', 'kansai': 'KIX', 'itami': 'ITM',
+    'kyoto': 'KIX', // Kyoto uses Osaka airports usually
+    'sapporo': 'SPPK', 'chitose': 'CTS', 'hokkaido': 'CTS',
+    'fukuoka': 'FUK',
+    'okinawa': 'OKA', 'naha': 'OKA',
+
+    // Thailand
+    'bangkok': 'BKKT', 'suvarnabhumi': 'BKK', 'don mueang': 'DMK',
+    'phuket': 'HKT',
+    'chiang mai': 'CNX',
+    'krabi': 'KBV',
+
+    // Singapore
+    'singapore': 'SIN', 'changi': 'SIN',
+
+    // Indonesia
+    'jakarta': 'JKTA', 'bali': 'DPS', 'denpasar': 'DPS',
+
+    // Vietnam
+    'ho chi minh': 'SGN', 'saigon': 'SGN',
+    'hanoi': 'HAN', 'da nang': 'DAD',
+
+    // China
+    'beijing': 'BJS', 'shanghai': 'SHA', 'guangzhou': 'CAN', 'shenzhen': 'SZX', 'hong kong': 'HKG',
+
+    // Europe
+    'london': 'LOND', 'heathrow': 'LHR', 'gatwick': 'LGW',
+    'paris': 'PARI', 'charles de gaulle': 'CDG',
+    'rome': 'ROM', 'fiumicino': 'FCO',
+    'milan': 'MIL',
+    'barcelona': 'BCN',
+    'madrid': 'MAD',
+    'amsterdam': 'AMS',
+    'frankfurt': 'FRA',
+    'munich': 'MUC',
+    'zurich': 'ZRH',
+
+    // USA
+    'new york': 'NYCA', 'jfk': 'JFK', 'newark': 'EWR',
+    'los angeles': 'LAX',
+    'san francisco': 'SFO',
+    'las vegas': 'LAS',
+    'chicago': 'CHIA',
+    'miami': 'MIA',
+    'orlando': 'ORL',
+
+    // Australia
+    'sydney': 'SYD',
+    'melbourne': 'MEL',
+    'brisbane': 'BNE',
+    'perth': 'PER',
+
+    // Middle East
+    'dubai': 'DXB',
+    'doha': 'DOH',
+    'abu dhabi': 'AUH',
+
+    // India
+    'delhi': 'DEL',
+    'mumbai': 'BOM',
+    'bangalore': 'BLR'
+};
 
 // Affiliate Links (Placeholders - User should replace with their actual links)
 export const AFFILIATE_LINKS = {

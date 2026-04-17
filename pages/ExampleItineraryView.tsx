@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { EXAMPLE_ITINERARIES } from '../data/exampleItineraries';
 import Dashboard from '../components/Dashboard';
 import SEO from '../components/SEO';
+import { logger } from '../services/logger';
 
 interface Props {
   setShowNavbar: (show: boolean) => void;
@@ -19,6 +20,7 @@ const ExampleItineraryView: React.FC<Props> = ({ setShowNavbar }) => {
       navigate('/');
     } else {
       setShowNavbar(false);
+      logger.info("User viewed Example Itinerary", { slug: example.slug, title: example.title });
     }
     
     return () => {

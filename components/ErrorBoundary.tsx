@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import emailjs from '@emailjs/browser';
 import { AlertTriangle } from 'lucide-react';
+import { logger } from '../services/logger';
 
 interface Props {
   children: ReactNode;
@@ -24,6 +25,9 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    
+    // Log directly via logger (Vercel Analytics)
+    logger.error("Uncaught React Error", { error, errorInfo });
     
     // CONFIGURATION: Replace these with your actual EmailJS keys
     const SERVICE_ID = 'service_q2f5gav';
