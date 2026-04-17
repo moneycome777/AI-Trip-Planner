@@ -8,8 +8,7 @@ import { chatWithAI } from '../services/geminiService';
 import ComparisonModal from './ComparisonModal';
 import PlaceDetailsModal from './PlaceDetailsModal';
 import AdUnlockModal from './AdUnlockModal'; 
-import FlightBookingModal from './FlightBookingModal';
-import { X } from 'lucide-react';
+import { X, Plane, Building2, Ticket, ExternalLink } from 'lucide-react';
 import { CACHE_KEY_PLAN } from '../constants';
 
 interface Props {
@@ -223,10 +222,48 @@ const Dashboard: React.FC<Props> = ({ initialPlan, preferences, onNewTrip, isExa
       />
 
       {showBookingModal && (
-          <FlightBookingModal 
-              preferences={preferences}
-              onClose={() => setShowBookingModal(false)}
-          />
+          <div className="fixed inset-0 z-[4000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+              <div className="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl border border-white/50 relative">
+                  <button onClick={() => setShowBookingModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 bg-slate-100 rounded-full transition">
+                      <X className="w-4 h-4" />
+                  </button>
+                  <h3 className="text-2xl font-black text-slate-900 mb-2">Book Your Trip</h3>
+                  <p className="text-sm text-slate-500 mb-6">Complete your itinerary by booking your flights, hotels, and activities.</p>
+
+                  <div className="space-y-3">
+                      <a href={`https://www.skyscanner.com/transport/flights-from/anywhere/to/${encodeURIComponent(preferences.destination)}`} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition group">
+                          <div className="flex items-center gap-3">
+                              <div className="bg-blue-100 p-2 rounded-xl text-blue-600"><Plane className="w-5 h-5" /></div>
+                              <div className="text-left">
+                                  <div className="font-bold text-slate-800 group-hover:text-blue-700">Flights to {preferences.destination}</div>
+                                  <div className="text-xs text-slate-500">via Skyscanner</div>
+                              </div>
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-blue-500" />
+                      </a>
+                      <a href={`https://www.agoda.com/search?textToSearch=${encodeURIComponent(preferences.destination)}`} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-rose-50 hover:border-rose-200 transition group">
+                          <div className="flex items-center gap-3">
+                              <div className="bg-rose-100 p-2 rounded-xl text-rose-600"><Building2 className="w-5 h-5" /></div>
+                              <div className="text-left">
+                                  <div className="font-bold text-slate-800 group-hover:text-rose-700">Hotels in {preferences.destination}</div>
+                                  <div className="text-xs text-slate-500">via Agoda</div>
+                              </div>
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-rose-500" />
+                      </a>
+                      <a href={`https://www.klook.com/en-US/search/result/?query=${encodeURIComponent(preferences.destination)}`} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-orange-50 hover:border-orange-200 transition group">
+                          <div className="flex items-center gap-3">
+                              <div className="bg-orange-100 p-2 rounded-xl text-orange-600"><Ticket className="w-5 h-5" /></div>
+                              <div className="text-left">
+                                  <div className="font-bold text-slate-800 group-hover:text-orange-700">Activities & Passes</div>
+                                  <div className="text-xs text-slate-500">via Klook</div>
+                              </div>
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-orange-500" />
+                      </a>
+                  </div>
+              </div>
+          </div>
       )}
 
       {showCompareConfirm && (

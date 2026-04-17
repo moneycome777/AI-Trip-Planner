@@ -8,7 +8,6 @@ import { generateTripPlan } from '../services/geminiService';
 import { CACHE_KEY_PLAN, CACHE_KEY_PREFS } from '../constants';
 import SEO from './SEO';
 import { DEMO_ITINERARY } from '../data/exampleItineraries';
-import { logger } from '../services/logger';
 
 interface Props {
   setShowNavbar: (show: boolean) => void;
@@ -37,7 +36,6 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   }, []);
 
   const handlePreferencesSubmit = async (prefs: UserPreferences) => {
-    logger.info("User requested trip generation", { destination: prefs.destination, duration: prefs.duration });
     setPreferences(prefs);
     setAppState(AppState.LOADING);
     setShowNavbar(false); 
@@ -84,7 +82,6 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
   };
 
   const handleDemo = () => {
-    logger.info("User requested Demo Mode");
     const demoTrip = DEMO_ITINERARY;
     setPreferences(demoTrip.preferences);
     setTripPlan(demoTrip.plan);
