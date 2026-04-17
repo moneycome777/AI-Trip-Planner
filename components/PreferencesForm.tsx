@@ -340,6 +340,19 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
 
   // Auto-fill destination from router state (e.g. clicked from Destinations page)
   useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Autoplay was prevented, checking if muted:", error);
+        // Ensure it's muted and try again if it failed
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          videoRef.current.play().catch(err => console.error("Final autoplay attempt failed:", err));
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (location.state && (location.state as any).autoFillDestination) {
         const destName = (location.state as any).autoFillDestination;
         setDestinations(prev => {
@@ -820,7 +833,6 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
                         loop 
                         muted 
                         playsInline
-                        controls
                         poster="https://picsum.photos/seed/travel-video/1280/720"
                         onError={(e) => console.error("Video loading error:", e)}
                     >
