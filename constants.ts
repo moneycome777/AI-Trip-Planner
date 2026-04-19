@@ -108,25 +108,28 @@ export const AIRPORT_MAPPING: Record<string, string> = {
     'singapore': 'SIN', 'changi': 'SIN',
 
     // Indonesia
-    'jakarta': 'JKTA', 'bali': 'DPS', 'denpasar': 'DPS',
+    'jakarta': 'JKTA', 'bali': 'DPS', 'denpasar': 'DPS', 'surabaya': 'SUB',
 
     // Vietnam
-    'ho chi minh': 'SGN', 'saigon': 'SGN',
-    'hanoi': 'HAN', 'da nang': 'DAD',
+    'ho chi minh': 'SGN', 'saigon': 'SGN', 'hanoi': 'HAN', 'da nang': 'DAD',
 
     // China
-    'beijing': 'BJS', 'shanghai': 'SHA', 'guangzhou': 'CAN', 'shenzhen': 'SZX', 'hong kong': 'HKG',
+    'beijing': 'BJS', 'pek': 'PEK', 'shanghai': 'SHA', 'pudong': 'PVG', 'guangzhou': 'CAN', 'shenzhen': 'SZX', 'hong kong': 'HKG',
+    
+    // Taiwan
+    'taipei': 'TPE', 'taoyuan': 'TPE',
 
     // Europe
     'london': 'LOND', 'heathrow': 'LHR', 'gatwick': 'LGW',
-    'paris': 'PARI', 'charles de gaulle': 'CDG',
+    'paris': 'PARI', 'charles de gaulle': 'CDG', 'orly': 'ORY',
     'rome': 'ROM', 'fiumicino': 'FCO',
-    'milan': 'MIL',
+    'milan': 'MIL', 'malpensa': 'MXP',
+    'nice': 'NCE',
+    'venice': 'VCE',
+    'berlin': 'BER', 'munich': 'MUC', 'frankfurt': 'FRA',
     'barcelona': 'BCN',
     'madrid': 'MAD',
     'amsterdam': 'AMS',
-    'frankfurt': 'FRA',
-    'munich': 'MUC',
     'zurich': 'ZRH',
 
     // USA

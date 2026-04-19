@@ -281,6 +281,8 @@ const StatCounter = ({ value, label, suffix = "", delay = 0, incrementInterval =
     );
 };
 
+import posthog from 'posthog-js';
+
 const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTripDest }) => {
   const [formData, setFormData] = useState<UserPreferences>({
     destination: '',
@@ -440,6 +442,16 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
         setDestinations(finalDests);
     }
     if (finalDests.length > 0 && formData.duration) {
+      if (import.meta.env.VITE_POSTHOG_KEY) {
+        posthog.capture('generate_trip_click', {
+          destination: finalDests.join(', '),
+          duration: formData.duration,
+          style: formData.style,
+          budget: formData.budget,
+          pacing: formData.pacing,
+          language: formData.language
+        });
+      }
       onSubmit({ ...formData, destination: finalDests.join(', ') });
     } else {
         if (finalDests.length === 0) alert("Please enter at least one destination.");
@@ -750,6 +762,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
 
             <div className="flex flex-col sm:flex-row gap-4">
                 <button
+                    id="btn-generate-trip"
                     type="submit"
                     className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-4 rounded-2xl shadow-xl shadow-slate-200 transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
                 >
@@ -758,6 +771,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
                 </button>
                 {onDemo && (
                     <button
+                        id="btn-try-demo"
                         type="button"
                         onClick={onDemo}
                         className="flex-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold py-4 px-4 rounded-2xl shadow-sm transform transition hover:scale-[1.01] flex items-center justify-center gap-2 text-lg"
@@ -879,6 +893,7 @@ const PreferencesForm: React.FC<Props> = ({ onSubmit, onResume, onDemo, savedTri
                         <Link 
                             key={i} 
                             to={`/example/${example.slug}`}
+                            id={`link-example-${example.slug}`}
                             className="group block bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100"
                         >
                             <div className="relative h-48 overflow-hidden">

@@ -1,8 +1,9 @@
 
 
 import React, { useState, useEffect } from 'react';
+import posthog from 'posthog-js';
 import { TripPlan, Activity, UserPreferences } from '../types';
-import { Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame, Clock, ShoppingBag } from 'lucide-react';
+import { Plane, Train, AlertTriangle, CloudSun, Backpack, SplitSquareHorizontal, Calendar, Info, BedDouble, Wallet, Download, Home, MousePointerClick, PiggyBank, FileSpreadsheet, FileText, X, Ticket, Video, Camera, ChevronLeft, ChevronRight, Flame, Clock, ShoppingBag } from 'lucide-react';
 import AdUnlockModal from './AdUnlockModal';
 import AffiliateTools from './AffiliateTools';
 import { jsPDF } from 'jspdf';
@@ -73,6 +74,12 @@ interface Props {
 
 const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () => void, dayColor: string, isLast: boolean }> = ({ activity, index, onClick, dayColor, isLast }) => {
   const isHotel = activity.type === 'hotel' || activity.place_name.toLowerCase().includes('hotel');
+  const isFlight = activity.type === 'transport' && (
+      activity.place_name.toLowerCase().includes('airport') || 
+      activity.place_name.toLowerCase().includes('flight') ||
+      activity.action.toLowerCase().includes('flight') ||
+      activity.action.toLowerCase().includes('fly to')
+  );
   
   return (
     <div className="relative pl-8 py-2 group">
@@ -80,20 +87,20 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
         <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-slate-200 group-last:bottom-auto group-last:h-6"></div>
         {/* Timeline Dot */}
         <div 
-            className="absolute left-[5px] top-6 w-4 h-4 rounded-full border-2 border-white shadow-sm z-10 flex items-center justify-center text-[8px] font-bold text-white"
-            style={{ backgroundColor: dayColor }}
+            className="absolute left-[5px] top-6 w-4 h-4 rounded-full border-2 border-white shadow-sm z-10 flex items-center justify-center text-[8px] font-bold text-white transition-transform group-hover:scale-110"
+            style={{ backgroundColor: isFlight ? '#0ea5e9' : dayColor }}
         >
-            {index + 1}
+            {isFlight ? <Plane className="w-2.5 h-2.5" /> : index + 1}
         </div>
 
         <div 
             onClick={onClick}
-            className={`cursor-pointer bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all hover:translate-x-1 relative overflow-hidden ${isHotel ? 'bg-indigo-50/50 border-indigo-100' : ''}`}
+            className={`cursor-pointer bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-sm hover:shadow-md transition-all hover:translate-x-1 relative overflow-hidden ${isHotel ? 'bg-indigo-50/50 border-indigo-100' : ''} ${isFlight ? 'bg-sky-50/50 border-sky-100' : ''}`}
             title="Click to view details, social media links and more"
         >
             <div className="flex justify-between items-start mb-1">
-                <h4 className={`font-bold text-sm ${isHotel ? 'text-indigo-900' : 'text-slate-800'}`}>{activity.place_name}</h4>
-                <span className="text-[10px] font-semibold bg-white/80 text-slate-500 px-2 py-0.5 rounded-full capitalize border border-slate-200 shadow-sm">{activity.type}</span>
+                <h4 className={`font-bold text-sm ${isHotel ? 'text-indigo-900' : isFlight ? 'text-sky-900' : 'text-slate-800'}`}>{activity.place_name}</h4>
+                <span className={`text-[10px] font-semibold bg-white/80 px-2 py-0.5 rounded-full capitalize border shadow-sm ${isFlight ? 'text-sky-600 border-sky-200' : 'text-slate-500 border-slate-200'}`}>{activity.type}</span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mb-2">{activity.action}</p>
             
@@ -114,9 +121,35 @@ const ActivityCard: React.FC<{ activity: Activity, index: number, onClick: () =>
 
             {/* Social & Booking Links */}
             <div className="flex flex-wrap gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
-                <a href={`${AFFILIATE_LINKS.KLOOK}&query=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition border border-orange-100">
-                    <Ticket className="w-3 h-3" /> {activity.cost_estimate ? `Find Tickets (est. ${activity.cost_estimate})` : 'Klook Deals'}
-                </a>
+                {isFlight ? (
+                     <a 
+                        href={`https://tp.media/r?marker=517346&trs=334346&p=4114&u=https%3A%2F%2Fwww.aviasales.com%2Fsearch%3Forigin%3D%26destination%3D${encodeURIComponent(activity.place_name)}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        onClick={() => {
+                            if (import.meta.env.VITE_POSTHOG_KEY) {
+                                posthog.capture('affiliate_link_click', { partner: 'Aviasales', place: activity.place_name });
+                            }
+                        }}
+                        className="flex items-center gap-1 text-[10px] font-bold bg-sky-100 text-sky-700 px-2 py-1 rounded-full hover:bg-sky-200 transition border border-sky-200"
+                    >
+                        <Plane className="w-3 h-3" /> Book Flights
+                    </a>
+                ) : (
+                    <a 
+                        href={`${AFFILIATE_LINKS.KLOOK}&query=${encodeURIComponent(activity.place_name)}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        onClick={() => {
+                            if (import.meta.env.VITE_POSTHOG_KEY) {
+                                posthog.capture('affiliate_link_click', { partner: 'Klook', place: activity.place_name });
+                            }
+                        }}
+                        className="flex items-center gap-1 text-[10px] font-bold bg-orange-50 text-orange-600 px-2 py-1 rounded-full hover:bg-orange-100 transition border border-orange-100"
+                    >
+                        <Ticket className="w-3 h-3" /> {activity.cost_estimate ? `Find Tickets (est. ${activity.cost_estimate})` : 'Klook Deals'}
+                    </a>
+                )}
                 <a href={`https://www.tiktok.com/search?q=${encodeURIComponent(activity.place_name)}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-1 rounded-full hover:bg-slate-200 transition">
                     <Video className="w-3 h-3" /> TikTok
                 </a>
@@ -551,6 +584,11 @@ const Itinerary: React.FC<Props> = ({ tripPlan, preferences, onDayClick, onNewTr
                                 href={`https://www.agoda.com/search?textToSearch=${encodeURIComponent(hotel.name)}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                onClick={() => {
+                                    if (import.meta.env.VITE_POSTHOG_KEY) {
+                                        posthog.capture('affiliate_link_click', { partner: 'Agoda', hotel: hotel.name });
+                                    }
+                                }}
                                 className="block w-full text-center py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition shadow-sm"
                             >
                                 Check Availability on Agoda
@@ -601,6 +639,11 @@ const Itinerary: React.FC<Props> = ({ tripPlan, preferences, onDayClick, onNewTr
                         href={AFFILIATE_LINKS.AIRHELP} 
                         target="_blank" 
                         rel="noreferrer"
+                        onClick={() => {
+                            if (import.meta.env.VITE_POSTHOG_KEY) {
+                                posthog.capture('affiliate_link_click', { partner: 'AirHelp' });
+                            }
+                        }}
                         className="block w-full text-center py-2 bg-white text-blue-600 rounded-xl text-xs font-bold hover:bg-blue-50 transition"
                     >
                         Check Compensation Now

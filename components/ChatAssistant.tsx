@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import posthog from 'posthog-js';
 import { Send, Loader2, X, CheckCircle, MessageSquare, Zap } from 'lucide-react';
 import { ChatMessage } from '../types';
 
@@ -34,6 +35,9 @@ const ChatAssistant: React.FC<Props> = ({ messages, onSendMessage, isUpdating })
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim() && !isUpdating) {
+      if (import.meta.env.VITE_POSTHOG_KEY) {
+        posthog.capture('ai_assistant_message', { message: input });
+      }
       onSendMessage(input);
       setInput('');
     }

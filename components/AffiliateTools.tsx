@@ -1,5 +1,6 @@
 
 import React from 'react';
+import posthog from 'posthog-js';
 import { Smartphone, Car, PlaneTakeoff, ShieldCheck, ExternalLink, Info } from 'lucide-react';
 import { AFFILIATE_LINKS } from '../constants';
 
@@ -10,6 +11,12 @@ interface AffiliateToolsProps {
 
 const AffiliateTools: React.FC<AffiliateToolsProps> = ({ transportMode, destination }) => {
   const isSelfDriving = transportMode === 'Self-Driving' || transportMode === 'Taxi/Ride-hailing';
+
+  const trackAffiliateClick = (partner: string) => {
+    if (import.meta.env.VITE_POSTHOG_KEY) {
+      posthog.capture('affiliate_link_click', { partner, destination });
+    }
+  };
 
   return (
     <div className="space-y-4 animate-fadeIn">
@@ -31,6 +38,7 @@ const AffiliateTools: React.FC<AffiliateToolsProps> = ({ transportMode, destinat
             href={AFFILIATE_LINKS.AIRHELP} 
             target="_blank" 
             rel="noreferrer"
+            onClick={() => trackAffiliateClick('AirHelp')}
             className="inline-flex items-center gap-2 bg-white text-blue-700 px-4 py-2 rounded-xl text-xs font-black hover:bg-blue-50 transition shadow-md"
           >
             Check My Compensation <ExternalLink className="w-3 h-3" />
@@ -46,15 +54,15 @@ const AffiliateTools: React.FC<AffiliateToolsProps> = ({ transportMode, destinat
         </div>
         <p className="text-xs text-slate-500 mb-4">Get an instant eSIM for your trip. No physical SIM cards needed.</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <a href={AFFILIATE_LINKS.AIRALO} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
+          <a href={AFFILIATE_LINKS.AIRALO} target="_blank" rel="noreferrer" onClick={() => trackAffiliateClick('Airalo')} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
             <span className="text-xs font-bold text-slate-700 group-hover:text-indigo-700">Airalo</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
-          <a href={AFFILIATE_LINKS.YESIM} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
+          <a href={AFFILIATE_LINKS.YESIM} target="_blank" rel="noreferrer" onClick={() => trackAffiliateClick('Yesim')} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
             <span className="text-xs font-bold text-slate-700 group-hover:text-indigo-700">Yesim</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
-          <a href={AFFILIATE_LINKS.SAILY} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
+          <a href={AFFILIATE_LINKS.SAILY} target="_blank" rel="noreferrer" onClick={() => trackAffiliateClick('Saily')} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-indigo-50 transition border border-slate-100 group">
             <span className="text-xs font-bold text-slate-700 group-hover:text-indigo-700">Saily</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
@@ -70,14 +78,14 @@ const AffiliateTools: React.FC<AffiliateToolsProps> = ({ transportMode, destinat
           </div>
           <p className="text-xs text-emerald-700 mb-4">Since you chose **{transportMode}**, we recommend booking your vehicle in advance.</p>
           <div className="grid grid-cols-1 gap-2">
-            <a href={AFFILIATE_LINKS.LOCALRENT} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-emerald-100 transition border border-emerald-200 group shadow-sm">
+            <a href={AFFILIATE_LINKS.LOCALRENT} target="_blank" rel="noreferrer" onClick={() => trackAffiliateClick('Localrent')} className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-emerald-100 transition border border-emerald-200 group shadow-sm">
               <div>
                 <span className="block text-xs font-black text-emerald-900">Localrent.com</span>
                 <span className="text-[10px] text-emerald-600">Best for local car rentals</span>
               </div>
               <ExternalLink className="w-4 h-4 text-emerald-400" />
             </a>
-            <a href={AFFILIATE_LINKS.GETRENTACAR} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-emerald-100 transition border border-emerald-200 group shadow-sm">
+            <a href={AFFILIATE_LINKS.GETRENTACAR} target="_blank" rel="noreferrer" onClick={() => trackAffiliateClick('GetRentACar')} className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-emerald-100 transition border border-emerald-200 group shadow-sm">
               <div>
                 <span className="block text-xs font-black text-emerald-900">GetRentACar</span>
                 <span className="text-[10px] text-emerald-600">Global car rental marketplace</span>

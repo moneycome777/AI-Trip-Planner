@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import posthog from 'posthog-js';
 import { AppState, TripPlan, UserPreferences } from '../types';
 import PreferencesForm from './PreferencesForm';
 import LoadingScreen from './LoadingScreen';
@@ -42,8 +43,21 @@ const MainPlanner: React.FC<Props> = ({ setShowNavbar }) => {
     setIsAiReady(false);
     setTripPlan(null);
     
+    const startTime = performance.now();
+    
     try {
       const plan = await generateTripPlan(prefs);
+      const endTime = performance.now();
+      const generationDuration = (endTime - startTime) / 1000; // in seconds
+
+      if (import.meta.env.VITE_POSTHOG_KEY) {
+        posthog.capture('plan_generated', {
+          destination: prefs.destination,
+          duration_seconds: generationDuration.toFixed(2),
+          language: prefs.language
+        });
+      }
+
       setTripPlan(plan);
       setIsAiReady(true);
       localStorage.setItem(CACHE_KEY_PLAN, JSON.stringify(plan));
