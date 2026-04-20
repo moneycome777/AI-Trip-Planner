@@ -14,7 +14,7 @@ let lastErrorTime = 0;
 
 export const logError = async (error: any, context: LogContext) => {
   const timestamp = new Date().toISOString();
-  const stack = error instanceof Error ? error.stack : 'No stack trace available';
+  const stack = (error instanceof Error ? error.stack : null) || 'No stack trace available';
   const message = error?.toString() || 'Unknown Error';
   
   // Deduplication Logic: Prevent multiple emails for the same error within 2 seconds
