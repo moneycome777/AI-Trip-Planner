@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import emailjs from '@emailjs/browser';
 import { AlertTriangle } from 'lucide-react';
+import { logError } from '../services/loggerService';
 
 interface Props {
   children: ReactNode;
@@ -23,34 +23,14 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
-    
-    // CONFIGURATION: Replace these with your actual EmailJS keys
-    const SERVICE_ID = 'service_q2f5gav';
-    const TEMPLATE_ID = 'template_s9guskd';
-    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
-
     // Only send if not already sent
     if (!this.state.sentReport) {
-        
-        // ALIGNMENT FIX: Matching {{name}}, {{time}}, {{error_message}}
-        const templateParams = {
-            name: "SYSTEM ALERT (TripGenie)",
-            time: new Date().toLocaleString(),
-            error_message: `CRITICAL APP CRASH:\n${error.toString()}\n\nSTACK TRACE:\n${errorInfo.componentStack}`,
-            
-            // Extra info
-            user_agent: navigator.userAgent,
-        };
-
-        emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
-            .then(() => {
-                this.setState({ sentReport: true });
-                console.log("Error report sent!");
-            })
-            .catch((err) => {
-                console.error("Failed to send error report", err);
-            });
+      logError(error, { 
+        location: "ErrorBoundary", 
+        additionalData: { componentStack: errorInfo.componentStack } 
+      }).then(() => {
+        this.setState({ sentReport: true });
+      });
     }
   }
 

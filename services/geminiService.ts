@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TripPlan, UserPreferences, ChatResponse } from "../types";
 import { MOCK_TRIP_PLAN } from "../constants";
-import emailjs from '@emailjs/browser';
+import { logError } from "./loggerService";
 
 // --- CONFIGURATION ---
 const MODEL_FLASH = "gemini-3-flash-preview";
@@ -80,28 +80,6 @@ const chatSchema = {
         modified_plan: tripSchema // Embed the trip schema here
     },
     required: ["intent", "answer"]
-};
-
-// --- HELPER FOR SENDING QUOTA ALERTS ---
-const sendQuotaAlert = async (error: any, context: string) => {
-    // Using the same credentials as Contact form
-    const SERVICE_ID = 'service_q2f5gav';
-    const TEMPLATE_ID = 'template_s9guskd';
-    const PUBLIC_KEY = 'k9Wtzi7pVLF6sI3cV';
-
-    const templateParams = {
-        name: "SYSTEM ALERT - QUOTA EXCEEDED",
-        time: new Date().toLocaleString(),
-        error_message: `API QUOTA HIT (${context}):\n${error.toString()}`,
-        message: "The application has hit the Gemini API rate limit (429). Immediate attention required if this is frequent."
-    };
-
-    try {
-        await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
-        console.log(`Quota alert email sent for ${context}.`);
-    } catch (err) {
-        console.error("Failed to send quota alert email", err);
-    }
 };
 
 // --- ACTIONS ---
@@ -202,17 +180,26 @@ export const generateTripPlan = async (prefs: UserPreferences): Promise<TripPlan
             throw new Error("Failed to parse AI response as JSON.");
         }
       } catch (error: any) {
+        // Log the error even if we are going to retry, so we can see what's happening
+        logError(error, { 
+            location: `generateTripPlan_Attempt_${3 - retries}`, 
+            additionalData: { 
+                preferences: prefs, 
+                retriesRemaining: retries - 1,
+                isFinalAttempt: retries === 1
+            } 
+        });
+
         retries--;
         if (retries === 0) {
-            console.error("Gemini API Error:", error);
+            console.error("Gemini API Error (Final Fail):", error);
             if (error.toString().includes("429") || error.toString().includes("Quota") || error.toString().includes("404")) {
                 console.warn("API Quota Limit hit or Model unavailable. Returning MOCK data for testing purposes.");
-                sendQuotaAlert(error, "generateTripPlan");
                 return MOCK_TRIP_PLAN;
             }
             throw error;
         }
-        console.warn("Retrying generateTripPlan due to error...");
+        console.warn(`Retrying generateTripPlan due to error (Retries left: ${retries})...`);
       }
   }
   throw new Error("Failed to generate trip plan after retries.");
@@ -275,7 +262,9 @@ export const chatWithAI = async (currentPlan: TripPlan, userMessage: string): Pr
         
         // Trigger Email Alert if it's a quota issue
         if (error.toString().includes("429") || error.toString().includes("Quota")) {
-            sendQuotaAlert(error, "chatWithAI");
+            logError(error, { location: "chatWithAI", additionalData: { message: userMessage, planSummary: currentPlan.trip_summary } });
+        } else {
+            logError(error, { location: "chatWithAI_Critical", additionalData: { message: userMessage } });
         }
 
         throw error;
@@ -329,19 +318,50 @@ export const generateStandardTour = async (prefs: UserPreferences): Promise<Trip
                 throw new Error("Failed to parse AI response as JSON.");
             }
         } catch (error : any) {
+            logError(error, { 
+                location: `generateStandardTour_Attempt_${3 - retries}`, 
+                additionalData: { 
+                    preferences: prefs, 
+                    retriesRemaining: retries - 1
+                } 
+            });
+
             retries--;
             if (retries === 0) {
-                console.error("Gemini API Error:", error);
+                console.error("Gemini API Error (Final Fail):", error);
                 if (error.toString().includes("429") || error.toString().includes("Quota")) {
-                     sendQuotaAlert(error, "generateStandardTour");
                      return MOCK_TRIP_PLAN;
                 }
                 throw error;
             }
-            console.warn("Retrying generateStandardTour due to error...");
+            console.warn(`Retrying generateStandardTour due to error (Retries left: ${retries})...`);
         }
     }
     throw new Error("Failed to generate standard tour after retries.");
+};
+
+// --- ERROR SIMULATION FOR TESTING ---
+export const simulateError = async (type: 'quota' | 'json' | 'crash' | 'rejection') => {
+    switch (type) {
+        case 'quota':
+            await logError(new Error("Simulated Quota Error: 429 Resource Exhausted"), { 
+                location: "TEST_SIMULATION_QUOTA", 
+                additionalData: { test: true } 
+            });
+            break;
+        case 'json':
+            await logError(new Error("Simulated JSON Parse Error: Unexpected token 'C' in JSON at position 1337"), { 
+                location: "TEST_SIMULATION_JSON", 
+                additionalData: { rawText: "{\n  \"invalid\": \"data... Catherine Catherine Catherine\"" } 
+            });
+            break;
+        case 'crash':
+            throw new Error("SIMULATED CRITICAL CRASH: This will trigger the global ErrorBoundary.");
+        case 'rejection':
+            // Trigger an unhandled rejection
+            Promise.reject(new Error("SIMULATED UNHANDLED REJECTION: Testing global window listener."));
+            break;
+    }
 };
 
 export const modifyTripPlan = async (currentPlan: TripPlan, userInstruction: string): Promise<TripPlan> => {

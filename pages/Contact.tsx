@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Send, Loader2, CheckCircle, AlertCircle, HelpCircle, MessageSquare, Clock, ShieldCheck } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import SEO from '../components/SEO';
+import { logError } from '../services/loggerService';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ const Contact: React.FC = () => {
         setFormData({ name: '', email: '', message: '' });
       })
       .catch((err) => {
-        console.error('Failed to send email:', err);
+        logError(err, { location: "ContactForm_Submission", additionalData: { formData } });
         setStatus('error');
       });
   };

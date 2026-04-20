@@ -5,17 +5,11 @@ import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Analytics } from "@vercel/analytics/react";
 import { BrowserRouter } from "react-router-dom";
+import { logError } from './services/loggerService';
 
-// Initialize PostHog
-if (import.meta.env.VITE_POSTHOG_KEY) {
-  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
-    api_host: 'https://us.i.posthog.com',
-    person_profiles: 'always',
-    capture_pageview: true 
-  });
-
-  // Global Error Tracking
-  window.addEventListener('error', (event) => {
+// Global Error Tracking
+window.addEventListener('error', (event) => {
+  if (import.meta.env.VITE_POSTHOG_KEY) {
     posthog.capture('app_error', {
       message: event.message,
       filename: event.filename,
@@ -23,12 +17,37 @@ if (import.meta.env.VITE_POSTHOG_KEY) {
       colno: event.colno,
       error: event.error?.stack || event.error?.message
     });
-  });
+  }
 
-  window.addEventListener('unhandledrejection', (event) => {
+  logError(event.error || new Error(event.message), {
+    location: "Global Window Error",
+    additionalData: {
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno
+    }
+  });
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  if (import.meta.env.VITE_POSTHOG_KEY) {
     posthog.capture('app_unhandled_rejection', {
       reason: event.reason?.stack || event.reason?.message || event.reason
     });
+  }
+
+  logError(event.reason, {
+    location: "Global Unhandled Rejection",
+    additionalData: { reason: event.reason }
+  });
+});
+
+// Initialize PostHog
+if (import.meta.env.VITE_POSTHOG_KEY) {
+  posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'always',
+    capture_pageview: true 
   });
 }
 

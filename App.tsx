@@ -9,6 +9,7 @@ import Destinations from './pages/Destinations';
 import Privacy from './pages/Privacy';
 import KnowledgeBase from './pages/KnowledgeBase';
 import ExampleItineraryView from './pages/ExampleItineraryView';
+import DebugPage from './pages/DebugPage';
 import SecurityGuard from './components/SecurityGuard';
 
 const ScrollToTop = () => {
@@ -96,6 +97,8 @@ const App: React.FC = () => {
             <Route path="/is-switzerland-expensive-to-visit" element={<KnowledgeBase slug="is-switzerland-expensive-to-visit" />} />
             <Route path="/best-time-to-visit-kyoto" element={<KnowledgeBase slug="best-time-to-visit-kyoto" />} />
             <Route path="/how-far-in-advance-to-plan-trip" element={<KnowledgeBase slug="how-far-in-advance-to-plan-trip" />} />
+            
+            <Route path="/debug-errors" element={<DebugPage />} />
             
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
