@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { CheckCircle, Info, Sparkles, ArrowRight, HelpCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 
-interface SEOContent {
+export interface SEOContent {
     title: string;
     directAnswer: string;
     definition: string;
@@ -13,7 +13,7 @@ interface SEOContent {
     faqs: { q: string, a: string }[];
 }
 
-const KNOWLEDGE_DATA: Record<string, SEOContent> = {
+export const KNOWLEDGE_DATA: Record<string, SEOContent> = {
     'how-do-i-plan-a-trip': {
         title: "How do I plan a trip?",
         directAnswer: "To plan a trip effectively, start by setting a budget, choosing a destination, and selecting your dates. Then, book flights and accommodation before building a logical daily itinerary using tools like AriaTrip AI to optimize your travel routes.",
@@ -678,18 +678,6 @@ const KnowledgeBase: React.FC<{ slug: string }> = ({ slug }) => {
                     ))}
                 </div>
             </section>
-
-            {/* Footer Navigation */}
-            <div className="pt-10 border-t border-slate-200 text-center">
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-8">Related Travel Hub Content</p>
-                <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
-                     {Object.entries(KNOWLEDGE_DATA).slice(0, 10).map(([slug, content]) => (
-                         <Link key={slug} to={`/${slug}`} className="text-indigo-600 hover:text-indigo-800 text-sm font-bold transition">
-                             {content.title}
-                         </Link>
-                     ))}
-                </div>
-            </div>
         </div>
     );
 };

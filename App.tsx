@@ -11,6 +11,7 @@ import KnowledgeBase from './pages/KnowledgeBase';
 import ExampleItineraryView from './pages/ExampleItineraryView';
 import DebugPage from './pages/DebugPage';
 import SecurityGuard from './components/SecurityGuard';
+import Footer from './components/Footer';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -103,6 +104,8 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+
+      {showNavbar && <Footer />}
     </div>
   );
 };
